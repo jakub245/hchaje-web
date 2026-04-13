@@ -22,9 +22,9 @@ const NAV = [
 export function Btn({ children, variant = "primary", className = "", as, to, ...props }: any) {
   const base =
     variant === "primary"
-      ? "bg-[#6EE76D] text-[#080C08] hover:brightness-110"
-      : "border border-[#6EE76D]/30 text-[#6EE76D] hover:bg-[#6EE76D]/10 hover:border-[#6EE76D]/60";
-  const cls = `rounded-full px-7 py-3 tracking-wider uppercase transition-all duration-300 cursor-pointer inline-flex items-center gap-2 text-[1.05rem] ${base} ${className}`;
+      ? "bg-[#6EE76D] text-[#080C08] hover:brightness-110 active:brightness-95"
+      : "border border-[#6EE76D]/30 text-[#6EE76D] hover:bg-[#6EE76D]/10 hover:border-[#6EE76D]/60 active:brightness-95";
+  const cls = `rounded-full px-7 py-3 tracking-wider uppercase transition-all duration-300 ease-out cursor-pointer inline-flex items-center gap-2 text-[1.05rem] ${base} ${className} active:-translate-y-[1px]`;
   const style = { fontFamily: bebas, letterSpacing: "0.08em" };
 
   if (to) {
@@ -73,7 +73,7 @@ export function Navbar() {
             <Link
               key={item.to}
               to={item.to}
-              className={`uppercase transition-colors hover:text-[#6EE76D] ${location.pathname.startsWith(item.to) ? "text-[#6EE76D]" : "text-white/55"}`}
+              className={`uppercase transition-all duration-200 ease-out hover:text-[#6EE76D] active:-translate-y-[1px] active:text-[#6EE76D] ${location.pathname.startsWith(item.to) ? "text-[#6EE76D]" : "text-white/55"}`}
               style={navTextStyle}
             >
               {item.label}
@@ -99,7 +99,7 @@ export function Navbar() {
             <Link
               key={item.to}
               to={item.to}
-              className="block py-3 text-white/60 hover:text-[#6EE76D] border-b border-white/5 uppercase tracking-wider"
+              className="block py-3 text-white/60 hover:text-[#6EE76D] active:-translate-y-[1px] border-b border-white/5 uppercase tracking-wider transition-all duration-200 ease-out"
               style={navTextStyle}
             >
               {item.label}
