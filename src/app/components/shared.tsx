@@ -63,12 +63,12 @@ export function Navbar() {
       className={`fixed left-0 w-full z-50 transition-all duration-300 ${scrolled ? "bg-[#080C08]/95 backdrop-blur-md shadow-lg shadow-black/30" : "bg-transparent"}`}
       style={{ top: 16 }}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16 lg:h-20">
+      <div className="px-12 lg:px-24 flex items-center justify-between h-16 lg:h-20">
         <Link to="/" className="flex items-center gap-3">
           <img src={logoSvg} alt="HC Háje" className="h-16 w-auto" />
         </Link>
 
-        <div className="hidden lg:flex items-center gap-7">
+        <div className="hidden lg:flex items-center gap-10">
           {NAV.map((item) => (
             <Link
               key={item.to}
