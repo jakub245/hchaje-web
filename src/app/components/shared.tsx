@@ -166,9 +166,8 @@ export function CtaStrip() {
   return (
     <section className="relative py-16 lg:py-20 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-r from-[#6EE76D]/8 via-[#6EE76D]/4 to-[#6EE76D]/8" />
-      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#6EE76D]/30 to-transparent" />
       <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#6EE76D]/30 to-transparent" />
-      <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div className="relative max-w-4xl mx-auto px-8 sm:px-12 lg:px-16 text-center">
         <h2 className="text-4xl lg:text-5xl text-white uppercase mb-4" style={{ fontFamily: bebas }}>
           Staň se součástí{" "}
           <span className="text-[#6EE76D]">HC Háje</span>
