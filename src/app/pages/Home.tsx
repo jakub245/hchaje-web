@@ -65,7 +65,6 @@ function Hero() {
         <div className="absolute inset-0 bg-gradient-to-r from-[#080C08] via-[#080C08]/85 to-[#080C08]/50" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#080C08] via-transparent to-transparent" />
       </div>
-      <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-[#6EE76D]/50 to-transparent" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32 w-full">
         <div className="max-w-2xl">
