@@ -109,6 +109,7 @@ export function Navbar() {
           </Btn>
         </div>
       )}
+      </div>
     </nav>
   );
 }
