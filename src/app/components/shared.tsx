@@ -62,7 +62,7 @@ export function Navbar() {
     <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled ? "bg-[#080C08]/95 backdrop-blur-md shadow-lg shadow-black/30" : "bg-transparent"}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16 lg:h-20">
         <Link to="/" className="flex items-center gap-3">
-          <img src={logoSvg} alt="HC Háje" className="h-12 w-auto" />
+          <img src={logoSvg} alt="HC Háje" className="h-16 w-auto" />
         </Link>
 
         <div className="hidden lg:flex items-center gap-7">
