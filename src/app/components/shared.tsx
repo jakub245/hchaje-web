@@ -56,7 +56,7 @@ export function Navbar() {
 
   useEffect(() => { setOpen(false); window.scrollTo(0, 0); }, [location.pathname]);
 
-  const navTextStyle = { fontFamily: bebas, fontSize: "0.98rem", letterSpacing: "0.08em", fontWeight: 300 as const };
+  const navTextStyle = { fontFamily: bebas, fontSize: "0.98rem", letterSpacing: "0.08em", fontWeight: 200 as const };
 
   return (
     <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled ? "bg-[#080C08]/95 backdrop-blur-md shadow-lg shadow-black/30" : "bg-transparent"}`}>
