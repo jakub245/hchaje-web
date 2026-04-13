@@ -45,24 +45,15 @@ export function SectionLabel({ children }: { children: React.ReactNode }) {
 /* ── Navbar ── */
 export function Navbar() {
   const [open, setOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
-
-  useEffect(() => {
-    const h = () => setScrolled(window.scrollY > 10);
-    h();
-    window.addEventListener("scroll", h);
-    return () => window.removeEventListener("scroll", h);
-  }, []);
 
   useEffect(() => { setOpen(false); window.scrollTo(0, 0); }, [location.pathname]);
 
   const navTextStyle = { fontFamily: bebas, fontSize: "17px", letterSpacing: "0.08em", fontWeight: 200 as const };
 
   return (
-    <nav
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${scrolled ? "bg-[#080C08] shadow-lg shadow-black/30 border-b border-white/10" : "bg-[#080C08]/85"}`}
-    >
+    <nav className="fixed inset-x-0 top-0 z-50">
+      <div className="px-12 lg:px-24 flex items-center justify-between h-16 lg:h-20">
       <div className="px-12 lg:px-24 flex items-center justify-between h-16 lg:h-20">
         <Link to="/" className="flex items-center gap-3">
           <img src={logoSvg} alt="HC Háje" className="h-16 w-auto" />
