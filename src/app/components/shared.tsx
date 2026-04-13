@@ -1,0 +1,201 @@
+import { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router";
+import {
+  Menu, X, Phone, Mail, MapPin, Instagram, Activity, ArrowRight,
+} from "lucide-react";
+import logoSvg from "../../imports/hchaje-zkusebni.svg";
+
+export const G = "#6EE76D";
+export const BG = "#080C08";
+export const bebas = "'Bebas Neue', sans-serif";
+export const inter = "Inter, sans-serif";
+
+const NAV = [
+  { label: "Aktuality", to: "/aktuality" },
+  { label: "Družstva", to: "/druzstva" },
+  { label: "Tréninky", to: "/treninky" },
+  { label: "O klubu", to: "/o-klubu" },
+  { label: "Kontakty", to: "/kontakty" },
+];
+
+/* ── Button ── */
+export function Btn({ children, variant = "primary", className = "", as, to, ...props }: any) {
+  const base =
+    variant === "primary"
+      ? "bg-[#6EE76D] text-[#080C08] hover:brightness-110"
+      : "border border-[#6EE76D]/30 text-[#6EE76D] hover:bg-[#6EE76D]/10 hover:border-[#6EE76D]/60";
+  const cls = `rounded-full px-7 py-3 tracking-wider uppercase transition-all duration-300 cursor-pointer inline-flex items-center gap-2 text-[1.05rem] ${base} ${className}`;
+  const style = { fontFamily: bebas, letterSpacing: "0.08em" };
+
+  if (to) {
+    return <Link to={to} className={cls} style={style} {...props}>{children}</Link>;
+  }
+  return <button className={cls} style={style} {...props}>{children}</button>;
+}
+
+/* ── Section heading ── */
+export function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="text-[#6EE76D] text-sm tracking-[0.2em] uppercase mb-3 block" style={{ fontFamily: bebas }}>
+      {children}
+    </span>
+  );
+}
+
+/* ── Navbar ── */
+export function Navbar() {
+  const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    const h = () => setScrolled(window.scrollY > 40);
+    window.addEventListener("scroll", h);
+    return () => window.removeEventListener("scroll", h);
+  }, []);
+
+  useEffect(() => { setOpen(false); window.scrollTo(0, 0); }, [location.pathname]);
+
+  const navTextStyle = { fontFamily: bebas, fontSize: "1.05rem", letterSpacing: "0.1em", fontWeight: 400 as const };
+
+  return (
+    <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled ? "bg-[#080C08]/95 backdrop-blur-md shadow-lg shadow-black/30" : "bg-transparent"}`}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16 lg:h-20">
+        <Link to="/" className="flex items-center gap-3">
+          <img src={logoSvg} alt="HC Háje" className="h-12 w-auto" />
+        </Link>
+
+        <div className="hidden lg:flex items-center gap-7">
+          {NAV.map((item) => (
+            <Link
+              key={item.to}
+              to={item.to}
+              className={`uppercase transition-colors hover:text-[#6EE76D] ${location.pathname.startsWith(item.to) ? "text-[#6EE76D]" : "text-white/55"}`}
+              style={navTextStyle}
+            >
+              {item.label}
+            </Link>
+          ))}
+          <Link
+            to="/kontakty"
+            className="rounded-full px-6 py-2 bg-[#6EE76D] text-[#080C08] hover:brightness-110 uppercase transition-all duration-300 inline-flex items-center gap-2"
+            style={navTextStyle}
+          >
+            Chci se přidat
+          </Link>
+        </div>
+
+        <button className="lg:hidden text-white" onClick={() => setOpen(!open)}>
+          {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
+      </div>
+
+      {open && (
+        <div className="lg:hidden bg-[#080C08]/98 backdrop-blur-lg border-t border-[#6EE76D]/10 px-4 pb-6 pt-2">
+          {NAV.map((item) => (
+            <Link
+              key={item.to}
+              to={item.to}
+              className="block py-3 text-white/60 hover:text-[#6EE76D] border-b border-white/5 uppercase tracking-wider"
+              style={navTextStyle}
+            >
+              {item.label}
+            </Link>
+          ))}
+          <Btn variant="primary" to="/kontakty" className="mt-4 w-full justify-center">
+            Chci se přidat
+          </Btn>
+        </div>
+      )}
+    </nav>
+  );
+}
+
+/* ── Footer ── */
+export function Footer() {
+  return (
+    <footer className="bg-[#050805] border-t border-[#6EE76D]/8 pt-12 pb-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
+          <div>
+            <Link to="/" className="flex items-center gap-2 mb-4">
+              <img src={logoSvg} alt="HC Háje" className="h-10 w-auto" />
+            </Link>
+            <p className="text-white/35 text-sm" style={{ fontFamily: inter }}>
+              Ženský házenkářský klub z Prahy 11. Trénujeme od přípravky po dospělé.
+            </p>
+          </div>
+          <div>
+            <h4 className="text-white mb-4 uppercase tracking-wider" style={{ fontFamily: bebas }}>Navigace</h4>
+            <div className="space-y-2">
+              {NAV.map((item) => (
+                <Link key={item.to} to={item.to} className="block text-white/35 hover:text-[#6EE76D] transition-colors text-sm">
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+          <div>
+            <h4 className="text-white mb-4 uppercase tracking-wider" style={{ fontFamily: bebas }}>Kontakt</h4>
+            <div className="space-y-2 text-sm text-white/35">
+              <p>+420 123 456 789</p>
+              <p>info@hchaje.cz</p>
+              <p>Sportovní hala Háje, Praha 4</p>
+            </div>
+          </div>
+          <div>
+            <h4 className="text-white mb-4 uppercase tracking-wider" style={{ fontFamily: bebas }}>Sociální sítě</h4>
+            <div className="flex gap-3">
+              <a href="#" className="w-10 h-10 rounded-full border border-[#6EE76D]/15 flex items-center justify-center text-white/35 hover:text-[#6EE76D] hover:border-[#6EE76D]/30 transition-all">
+                <Instagram className="w-5 h-5" />
+              </a>
+            </div>
+          </div>
+        </div>
+        <div className="border-t border-[#6EE76D]/8 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-white/25 text-sm">© 2026 HC Háje. Všechna práva vyhrazena.</p>
+          <p className="text-white/15 text-xs">Vytvořeno s vášní pro házenou</p>
+        </div>
+      </div>
+    </footer>
+  );
+}
+
+/* ── CTA Strip ── */
+export function CtaStrip() {
+  return (
+    <section className="relative py-16 lg:py-20 overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-r from-[#6EE76D]/8 via-[#6EE76D]/4 to-[#6EE76D]/8" />
+      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#6EE76D]/30 to-transparent" />
+      <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#6EE76D]/30 to-transparent" />
+      <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 className="text-4xl lg:text-5xl text-white uppercase mb-4" style={{ fontFamily: bebas }}>
+          Staň se součástí{" "}
+          <span className="text-[#6EE76D]">HC Háje</span>
+        </h2>
+        <p className="text-white/45 text-lg mb-8 max-w-xl mx-auto" style={{ fontFamily: inter }}>
+          Ať už jsi zkušená hráčka nebo teprve začínáš — u nás si najdeš svoje místo.
+          Přijď se podívat na trénink a poznej náš tým!
+        </p>
+        <Btn variant="primary" to="/kontakty" className="px-10 py-4">
+          Chci se přijít podívat <ArrowRight className="w-5 h-5" />
+        </Btn>
+      </div>
+    </section>
+  );
+}
+
+/* ── Page wrapper ── */
+export function PageHero({ title, subtitle }: { title: string; subtitle?: string }) {
+  return (
+    <section className="pt-28 pb-12 lg:pt-36 lg:pb-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h1 className="text-5xl lg:text-7xl text-white uppercase" style={{ fontFamily: bebas, lineHeight: 1 }}>
+          {title}
+        </h1>
+        {subtitle && <p className="text-white/45 text-lg mt-4 max-w-2xl" style={{ fontFamily: inter }}>{subtitle}</p>}
+        <div className="w-20 h-1 bg-[#6EE76D] rounded-full mt-6" />
+      </div>
+    </section>
+  );
+}

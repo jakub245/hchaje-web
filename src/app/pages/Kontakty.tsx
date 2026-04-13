@@ -1,0 +1,92 @@
+import { Phone, Mail, MapPin, Clock, Instagram } from "lucide-react";
+import { PageHero, Btn, SectionLabel, bebas, inter } from "../components/shared";
+
+export default function KontaktyPage() {
+  return (
+    <>
+      <PageHero title="Kontakty" subtitle="Chcete se přidat, máte dotaz nebo nás chcete navštívit? Ozvěte se!" />
+
+      <section className="pb-20 lg:pb-28">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
+            {/* Contact info */}
+            <div>
+              <SectionLabel>Kontaktní informace</SectionLabel>
+              <h2 className="text-3xl lg:text-4xl text-white uppercase mb-8" style={{ fontFamily: bebas }}>Ozvěte se nám</h2>
+
+              <div className="space-y-6 mb-10">
+                {[
+                  { icon: Phone, label: "Telefon", value: "+420 123 456 789", href: "tel:+420123456789" },
+                  { icon: Mail, label: "E-mail", value: "info@hchaje.cz", href: "mailto:info@hchaje.cz" },
+                ].map((c) => (
+                  <div key={c.label} className="flex items-start gap-4">
+                    <div className="w-12 h-12 rounded-full bg-[#6EE76D]/10 flex items-center justify-center flex-shrink-0">
+                      <c.icon className="w-5 h-5 text-[#6EE76D]" />
+                    </div>
+                    <div>
+                      <p className="text-white/35 text-sm mb-1">{c.label}</p>
+                      <a href={c.href} className="text-white hover:text-[#6EE76D] transition-colors">{c.value}</a>
+                    </div>
+                  </div>
+                ))}
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-full bg-[#6EE76D]/10 flex items-center justify-center flex-shrink-0">
+                    <MapPin className="w-5 h-5 text-[#6EE76D]" />
+                  </div>
+                  <div>
+                    <p className="text-white/35 text-sm mb-1">Kde nás najdete</p>
+                    <p className="text-white">Sportovní hala Háje</p>
+                    <p className="text-white/50">Novomeského 1, Praha 4 – Háje</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 rounded-full bg-[#6EE76D]/10 flex items-center justify-center flex-shrink-0">
+                    <Clock className="w-5 h-5 text-[#6EE76D]" />
+                  </div>
+                  <div>
+                    <p className="text-white/35 text-sm mb-1">Tréninky</p>
+                    <p className="text-white">Po – Pá, 16:00 – 21:00</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex gap-3">
+                <a href="#" className="w-10 h-10 rounded-full border border-[#6EE76D]/15 flex items-center justify-center text-white/35 hover:text-[#6EE76D] hover:border-[#6EE76D]/30 transition-all">
+                  <Instagram className="w-5 h-5" />
+                </a>
+              </div>
+            </div>
+
+            {/* Map */}
+            <div className="rounded-2xl overflow-hidden border border-[#6EE76D]/10 h-[400px] lg:h-auto min-h-[400px]">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2563.5!2d14.5074!3d50.0313!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x470b93a5db8d3c23%3A0x6ac6c5e5b7cb7f3d!2zSMOhamU!5e0!3m2!1scs!2scz!4v1680000000000!5m2!1scs!2scz"
+                width="100%"
+                height="100%"
+                style={{ border: 0, filter: "invert(90%) hue-rotate(180deg) brightness(0.8) contrast(1.2)" }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Mapa – Sportovní hala Háje"
+              />
+            </div>
+          </div>
+
+          {/* Join form CTA */}
+          <div className="mt-16 p-8 lg:p-12 rounded-2xl bg-gradient-to-r from-[#6EE76D]/8 via-[#6EE76D]/4 to-[#6EE76D]/8 border border-[#6EE76D]/15 text-center">
+            <h2 className="text-3xl lg:text-4xl text-white uppercase mb-4" style={{ fontFamily: bebas }}>
+              Chci se přijít podívat
+            </h2>
+            <p className="text-white/45 max-w-xl mx-auto mb-6" style={{ fontFamily: inter }}>
+              První trénink je u nás zdarma a nezávazně. Stačí si vzít sportovní oblečení,
+              sálové boty a dobrou náladu. Těšíme se na tebe!
+            </p>
+            <Btn variant="primary" className="px-10 py-4">
+              Napište nám <Mail className="w-4 h-4" />
+            </Btn>
+          </div>
+        </div>
+      </section>
+    </>
+  );
+}
