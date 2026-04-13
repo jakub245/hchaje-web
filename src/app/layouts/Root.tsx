@@ -1,10 +1,10 @@
 import { Outlet } from "react-router";
-import { useEffect } from "react";
+import { useLayoutEffect } from "react";
 import { Navbar, Footer } from "../components/shared";
 import { inter } from "../components/shared";
 
 export default function Root() {
-  useEffect(() => {
+  useLayoutEffect(() => {
     const observer = new IntersectionObserver(
       (entries, obs) => {
         entries.forEach((entry) => {
@@ -15,15 +15,27 @@ export default function Root() {
         });
       },
       {
-        threshold: 0.12,
+        threshold: 0.02,
+        rootMargin: "0px 0px -100px 0px",
       }
     );
 
-    document.querySelectorAll<HTMLElement>(".reveal-on-scroll").forEach((section) => {
-      observer.observe(section);
-    });
+    const sections = Array.from(document.querySelectorAll<HTMLElement>(".reveal-on-scroll"));
+    sections.forEach((section) => observer.observe(section));
 
-    return () => observer.disconnect();
+    const fallback = window.setTimeout(() => {
+      sections.forEach((section) => {
+        if (!section.classList.contains("reveal-visible") && section.getBoundingClientRect().top < window.innerHeight) {
+          section.classList.add("reveal-visible");
+          observer.unobserve(section);
+        }
+      });
+    }, 120);
+
+    return () => {
+      observer.disconnect();
+      window.clearTimeout(fallback);
+    };
   }, []);
 
   return (
