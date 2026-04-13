@@ -56,13 +56,13 @@ export function Navbar() {
 
   useEffect(() => { setOpen(false); window.scrollTo(0, 0); }, [location.pathname]);
 
-  const navTextStyle = { fontFamily: bebas, fontSize: "1.05rem", letterSpacing: "0.1em", fontWeight: 400 as const };
+  const navTextStyle = { fontFamily: bebas, fontSize: "0.98rem", letterSpacing: "0.08em", fontWeight: 300 as const };
 
   return (
     <nav className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${scrolled ? "bg-[#080C08]/95 backdrop-blur-md shadow-lg shadow-black/30" : "bg-transparent"}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16 lg:h-20">
         <Link to="/" className="flex items-center gap-3">
-          <img src={logoSvg} alt="HC Háje" className="h-20 w-auto" />
+          <img src={logoSvg} alt="HC Háje" className="h-16 w-auto" />
         </Link>
 
         <div className="hidden lg:flex items-center gap-7">
@@ -165,7 +165,6 @@ export function Footer() {
 export function CtaStrip() {
   return (
     <section className="relative py-16 lg:py-20 overflow-hidden">
-      <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-[#6EE76D]/30 to-transparent" />
       <div className="relative max-w-4xl mx-auto px-8 sm:px-12 lg:px-16 text-center">
         <h2 className="text-4xl lg:text-5xl text-white uppercase mb-4" style={{ fontFamily: bebas }}>
           Staň se součástí{" "}
