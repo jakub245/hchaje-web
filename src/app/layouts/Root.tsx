@@ -1,9 +1,11 @@
-import { Outlet } from "react-router";
+import { Outlet, useLocation } from "react-router";
 import { useLayoutEffect } from "react";
 import { Navbar, Footer } from "../components/shared";
 import { inter } from "../components/shared";
 
 export default function Root() {
+  const location = useLocation();
+
   useLayoutEffect(() => {
     const observer = new IntersectionObserver(
       (entries, obs) => {
@@ -36,7 +38,7 @@ export default function Root() {
       observer.disconnect();
       window.clearTimeout(fallback);
     };
-  }, []);
+  }, [location.pathname]);
 
   return (
     <div className="min-h-screen bg-[#080C08] animate-page-fade" style={{ fontFamily: inter }}>
