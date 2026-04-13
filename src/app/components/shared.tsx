@@ -60,7 +60,7 @@ export function Navbar() {
 
   return (
     <nav
-      className={`fixed left-0 w-full z-50 transition-all duration-300 ${scrolled ? "bg-[#080C08]/95 backdrop-blur-md shadow-lg shadow-black/30" : "bg-transparent"}`}
+      className={`fixed left-0 w-full z-50 transition-all duration-300 ${scrolled ? "bg-[#080C08] shadow-lg shadow-black/30" : "bg-transparent"}`}
       style={{ top: 16 }}
     >
       <div className="px-12 lg:px-24 flex items-center justify-between h-16 lg:h-20">
