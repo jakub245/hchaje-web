@@ -49,7 +49,8 @@ export function Navbar() {
   const location = useLocation();
 
   useEffect(() => {
-    const h = () => setScrolled(window.scrollY > 40);
+    const h = () => setScrolled(window.scrollY > 10);
+    h();
     window.addEventListener("scroll", h);
     return () => window.removeEventListener("scroll", h);
   }, []);
@@ -60,8 +61,7 @@ export function Navbar() {
 
   return (
     <nav
-      className={`fixed left-0 w-full z-50 transition-all duration-300 ${scrolled ? "bg-[#080C08] shadow-lg shadow-black/30 border-b border-white/10" : "bg-transparent"}`}
-      style={{ top: 16 }}
+      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${scrolled ? "bg-[#080C08] shadow-lg shadow-black/30 border-b border-white/10" : "bg-[#080C08]/85"}`}
     >
       <div className="px-12 lg:px-24 flex items-center justify-between h-16 lg:h-20">
         <Link to="/" className="flex items-center gap-3">
