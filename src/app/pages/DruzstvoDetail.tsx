@@ -81,10 +81,10 @@ export default function DruzstvoDetail() {
               <button
                 key={s.id}
                 onClick={() => scrollTo(s.id)}
-                className={`px-5 py-3 uppercase tracking-wider text-sm transition-all rounded-full whitespace-nowrap cursor-pointer ${
+                className={`px-5 py-3 uppercase tracking-wider text-[17px] transition-all whitespace-nowrap cursor-pointer rounded-full ${
                   active === s.id
-                    ? "text-[#080C08] bg-[#6EE76D]"
-                    : "text-white/45 hover:text-white hover:bg-white/5"
+                    ? "text-[#6EE76D] border-b-[3px] border-[#6EE76D]"
+                    : "text-white/45 hover:text-white"
                 }`}
                 style={{ fontFamily: bebas, letterSpacing: "0.1em" }}
               >
