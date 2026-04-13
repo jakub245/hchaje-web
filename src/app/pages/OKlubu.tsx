@@ -25,7 +25,7 @@ export default function OKlubuPage() {
       <PageHero title="O klubu" subtitle="Poznejte příběh HC Háje — od založení až po současnost." />
 
       {/* Intro */}
-      <section className="pb-16 lg:pb-24">
+      <section className="reveal-on-scroll pb-16 lg:pb-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>

@@ -30,7 +30,7 @@ export default function TreninkyPage() {
     <>
       <PageHero title="Tréninky" subtitle="Kompletní rozvrh tréninků pro všechna družstva. Tréninky probíhají ve Sportovní hale Háje." />
 
-      <section className="pb-20 lg:pb-28">
+      <section className="reveal-on-scroll pb-20 lg:pb-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Info bar */}
           <div className="flex flex-wrap gap-6 mb-12 p-6 rounded-2xl bg-[#0e160e] border border-[#6EE76D]/10">

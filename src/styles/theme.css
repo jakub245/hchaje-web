@@ -145,9 +145,15 @@
     animation: page-fade-in 0.45s ease-out both;
   }
 
-  .interactive-link,
-  .interactive-button {
-    transition: transform 180ms ease-out, color 180ms ease-out, filter 180ms ease-out;
+  .reveal-on-scroll {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.65s ease-out, transform 0.65s ease-out;
+  }
+
+  .reveal-visible {
+    opacity: 1;
+    transform: translateY(0);
   }
 
   @keyframes page-fade-in {
@@ -159,5 +165,10 @@
       opacity: 1;
       transform: translateY(0);
     }
+  }
+
+  .interactive-link,
+  .interactive-button {
+    transition: transform 180ms ease-out, color 180ms ease-out, filter 180ms ease-out;
   }
 }

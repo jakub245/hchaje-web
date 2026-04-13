@@ -9,7 +9,7 @@ export default function DruzstvaPage() {
     <>
       <PageHero title="Naše družstva" subtitle="Vyberte si kategorii a zjistěte vše o tréninzích, hráčkách a aktualitách." />
 
-      <section className="pb-20 lg:pb-28">
+      <section className="reveal-on-scroll pb-20 lg:pb-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {TEAMS.map((team) => (

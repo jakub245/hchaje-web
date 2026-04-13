@@ -55,7 +55,7 @@ const TRAININGS = [
 /* ══════════════ HERO ══════════════ */
 function Hero() {
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden pt-20">
+    <section className="reveal-on-scroll relative min-h-screen flex items-center overflow-hidden pt-20">
       <div className="absolute inset-0">
         <ImageWithFallback
           src="https://images.unsplash.com/photo-1575367728985-8cb72541609a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxoYW5kYmFsbCUyMGdhbWUlMjBtYXRjaCUyMGFjdGlvbnxlbnwxfHx8fDE3NzYwODU5NjZ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
@@ -118,7 +118,7 @@ function About() {
   }, []);
 
   return (
-    <section className="py-20 lg:py-28">
+    <section className="reveal-on-scroll py-20 lg:py-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <div>
@@ -201,7 +201,7 @@ function ReelsSection() {
   `;
 
   return (
-    <section className="py-16 lg:py-24 relative overflow-hidden">
+    <section className="reveal-on-scroll py-16 lg:py-24 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-[#080C08] via-[#0e160e] to-[#080C08]" />
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <style>{`
@@ -271,7 +271,7 @@ function ReelsSection() {
 /* ══════════════ NEWS + TRAININGS ══════════════ */
 function NewsAndTrainings() {
   return (
-    <section className="py-20 lg:py-28">
+    <section className="reveal-on-scroll py-20 lg:py-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
           <div>

@@ -19,7 +19,7 @@ export default function AktualityPage() {
     <>
       <PageHero title="Aktuality" subtitle="Nejnovější zprávy a události z našeho klubu." />
 
-      <section className="pb-20 lg:pb-28">
+      <section className="reveal-on-scroll pb-20 lg:pb-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-6">
             {ALL_NEWS.map((item) => (
