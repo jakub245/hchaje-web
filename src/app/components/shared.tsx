@@ -53,7 +53,7 @@ export function Navbar() {
 
   return (
     <nav className="fixed inset-x-0 top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16 lg:h-20">
+      <div className="w-full px-12 lg:px-24 flex items-center justify-between h-16 lg:h-20">
         <Link to="/" className="flex items-center gap-3">
           <img src={logoSvg} alt="HC Háje" className="h-16 w-auto" />
         </Link>
