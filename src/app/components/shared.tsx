@@ -9,6 +9,12 @@ export const G = "#6EE76D";
 export const BG = "#080C08";
 export const bebas = "'Bebas Neue', sans-serif";
 export const inter = "Inter, sans-serif";
+export const CONTACT_PHONE = "+420 777 721 282";
+export const CONTACT_PHONE_SECONDARY = "+420 608 981 667";
+export const CONTACT_EMAIL = "vybor@hchaje.cz";
+export const CONTACT_ADDRESS_TITLE = "Areál TJ Háje";
+export const CONTACT_ADDRESS = "K Jezeru, Praha 4";
+export const MAP_URL = "https://www.google.com/maps?q=50.0365389,14.5359419";
 
 const NAV = [
   { label: "Aktuality", to: "/aktuality" },
@@ -141,9 +147,11 @@ export function Footer() {
           <div>
             <h4 className="text-white mb-4 uppercase tracking-wider" style={{ fontFamily: bebas }}>Kontakt</h4>
             <div className="space-y-2 text-sm text-white/35">
-              <p>+420 123 456 789</p>
-              <p>info@hchaje.cz</p>
-              <p>Sportovní hala Háje, Praha 4</p>
+              <a href={`tel:${CONTACT_PHONE.replace(/\s/g, "")}`} className="block hover:text-[#6EE76D] transition-colors">{CONTACT_PHONE}</a>
+              <a href={`mailto:${CONTACT_EMAIL}`} className="block hover:text-[#6EE76D] transition-colors">{CONTACT_EMAIL}</a>
+              <a href={MAP_URL} target="_blank" rel="noreferrer" className="block hover:text-[#6EE76D] transition-colors">
+                {CONTACT_ADDRESS_TITLE}, {CONTACT_ADDRESS}
+              </a>
             </div>
           </div>
           <div>

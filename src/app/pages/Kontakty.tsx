@@ -1,5 +1,17 @@
-import { Phone, Mail, MapPin, Clock, Instagram } from "lucide-react";
-import { PageHero, Btn, SectionLabel, bebas, inter } from "../components/shared";
+import { Phone, Mail, MapPin, Clock, Instagram, ArrowUpRight } from "lucide-react";
+import {
+  PageHero,
+  Btn,
+  SectionLabel,
+  bebas,
+  inter,
+  CONTACT_PHONE,
+  CONTACT_PHONE_SECONDARY,
+  CONTACT_EMAIL,
+  CONTACT_ADDRESS_TITLE,
+  CONTACT_ADDRESS,
+  MAP_URL,
+} from "../components/shared";
 
 export default function KontaktyPage() {
   return (
@@ -16,8 +28,8 @@ export default function KontaktyPage() {
 
               <div className="space-y-6 mb-10">
                 {[
-                  { icon: Phone, label: "Telefon", value: "+420 123 456 789", href: "tel:+420123456789" },
-                  { icon: Mail, label: "E-mail", value: "info@hchaje.cz", href: "mailto:info@hchaje.cz" },
+                  { icon: Phone, label: "Telefon", value: `${CONTACT_PHONE} / ${CONTACT_PHONE_SECONDARY}`, href: `tel:${CONTACT_PHONE.replace(/\s/g, "")}` },
+                  { icon: Mail, label: "E-mail", value: CONTACT_EMAIL, href: `mailto:${CONTACT_EMAIL}` },
                 ].map((c) => (
                   <div key={c.label} className="flex items-start gap-4">
                     <div className="w-12 h-12 rounded-full bg-[#6EE76D]/10 flex items-center justify-center flex-shrink-0">
@@ -35,8 +47,16 @@ export default function KontaktyPage() {
                   </div>
                   <div>
                     <p className="text-white/35 text-sm mb-1">Kde nás najdete</p>
-                    <p className="text-white">Sportovní hala Háje</p>
-                    <p className="text-white/50">Novomeského 1, Praha 4 – Háje</p>
+                    <p className="text-white">{CONTACT_ADDRESS_TITLE}</p>
+                    <a
+                      href={MAP_URL}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-white/50 hover:text-[#6EE76D] transition-colors inline-flex items-center gap-1"
+                    >
+                      {CONTACT_ADDRESS} <ArrowUpRight className="w-3.5 h-3.5" />
+                    </a>
+                    <p className="text-white/35 text-sm mt-1">GPS: 50.0365389N, 14.5359419E</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
@@ -60,14 +80,14 @@ export default function KontaktyPage() {
             {/* Map */}
             <div className="rounded-2xl overflow-hidden border border-[#6EE76D]/10 h-[400px] lg:h-auto min-h-[400px]">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2563.5!2d14.5074!3d50.0313!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x470b93a5db8d3c23%3A0x6ac6c5e5b7cb7f3d!2zSMOhamU!5e0!3m2!1scs!2scz!4v1680000000000!5m2!1scs!2scz"
+                src="https://www.google.com/maps?q=50.0365389,14.5359419&z=16&output=embed"
                 width="100%"
                 height="100%"
                 style={{ border: 0, filter: "invert(90%) hue-rotate(180deg) brightness(0.8) contrast(1.2)" }}
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                title="Mapa – Sportovní hala Háje"
+                title="Mapa – Areál TJ Háje"
               />
             </div>
           </div>
@@ -81,7 +101,7 @@ export default function KontaktyPage() {
               První trénink je u nás zdarma a nezávazně. Stačí si vzít sportovní oblečení,
               sálové boty a dobrou náladu. Těšíme se na tebe!
             </p>
-            <Btn variant="primary" className="px-10 py-4">
+            <Btn variant="primary" to={`mailto:${CONTACT_EMAIL}`} className="px-10 py-4">
               Napište nám <Mail className="w-4 h-4" />
             </Btn>
           </div>
