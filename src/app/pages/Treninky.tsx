@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router";
-import { ArrowRight, Clock, MapPin } from "lucide-react";
+import { ArrowRight, Clock, MapPin, Trophy, Users } from "lucide-react";
 import { PageHero, CtaStrip, bebas, inter } from "../components/shared";
 import { TEAMS } from "../data/teams";
 
@@ -121,9 +121,13 @@ export default function TreninkyPage() {
                       to={`/druzstva/${slot.slug}`}
                       className="group block w-full rounded-2xl border border-[#6EE76D]/10 bg-[#0f180f] px-4 py-4 transition-all hover:border-[#6EE76D]/25 hover:bg-[#111c11]"
                     >
-                      <div className="grid gap-3 md:gap-4 lg:grid-cols-[minmax(220px,1.2fr)_minmax(160px,0.8fr)_minmax(220px,1fr)_28px] lg:items-center">
+                      <div className="grid gap-3 md:gap-4 lg:grid-cols-[48px_minmax(220px,1.2fr)_minmax(160px,0.8fr)_minmax(220px,1fr)_28px] lg:items-center">
+                        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#6EE76D]/10 flex-shrink-0">
+                          {slot.slug === "zeny" ? <Trophy className="w-5 h-5 text-[#6EE76D]" /> : <Users className="w-5 h-5 text-[#6EE76D]" />}
+                        </div>
+
                         <div className="min-w-0">
-                          <div className="text-white text-[18px] leading-tight" style={{ fontFamily: inter }}>{slot.team}</div>
+                          <div className="text-white text-[20px] leading-tight" style={{ fontFamily: inter }}>{slot.team}</div>
                           {slot.season && (
                             <div className="mt-2">
                               <span className="inline-flex rounded-full border border-[#6EE76D]/20 bg-[#6EE76D]/8 px-2.5 py-1 text-[11px] text-white/75" style={{ fontFamily: inter }}>
