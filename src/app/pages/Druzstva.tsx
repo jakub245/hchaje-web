@@ -25,16 +25,16 @@ export default function DruzstvaPage() {
                     alt={team.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-b from-[#6EE76D]/40 via-[#0b120b]/35 to-[#080C08]/90" />
+                  <div className="absolute inset-0 bg-gradient-to-b from-[#0d140d]/55 via-[#080C08]/65 to-[#050805]/95" />
                 </div>
 
                 {/* Content overlay */}
-                <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-[#080C08]/80 via-[#080C08]/35 to-transparent">
+                <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-[#050805]/95 via-[#080C08]/70 to-transparent">
                   <div className="flex items-center gap-2 mb-2">
                     <div className="w-8 h-8 rounded-full bg-[#6EE76D]/15 flex items-center justify-center">
                       <Users className="w-4 h-4 text-[#6EE76D]" />
                     </div>
-                    <span className="text-white/70 text-sm" style={{ fontFamily: inter }}>{team.ageRange}</span>
+                    <span className="text-white/85 text-sm" style={{ fontFamily: inter }}>{team.ageRange}</span>
                   </div>
                   <h3
                     className="text-2xl lg:text-3xl text-white uppercase group-hover:text-[#6EE76D] transition-colors"
@@ -42,7 +42,7 @@ export default function DruzstvaPage() {
                   >
                     {team.name}
                   </h3>
-                  <p className="text-white/70 text-sm mt-1 line-clamp-2" style={{ fontFamily: inter }}>
+                  <p className="text-white/80 text-sm mt-1 line-clamp-2" style={{ fontFamily: inter }}>
                     {team.desc}
                   </p>
                   <div className="mt-3 flex items-center gap-2 text-[#6EE76D] text-sm opacity-0 group-hover:opacity-100 transition-opacity" style={{ fontFamily: bebas, letterSpacing: "0.1em" }}>
