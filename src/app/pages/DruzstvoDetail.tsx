@@ -295,7 +295,7 @@ export default function DruzstvoDetail() {
                           <div className="w-12 h-12 rounded-2xl bg-[#6EE76D]/10 flex items-center justify-center">
                             <Calendar className="w-5 h-5 text-[#6EE76D]" />
                           </div>
-                          <div className="text-white text-[16px]" style={{ fontFamily: bebas }}>{item.day}</div>
+                          <div className="text-white text-xl" style={{ fontFamily: bebas }}>{item.day}</div>
                         </div>
                         <div className="grid grid-cols-2 gap-4 text-sm" style={{ fontFamily: inter }}>
                           <div>
@@ -326,7 +326,7 @@ export default function DruzstvoDetail() {
                       <div className="text-white/70 text-sm mt-1">{t.hall}</div>
                     </div>
                   </div>
-                  <div className="text-[16px] text-white" style={{ fontFamily: bebas }}>{t.day}</div>
+                  <div className="text-2xl text-white" style={{ fontFamily: bebas }}>{t.day}</div>
                   <div className="text-white/40 mt-1">{t.time}</div>
                 </div>
               ))}

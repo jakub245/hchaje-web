@@ -83,7 +83,7 @@ export default function OKlubuPage() {
                   <div className="w-12 h-12 rounded-full bg-[#6EE76D]/10 flex items-center justify-center mb-4">
                     <Icon className="w-6 h-6 text-[#6EE76D]" />
                   </div>
-                  <h3 className="text-white text-[16px] uppercase mb-2" style={{ fontFamily: bebas }}>{v.title}</h3>
+                  <h3 className="text-white text-xl uppercase mb-2" style={{ fontFamily: bebas }}>{v.title}</h3>
                   <p className="text-white/40 text-sm" style={{ fontFamily: inter }}>{v.desc}</p>
                 </div>
               );
