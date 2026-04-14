@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router";
 import {
-  Menu, X, Phone, Mail, MapPin, Instagram, Activity, ArrowRight, Facebook, Calendar, ChevronRight,
+  Menu, X, Phone, Mail, MapPin, Instagram, Activity, ArrowRight, Facebook, Calendar,
 } from "lucide-react";
 import logoSvg from "../../imports/hc-haje-nove.svg";
 
@@ -108,8 +108,8 @@ export function NewsCard({
       )}
 
       <div className="mt-4 inline-flex items-center gap-1.5 text-sm" style={{ fontFamily: inter }}>
-        <ChevronRight className="w-4 h-4 text-[#6EE76D]" />
-        <span className="text-white/45 underline-offset-4 group-hover:underline">Zobrazit detail</span>
+        <ArrowRight className="w-4 h-4 text-[#6EE76D] group-hover:translate-x-0.5 transition-transform" />
+        <span className="text-white/45 underline-offset-4 group-hover:text-[#6EE76D] group-hover:underline">Zobrazit detail</span>
       </div>
     </Link>
   );

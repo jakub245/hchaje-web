@@ -45,9 +45,8 @@ export default function DruzstvaPage() {
                   <p className="text-white/80 text-sm mt-1 line-clamp-2" style={{ fontFamily: inter }}>
                     {team.desc}
                   </p>
-                  <div className="mt-3 flex items-center gap-2 text-[#6EE76D] text-sm opacity-0 group-hover:opacity-100 transition-opacity" style={{ fontFamily: bebas, letterSpacing: "0.1em" }}>
-                    <span className="uppercase">Zobrazit detail</span>
-                    <ArrowRight className="w-4 h-4" />
+                  <div className="mt-3 flex items-center text-[#6EE76D] opacity-0 group-hover:opacity-100 transition-opacity">
+                    <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
                   </div>
                 </div>
               </Link>
