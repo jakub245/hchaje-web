@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { Children, cloneElement, isValidElement, useState, useEffect, type ReactElement, type ReactNode } from "react";
 import { Link, useLocation } from "react-router";
 import {
   Menu, X, Phone, Mail, MapPin, Instagram, Activity, ArrowRight, Facebook, Calendar,
@@ -35,14 +35,27 @@ export function Btn({ children, variant = "primary", className = "", as, to, ...
   const cls = `rounded-full px-7 py-3 tracking-wider uppercase transition-all duration-300 ease-out cursor-pointer inline-flex items-center gap-2 text-[1.05rem] ${base} ${className} active:-translate-y-[1px]`;
   const style = { fontFamily: bebas, letterSpacing: "0.08em" };
 
+  const content = typeof children === "string"
+    ? children
+    : Children.map(children, (child: ReactNode) => {
+        if (isValidElement(child) && typeof child.type !== "string") {
+          const childProps = child.props as { className?: string };
+          const iconClass = childProps.className?.includes("w-")
+            ? `${childProps.className} transition-transform duration-300 group-hover:translate-x-0.5`
+            : childProps.className;
+          return cloneElement(child as ReactElement<{ className?: string }>, { className: iconClass });
+        }
+        return child;
+      });
+
   if (to) {
-    return <Link to={to} className={cls} style={style} {...props}>{children}</Link>;
+    return <Link to={to} className={`${cls} group`} style={style} {...props}>{content}</Link>;
   }
-  return <button className={cls} style={style} {...props}>{children}</button>;
+  return <button className={`${cls} group`} style={style} {...props}>{content}</button>;
 }
 
 /* ── Section heading ── */
-export function SectionLabel({ children }: { children: React.ReactNode }) {
+export function SectionLabel({ children }: { children: ReactNode }) {
   return (
     <span className="text-[#6EE76D] text-sm tracking-[0.2em] uppercase mb-3 block" style={{ fontFamily: bebas }}>
       {children}
@@ -108,7 +121,7 @@ export function NewsCard({
       )}
 
       <div className="mt-4 inline-flex items-center gap-1.5 text-sm" style={{ fontFamily: inter }}>
-        <ArrowRight className="w-4 h-4 text-[#6EE76D] group-hover:translate-x-0.5 transition-transform" />
+        <ArrowRight className="w-4 h-4 text-white/45 group-hover:text-[#6EE76D] group-hover:translate-x-0.5 transition-all" />
         <span className="text-white/45 underline-offset-4 group-hover:text-[#6EE76D] group-hover:underline">Zobrazit detail</span>
       </div>
     </Link>
