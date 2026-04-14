@@ -114,16 +114,16 @@ export default function TreninkyPage() {
                   <div className="w-3 h-3 rounded-full bg-[#6EE76D]" />
                   {day.day}
                 </h3>
-                <div className="space-y-2">
+                <div className="space-y-3">
                   {day.slots.map((slot) => (
                     <Link
                       key={slot.slug + slot.day + slot.time + slot.hall + (slot.season ?? "")}
                       to={`/druzstva/${slot.slug}`}
-                      className="group rounded-2xl bg-[#0e160e] border border-[#6EE76D]/8 px-4 py-4 hover:border-[#6EE76D]/20 hover:bg-[#111c11] transition-all"
+                      className="group block w-full rounded-2xl border border-[#6EE76D]/10 bg-[#0f180f] px-4 py-4 transition-all hover:border-[#6EE76D]/25 hover:bg-[#111c11]"
                     >
-                      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:gap-6">
-                        <div className="min-w-0 lg:w-[240px] xl:w-[280px]">
-                          <div className="text-white" style={{ fontFamily: inter }}>{slot.team}</div>
+                      <div className="grid gap-3 md:gap-4 lg:grid-cols-[minmax(220px,1.2fr)_minmax(160px,0.8fr)_minmax(220px,1fr)_28px] lg:items-center">
+                        <div className="min-w-0">
+                          <div className="text-white text-[18px] leading-tight" style={{ fontFamily: inter }}>{slot.team}</div>
                           {slot.season && (
                             <div className="mt-2">
                               <span className="inline-flex rounded-full border border-[#6EE76D]/20 bg-[#6EE76D]/8 px-2.5 py-1 text-[11px] text-white/75" style={{ fontFamily: inter }}>
@@ -133,19 +133,17 @@ export default function TreninkyPage() {
                           )}
                         </div>
 
-                        <div className="flex-1 flex flex-col gap-2 md:flex-row md:flex-wrap md:items-center md:gap-6 min-w-0">
-                          <div className="flex items-center gap-2 text-sm min-w-0 text-white" style={{ fontFamily: inter }}>
-                            <Clock className="w-4 h-4 text-[#6EE76D] flex-shrink-0" />
-                            <span className="text-white">{slot.time}</span>
-                          </div>
-
-                          <div className="flex items-center gap-2 text-sm min-w-0 text-white" style={{ fontFamily: inter }}>
-                            <MapPin className="w-4 h-4 text-[#6EE76D] flex-shrink-0" />
-                            <span className="text-white">{formatPlace(slot.hall)}</span>
-                          </div>
+                        <div className="flex items-center gap-2 text-sm min-w-0" style={{ fontFamily: inter }}>
+                          <Clock className="w-4 h-4 text-[#6EE76D] flex-shrink-0" />
+                          <span className="text-white">{slot.time}</span>
                         </div>
 
-                        <div className="hidden lg:flex items-center justify-end text-white/45 group-hover:text-[#6EE76D] transition-colors">
+                        <div className="flex items-center gap-2 text-sm min-w-0" style={{ fontFamily: inter }}>
+                          <MapPin className="w-4 h-4 text-[#6EE76D] flex-shrink-0" />
+                          <span className="text-white truncate">{formatPlace(slot.hall)}</span>
+                        </div>
+
+                        <div className="flex items-center justify-end text-white/45 group-hover:text-[#6EE76D] group-hover:translate-x-1 transition-all">
                           <ArrowRight className="w-5 h-5" />
                         </div>
                       </div>
