@@ -314,23 +314,30 @@ function NewsAndTrainings() {
           <div>
             <SectionLabel>Novinky</SectionLabel>
             <h2 className="text-3xl lg:text-4xl text-white uppercase mb-8" style={{ fontFamily: bebas }}>Aktuality</h2>
-            <div className="space-y-4">
+            <div className="space-y-2">
               {latestNews.map((item) => (
                 <Link
                   key={item.id}
                   to={`/aktuality/${toSlug(item.title)}`}
                   state={{ article: { title: item.title, date: item.date }, backTo: "/" }}
-                  className="block p-5 rounded-2xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/25 transition-all group"
+                  className="group block p-4 rounded-2xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/20 transition-all min-h-[92px]"
                 >
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <div className="flex items-center gap-3 mb-2">
-                        <span className="text-white/35 text-sm">{item.date}</span>
-                        <span className="px-3 py-0.5 rounded-full bg-[#6EE76D]/10 text-[#6EE76D] text-xs tracking-wider" style={{ fontFamily: bebas }}>{item.tag}</span>
-                      </div>
-                      <h3 className="text-white group-hover:text-[#6EE76D] transition-colors" style={{ fontFamily: inter }}>{item.title}</h3>
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-full bg-[#6EE76D]/10 flex items-center justify-center flex-shrink-0">
+                      <Calendar className="w-5 h-5 text-[#6EE76D]" />
                     </div>
-                    <ChevronRight className="w-5 h-5 text-white/15 group-hover:text-[#6EE76D] transition-colors flex-shrink-0 mt-1" />
+
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-white text-[16px] leading-tight group-hover:text-[#6EE76D] transition-colors" style={{ fontFamily: inter }}>
+                        {item.title}
+                      </h3>
+                      <div className="flex flex-wrap items-center gap-3 text-sm text-white/35 mt-1.5">
+                        <span>{item.date}</span>
+                        <span className="px-3 py-0.5 rounded-full bg-[#6EE76D]/10 text-[#6EE76D] text-[11px] tracking-wider" style={{ fontFamily: bebas }}>{item.tag}</span>
+                      </div>
+                    </div>
+
+                    <ChevronRight className="w-5 h-5 text-white/15 group-hover:text-[#6EE76D] transition-colors flex-shrink-0" />
                   </div>
                 </Link>
               ))}
