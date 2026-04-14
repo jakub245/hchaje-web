@@ -59,7 +59,17 @@ export default function AktualitaDetail() {
   const location = useLocation();
   const state = location.state as { article?: Article; backTo?: string } | undefined;
 
-  const article = state?.article || FALLBACK_ARTICLES.find((item) => item.slug === articleSlug);
+  const fallbackArticle = FALLBACK_ARTICLES.find(
+    (item) => item.slug === articleSlug || (state?.article?.title && item.slug === toSlug(state.article.title))
+  );
+
+  const article = state?.article
+    ? {
+        ...fallbackArticle,
+        ...state.article,
+        content: state.article.content ?? fallbackArticle?.content,
+      }
+    : fallbackArticle;
 
   if (!article) {
     return <Navigate to="/aktuality" replace />;
