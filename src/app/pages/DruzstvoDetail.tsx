@@ -113,8 +113,12 @@ export default function DruzstvoDetail() {
       ]
     : isPripravkaTeam
       ? [
-          { date: "05.09.2023", title: "Pohádková stezka Hostivařským lesoparkem", location: "Hřiště HC Háje" },
-          { date: "05.09.2023", title: "Malování na obličej od Lukáše Phoenixe Bureše", location: "Hřiště HC Háje" },
+          { date: "25.04.2026", title: "Turnaj 4+1", location: "hala Kobylisy" },
+          { date: "02.05.2026", title: "Memoriál Karla Šulce 4+1", location: "Plzeň" },
+          { date: "17.05.2026", title: "Turnaj 4+1", location: "" },
+          { date: "30.05.2026", title: "Turnaj 4+1\nPořadatelství HC Háje", location: "Hřiště HC Háje" },
+          { date: "06.06.2026", title: "Mináček 4+1\n2017 a mladší", location: "DHC Slavia" },
+          { date: "14.06.2026", title: "Závěrečný turnaj 4+1", location: "Astra" },
         ]
       : (team.events ?? []).map((event) => ({
           date: event.date,
@@ -130,8 +134,9 @@ export default function DruzstvoDetail() {
       ]
     : isPripravkaTeam
       ? [
-          { name: team.coach, phone: "", email: "vybor@hchaje.cz" },
-          ...(team.assistantCoach ? [{ name: team.assistantCoach, phone: "", email: "vybor@hchaje.cz" }] : []),
+          { name: "Kateřina Bláhová", phone: "608 981 667", email: "pripravkahchaje@gmail.com" },
+          { name: "Petr Paulín", phone: "", email: "" },
+          { name: "Nela Černá", phone: "", email: "" },
         ]
       : [
           { name: team.coach, phone: "", email: "" },
@@ -206,12 +211,18 @@ export default function DruzstvoDetail() {
     : isPripravkaTeam
       ? [
           {
-            title: "Tréninky přípravky",
-            items: team.trainings.map((training) => ({
-              day: training.day.toLowerCase(),
-              time: training.time.replace("–", "-").replace("  ", " "),
-              place: training.hall,
-            })),
+            title: "Tréninky září, květen - červen",
+            items: [
+              { day: "úterý", time: "17:00 - 18:30", place: "hřiště" },
+              { day: "čtvrtek", time: "17:00 - 18:30", place: "hřiště" },
+            ],
+          },
+          {
+            title: "Tréninky říjen - duben",
+            items: [
+              { day: "úterý", time: "17:15 - 18:45", place: "tělocvišna ZŠ K Milíčovu" },
+              { day: "čtvrtek", time: "16:30 - 18:00", place: "tělocvišna ZŠ Mendelova" },
+            ],
           },
         ]
       : [];
