@@ -1,10 +1,13 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, Link, Navigate } from "react-router";
 import {
-  ArrowLeft, Clock, MapPin, Calendar, Users, User, Newspaper, ChevronRight,
+  ArrowLeft, Clock, MapPin, Calendar, Users, User, Newspaper, ChevronLeft, ChevronRight,
 } from "lucide-react";
 import { Btn, bebas, inter, CtaStrip } from "../components/shared";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
+import akceMini from "../../imports/akce-mini.png";
+import treninkyMini from "../../imports/treninky-mini.png";
+import treneriMini from "../../imports/treneri-mini.png";
 import { getTeamBySlug, TEAMS } from "../data/teams";
 
 const SECTIONS = [
@@ -20,6 +23,7 @@ export default function DruzstvoDetail() {
   const team = getTeamBySlug(slug || "");
   const [active, setActive] = useState("prehled");
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
+  const playersScrollRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -50,6 +54,12 @@ export default function DruzstvoDetail() {
 
   const scrollTo = (id: string) => {
     sectionRefs.current[id]?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
+  const isMiniTeam = team.slug === "mini-zakyne";
+
+  const scrollPlayers = (direction: number) => {
+    playersScrollRef.current?.scrollBy({ left: direction * 360, behavior: "smooth" });
   };
 
   const newsSorted = [...team.news].sort((a, b) => parseCzDate(b.date) - parseCzDate(a.date));
@@ -144,15 +154,37 @@ export default function DruzstvoDetail() {
         </div>
       </section>
 
+      {isMiniTeam && (
+        <section className="py-8 lg:py-10">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              {[
+                { src: akceMini, title: "Akce", subtitle: "Kalendář mini akcí a turnajů." },
+                { src: treninkyMini, title: "Tréninky", subtitle: "Rozvrh a program tréninků." },
+                { src: treneriMini, title: "Trenéři", subtitle: "Kdo vede tým mini žákyň." },
+              ].map((item) => (
+                <div key={item.title} className="rounded-3xl overflow-hidden border border-[#6EE76D]/10 bg-[#0e160e] shadow-black/20 shadow-sm">
+                  <ImageWithFallback src={item.src} alt={item.title} className="w-full h-48 object-cover" />
+                  <div className="p-5">
+                    <div className="text-sm uppercase tracking-[0.2em] text-[#6EE76D]" style={{ fontFamily: bebas }}>{item.title}</div>
+                    <p className="mt-3 text-white/70 text-sm" style={{ fontFamily: inter }}>{item.subtitle}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* ── TRÉNINKY ── */}
       <section id="treninky" ref={(el) => { sectionRefs.current["treninky"] = el; }} className="py-16 lg:py-20 bg-[#0e160e]/30 scroll-mt-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <span className="text-[#6EE76D] text-sm tracking-[0.2em] uppercase mb-3 block" style={{ fontFamily: bebas }}>Rozvrh</span>
           <h2 className="text-3xl lg:text-4xl text-white uppercase mb-8" style={{ fontFamily: bebas }}>Tréninky</h2>
 
-          <div className="flex gap-4 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
+          <div className={isMiniTeam ? "space-y-4" : "flex gap-4 overflow-x-auto pb-1"} style={isMiniTeam ? undefined : { scrollbarWidth: "none" }}>
             {team.trainings.map((t, i) => (
-              <div key={i} className="min-w-[18rem] flex-shrink-0 p-5 rounded-3xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/20 transition-all">
+              <div key={i} className={`p-5 rounded-3xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/20 transition-all ${isMiniTeam ? "w-full" : "min-w-[18rem] flex-shrink-0"}`}>
                 <div className="flex items-center gap-4 mb-4">
                   <div className="w-12 h-12 rounded-2xl bg-[#6EE76D]/10 flex items-center justify-center">
                     <Calendar className="w-5 h-5 text-[#6EE76D]" />
@@ -211,23 +243,62 @@ export default function DruzstvoDetail() {
           <span className="text-[#6EE76D] text-sm tracking-[0.2em] uppercase mb-3 block" style={{ fontFamily: bebas }}>Soupiska</span>
           <h2 className="text-3xl lg:text-4xl text-white uppercase mb-8" style={{ fontFamily: bebas }}>Hráčky</h2>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {team.players.map((p, i) => (
-              <div key={i} className="flex items-center gap-4 p-4 rounded-2xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/20 transition-all">
-                <div className="w-12 h-12 rounded-full bg-[#6EE76D]/10 flex items-center justify-center flex-shrink-0">
-                  {p.number ? (
-                    <span className="text-[#6EE76D] text-lg" style={{ fontFamily: bebas }}>{p.number}</span>
-                  ) : (
-                    <Users className="w-5 h-5 text-[#6EE76D]" />
-                  )}
-                </div>
-                <div>
-                  <div className="text-white" style={{ fontFamily: inter }}>{p.name}</div>
-                  <div className="text-white/35 text-sm" style={{ fontFamily: inter }}>{p.position}</div>
-                </div>
+          {isMiniTeam ? (
+            <div className="relative">
+              <div className="absolute right-0 top-0 flex gap-2 z-10">
+                <button
+                  onClick={() => scrollPlayers(-1)}
+                  className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#0e160e]/90 border border-[#6EE76D]/15 text-white/70 hover:text-white transition"
+                  aria-label="Posunout doleva"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={() => scrollPlayers(1)}
+                  className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#0e160e]/90 border border-[#6EE76D]/15 text-white/70 hover:text-white transition"
+                  aria-label="Posunout doprava"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
               </div>
-            ))}
-          </div>
+
+              <div ref={playersScrollRef} className="flex gap-4 overflow-x-auto pb-4 scroll-smooth">
+                {team.players.map((p, i) => (
+                  <div key={i} className="min-w-[18rem] flex-shrink-0 flex items-center gap-4 p-4 rounded-2xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/20 transition-all">
+                    <div className="w-12 h-12 rounded-full bg-[#6EE76D]/10 flex items-center justify-center flex-shrink-0">
+                      {p.number ? (
+                        <span className="text-[#6EE76D] text-lg" style={{ fontFamily: bebas }}>{p.number}</span>
+                      ) : (
+                        <Users className="w-5 h-5 text-[#6EE76D]" />
+                      )}
+                    </div>
+                    <div>
+                      <div className="text-white" style={{ fontFamily: inter }}>{p.name}</div>
+                      <div className="text-white/35 text-sm" style={{ fontFamily: inter }}>Ročník {p.position}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+              {team.players.map((p, i) => (
+                <div key={i} className="flex items-center gap-4 p-4 rounded-2xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/20 transition-all">
+                  <div className="w-12 h-12 rounded-full bg-[#6EE76D]/10 flex items-center justify-center flex-shrink-0">
+                    {p.number ? (
+                      <span className="text-[#6EE76D] text-lg" style={{ fontFamily: bebas }}>{p.number}</span>
+                    ) : (
+                      <Users className="w-5 h-5 text-[#6EE76D]" />
+                    )}
+                  </div>
+                  <div>
+                    <div className="text-white" style={{ fontFamily: inter }}>{p.name}</div>
+                    <div className="text-white/35 text-sm" style={{ fontFamily: inter }}>{p.position}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

@@ -1,7 +1,7 @@
 export interface Player {
   name: string;
   position: string;
-  number?: number;
+  number?: string | number;
 }
 
 export interface Training {
@@ -37,6 +37,8 @@ export interface Team {
   news: TeamNews[];
   events?: TeamEvent[];
 }
+
+import miniPhoto from "../../imports/mini2025.jpg";
 
 export const TEAMS: Team[] = [
   {
@@ -138,10 +140,10 @@ export const TEAMS: Team[] = [
     shortName: "Mini",
     desc: "Nejmladší házenkářky 8–10 let.",
     longDesc: "Mini žákyně jsou budoucností našeho klubu. Trénujeme formou her a zábavných cvičení, která děti baví a zároveň rozvíjejí koordinaci, rychlost a základní házenkářské dovednosti. Každá holčička je u nás vítaná!",
-    img: "https://images.unsplash.com/photo-1669046239665-5dcfc2ecc468?w=800",
+    img: miniPhoto,
     coach: "Lucie Svobodová",
     assistantCoach: "Markéta Tichá",
-    playerCount: 22,
+    playerCount: 19,
     ageRange: "8–10 let",
     trainings: [
       { day: "Pondělí", time: "16:00 – 17:15", hall: "Sportovní hala Háje" },
@@ -149,11 +151,25 @@ export const TEAMS: Team[] = [
       { day: "Pátek", time: "16:00 – 17:15", hall: "Sportovní hala Háje" },
     ],
     players: [
-      { name: "Emička Horáčková", position: "Hráčka", number: 2 },
-      { name: "Terezka Bílá", position: "Hráčka", number: 5 },
-      { name: "Barunka Veselá", position: "Hráčka", number: 8 },
-      { name: "Adélka Pokorná", position: "Hráčka", number: 11 },
-      { name: "Maruška Fialová", position: "Hráčka", number: 3 },
+      { name: "Badíková Barbora", position: "2016", number: "092689" },
+      { name: "Bouzidová Tina", position: "2016", number: "096619" },
+      { name: "Čadová Aneta", position: "2015", number: "092688" },
+      { name: "Fleissigová Elena", position: "2015", number: "092619" },
+      { name: "Holečková Sára", position: "2015", number: "092637" },
+      { name: "Horvátová Michaela", position: "2015", number: "099866" },
+      { name: "Hradilová Ema", position: "2015", number: "089838" },
+      { name: "Kiszová Tereza", position: "2015", number: "090108" },
+      { name: "Latif Jasmína", position: "2016", number: "092621" },
+      { name: "Lípová Sára", position: "2015", number: "099867" },
+      { name: "Mančalová Klára", position: "2015", number: "089843" },
+      { name: "Marková Kateřina", position: "2015", number: "085903" },
+      { name: "Peterková Rozálie", position: "2015", number: "092642" },
+      { name: "Růžičková Julie", position: "2016", number: "092640" },
+      { name: "Suchánková Berenika", position: "2015", number: "092687" },
+      { name: "Šimunská Kristina", position: "2015", number: "094726" },
+      { name: "Vadinská Karla", position: "2015", number: "094727" },
+      { name: "Zemanová Johana", position: "2016", number: "096618" },
+      { name: "Žďánská Tereza", position: "2015", number: "089840" },
     ],
     news: [
       { date: "9. 4. 2026", title: "Nábor mini žákyň — přijďte si to zkusit!" },
