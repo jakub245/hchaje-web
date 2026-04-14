@@ -133,7 +133,7 @@ export function Footer() {
               <img src={logoSvg} alt="HC Háje" className="h-10 w-auto" />
             </Link>
             <p className="text-white/35 text-sm" style={{ fontFamily: inter }}>
-              Ženský házenkářský klub z Prahy 11. Trénujeme od přípravky po dospělé.
+              Dívčí a ženský házenkářský klub z Prahy 4. Od roku 1980 vedeme hráčky od přípravky po ženy.
             </p>
           </div>
           <div>

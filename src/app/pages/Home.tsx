@@ -9,10 +9,14 @@ import { Btn, SectionLabel, CtaStrip, bebas, inter } from "../components/shared"
 import { TEAMS } from "../data/teams";
 import heroBackground from "../../imports/hc-haje-pozadi.png";
 
+const totalPlayers = TEAMS.reduce((sum, team) => sum + team.playerCount, 0);
+const totalTeams = TEAMS.length;
+const totalTrainingsPerWeek = TEAMS.reduce((sum, team) => sum + team.trainings.length, 0);
+
 const STATS = [
-  { value: "120+", label: "Aktivních hráček" },
-  { value: "6", label: "Družstev" },
-  { value: "14+", label: "Tréninků týdně" },
+  { value: `${totalPlayers}`, label: "Aktivních hráček" },
+  { value: `${totalTeams}`, label: "Družstev" },
+  { value: `${totalTrainingsPerWeek}`, label: "Tréninků týdně" },
 ];
 
 const CAROUSEL_IMAGES = [
@@ -120,8 +124,8 @@ function Hero() {
           </h1>
 
           <p className="text-white/50 text-lg mb-10 max-w-lg" style={{ fontFamily: inter }}>
-            Jsme HC Háje — ženský házenkářský klub z Prahy. Trénujeme, soutěžíme a hlavně
-            milujeme házenou. Přidej se k nám a zažij adrenalin na hřišti!
+            Jsme HC Háje — dívčí a ženský házenkářský klub z Prahy 4. Od roku 1980 vedeme
+            hráčky k pravidelnému sportu, týmovosti a radosti z házené.
           </p>
 
           <div className="flex flex-wrap gap-4">
@@ -173,15 +177,15 @@ function About() {
           <div>
             <SectionLabel>O klubu</SectionLabel>
             <h2 className="text-4xl lg:text-5xl text-white uppercase mb-6" style={{ fontFamily: bebas, lineHeight: 1 }}>
-              Tradice a vášeň<br />od roku 2005
+              Tradice a výchova<br />od roku 1980
             </h2>
             <p className="text-white/50 mb-4" style={{ fontFamily: inter }}>
-              HC Háje je ženský házenkářský klub se sídlem v Praze 11. Náš klub sdružuje
-              hráčky od těch nejmenších přípravek až po dospělý A-tým žen.
+              HC Háje patří mezi tradiční centra dívčí házené v Praze. Zaměřujeme se na
+              dlouhodobou sportovní přípravu děvčat od přípravky až po ženské kategorie.
             </p>
             <p className="text-white/50 mb-8" style={{ fontFamily: inter }}>
-              Trénujeme v moderní hale s kvalitním zázemím. Naše trenérky a trenéři mají
-              dlouholeté zkušenosti a individuální přístup ke každé hráčce.
+              V nejmladších kategoriích stavíme na pohybových hrách a všeobecném rozvoji,
+              na které postupně navazují házenkářské dovednosti, soutěže i týmové zkušenosti.
             </p>
             <div className="flex flex-wrap gap-4">
               <Btn variant="primary" to="/o-klubu">Více o klubu</Btn>
