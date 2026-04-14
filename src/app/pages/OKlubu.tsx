@@ -27,7 +27,7 @@ export default function OKlubuPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <p className="text-white/55 text-lg mb-4" style={{ fontFamily: inter }}>
+              <p className="text-white text-lg mb-4" style={{ fontFamily: inter }}>
                 HC Háje je dívčí a ženský házenkářský klub z Prahy 4, který patří od svého založení
                 v roce 1980 mezi výrazná centra dívčí házené v Praze i v rámci celé České republiky.
               </p>
@@ -83,7 +83,7 @@ export default function OKlubuPage() {
                   <div className="w-12 h-12 rounded-full bg-[#6EE76D]/10 flex items-center justify-center mb-4">
                     <Icon className="w-6 h-6 text-[#6EE76D]" />
                   </div>
-                  <h3 className="text-white text-xl uppercase mb-2" style={{ fontFamily: bebas }}>{v.title}</h3>
+                  <h3 className="text-white text-[16px] uppercase mb-2" style={{ fontFamily: bebas }}>{v.title}</h3>
                   <p className="text-white/40 text-sm" style={{ fontFamily: inter }}>{v.desc}</p>
                 </div>
               );

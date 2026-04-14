@@ -228,7 +228,7 @@ export default function DruzstvoDetail() {
               <button
                 key={s.id}
                 onClick={() => scrollTo(s.id)}
-                className={`px-5 py-3 uppercase tracking-wider text-[17px] transition-all whitespace-nowrap cursor-pointer relative ${
+                className={`px-5 py-3 uppercase tracking-wider text-[16px] transition-all whitespace-nowrap cursor-pointer relative ${
                   active === s.id
                     ? "text-[#6EE76D] after:content-[''] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-[#6EE76D] after:rounded-full"
                     : "text-white/45 hover:text-white"
@@ -295,7 +295,7 @@ export default function DruzstvoDetail() {
                           <div className="w-12 h-12 rounded-2xl bg-[#6EE76D]/10 flex items-center justify-center">
                             <Calendar className="w-5 h-5 text-[#6EE76D]" />
                           </div>
-                          <div className="text-white text-xl" style={{ fontFamily: bebas }}>{item.day}</div>
+                          <div className="text-white text-[16px]" style={{ fontFamily: bebas }}>{item.day}</div>
                         </div>
                         <div className="grid grid-cols-2 gap-4 text-sm" style={{ fontFamily: inter }}>
                           <div>
@@ -326,7 +326,7 @@ export default function DruzstvoDetail() {
                       <div className="text-white/70 text-sm mt-1">{t.hall}</div>
                     </div>
                   </div>
-                  <div className="text-2xl text-white" style={{ fontFamily: bebas }}>{t.day}</div>
+                  <div className="text-[16px] text-white" style={{ fontFamily: bebas }}>{t.day}</div>
                   <div className="text-white/40 mt-1">{t.time}</div>
                 </div>
               ))}
@@ -429,7 +429,7 @@ export default function DruzstvoDetail() {
                         <Users className="w-8 h-8 text-[#6EE76D]" />
                       )}
                     </div>
-                    <div className="text-white text-lg" style={{ fontFamily: inter }}>{p.name}</div>
+                    <div className="text-white text-[16px]" style={{ fontFamily: inter }}>{p.name}</div>
                     <div className="text-white/45 text-sm mt-2" style={{ fontFamily: inter }}>Ročník {p.position}</div>
                     <div className="text-[#6EE76D] text-2xl mt-3" style={{ fontFamily: bebas }}>{p.number}</div>
                   </div>
@@ -479,7 +479,7 @@ export default function DruzstvoDetail() {
                     </div>
                     <div>
                       <div className="text-white/45 text-sm md:hidden" style={{ fontFamily: inter }}>Jméno</div>
-                      <div className="text-white text-lg" style={{ fontFamily: inter }}>{member.name}</div>
+                      <div className="text-white text-[16px]" style={{ fontFamily: inter }}>{member.name}</div>
                     </div>
                   </div>
 
