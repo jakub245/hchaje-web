@@ -112,6 +112,8 @@ export default function DruzstvoDetail() {
   };
 
   const newsSorted = [...team.news].sort((a, b) => parseCzDate(b.date) - parseCzDate(a.date));
+  const trainingBlocks = team.trainingSections ?? [];
+  const trainingCount = trainingBlocks[0]?.items.length || team.trainings.length;
 
   const displayedEvents = isMiniTeam
     ? [
@@ -198,43 +200,6 @@ export default function DruzstvoDetail() {
           excerpt: "Nejnovější aktualita z týmu.",
         }));
 
-  const trainingBlocks = isMiniTeam
-    ? [
-        {
-          title: "Tréninky září, květen - červen",
-          items: [
-            { day: "pondělí", time: "17:00 - 18:30", place: "hala TJ JM Chodov" },
-            { day: "úterý", time: "16:30 - 18:00", place: "hřiště" },
-            { day: "čtvrtek", time: "16:30 - 18:00", place: "hřiště" },
-          ],
-        },
-        {
-          title: "Tréninky říjen - duben",
-          items: [
-            { day: "pondělí", time: "17:00 - 18:30", place: "hala TJ JM Chodov" },
-            { day: "úterý", time: "17:15 - 18:45", place: "tělocvična ZŠ K Milíčovu" },
-            { day: "čtvrtek", time: "16:30 - 18:00", place: "tělocvična ZŠ Mendelova" },
-          ],
-        },
-      ]
-    : isPripravkaTeam
-      ? [
-          {
-            title: "Tréninky září, květen - červen",
-            items: [
-              { day: "úterý", time: "17:00 - 18:30", place: "hřiště" },
-              { day: "čtvrtek", time: "17:00 - 18:30", place: "hřiště" },
-            ],
-          },
-          {
-            title: "Tréninky říjen - duben",
-            items: [
-              { day: "úterý", time: "17:15 - 18:45", place: "tělocvišna ZŠ K Milíčovu" },
-              { day: "čtvrtek", time: "16:30 - 18:00", place: "tělocvišna ZŠ Mendelova" },
-            ],
-          },
-        ]
-      : [];
   return (
     <>
       <section className="relative pt-24 pb-10 lg:pt-32 lg:pb-14">
@@ -291,7 +256,7 @@ export default function DruzstvoDetail() {
                   <div className="text-white/35 text-sm" style={{ fontFamily: inter }}>Hráček</div>
                 </div>
                 <div className="p-4 rounded-2xl bg-[#0e160e] border border-[#6EE76D]/8">
-                  <div className="text-3xl text-[#6EE76D]" style={{ fontFamily: bebas }}>{team.trainings.length}×</div>
+                  <div className="text-3xl text-[#6EE76D]" style={{ fontFamily: bebas }}>{trainingCount}×</div>
                   <div className="text-white/35 text-sm" style={{ fontFamily: inter }}>Tréninků týdně</div>
                 </div>
               </div>
@@ -318,14 +283,14 @@ export default function DruzstvoDetail() {
           <span className="text-[#6EE76D] text-sm tracking-[0.2em] uppercase mb-3 block" style={{ fontFamily: bebas }}>Rozvrh</span>
           <h2 className="text-3xl lg:text-4xl text-white uppercase mb-8" style={{ fontFamily: bebas }}>Tréninky</h2>
 
-          {isKidsTeam ? (
+          {trainingBlocks.length > 0 ? (
             <div className="space-y-10">
               {trainingBlocks.map((block) => (
                 <div key={block.title}>
                   <h3 className="text-xl text-white/45 mb-4 normal-case" style={{ fontFamily: inter }}>{block.title}</h3>
                   <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                     {block.items.map((item) => (
-                      <div key={item.day + item.time} className="rounded-3xl border border-[#6EE76D]/8 bg-[#0e160e] p-6">
+                      <div key={item.day + item.time + item.hall} className="rounded-3xl border border-[#6EE76D]/8 bg-[#0e160e] p-6">
                         <div className="flex items-center gap-3 mb-4">
                           <div className="w-12 h-12 rounded-2xl bg-[#6EE76D]/10 flex items-center justify-center">
                             <Calendar className="w-5 h-5 text-[#6EE76D]" />
@@ -339,7 +304,7 @@ export default function DruzstvoDetail() {
                           </div>
                           <div>
                             <div className="text-white/40 mb-1">Místo</div>
-                            <div className="text-white/80">{item.place}</div>
+                            <div className="text-white/80">{item.hall}</div>
                           </div>
                         </div>
                       </div>

@@ -10,6 +10,11 @@ export interface Training {
   hall: string;
 }
 
+export interface TrainingSection {
+  title: string;
+  items: Training[];
+}
+
 export interface TeamNews {
   date: string;
   title: string;
@@ -33,6 +38,7 @@ export interface Team {
   playerCount: number;
   ageRange: string;
   trainings: Training[];
+  trainingSections?: TrainingSection[];
   players: Player[];
   news: TeamNews[];
   events?: TeamEvent[];
@@ -147,9 +153,27 @@ export const TEAMS: Team[] = [
     playerCount: 19,
     ageRange: "8–10 let",
     trainings: [
-      { day: "Pondělí", time: "16:00 – 17:15", hall: "Sportovní hala Háje" },
-      { day: "Středa", time: "16:00 – 17:15", hall: "Sportovní hala Háje" },
-      { day: "Pátek", time: "16:00 – 17:15", hall: "Sportovní hala Háje" },
+      { day: "Pondělí", time: "17:00 - 18:30", hall: "hala TJ JM Chodov" },
+      { day: "Úterý", time: "17:15 - 18:45", hall: "tělocvična ZŠ K Milíčovu" },
+      { day: "Čtvrtek", time: "16:30 - 18:00", hall: "tělocvična ZŠ Mendelova" },
+    ],
+    trainingSections: [
+      {
+        title: "Tréninky září, květen - červen",
+        items: [
+          { day: "Pondělí", time: "17:00 - 18:30", hall: "hala TJ JM Chodov" },
+          { day: "Úterý", time: "16:30 - 18:00", hall: "hřiště" },
+          { day: "Čtvrtek", time: "16:30 - 18:00", hall: "hřiště" },
+        ],
+      },
+      {
+        title: "Tréninky říjen - duben",
+        items: [
+          { day: "Pondělí", time: "17:00 - 18:30", hall: "hala TJ JM Chodov" },
+          { day: "Úterý", time: "17:15 - 18:45", hall: "tělocvična ZŠ K Milíčovu" },
+          { day: "Čtvrtek", time: "16:30 - 18:00", hall: "tělocvična ZŠ Mendelova" },
+        ],
+      },
     ],
     players: [
       { name: "Badíková Barbora", position: "2016", number: "092689" },
@@ -189,8 +213,24 @@ export const TEAMS: Team[] = [
     playerCount: 18,
     ageRange: "6–8 let",
     trainings: [
-      { day: "Pondělí", time: "15:00 – 16:00", hall: "Sportovní hala Háje" },
-      { day: "Pátek", time: "15:00 – 16:00", hall: "Sportovní hala Háje" },
+      { day: "Úterý", time: "17:15 - 18:45", hall: "tělocvišna ZŠ K Milíčovu" },
+      { day: "Čtvrtek", time: "16:30 - 18:00", hall: "tělocvišna ZŠ Mendelova" },
+    ],
+    trainingSections: [
+      {
+        title: "Tréninky září, květen - červen",
+        items: [
+          { day: "Úterý", time: "17:00 - 18:30", hall: "hřiště" },
+          { day: "Čtvrtek", time: "17:00 - 18:30", hall: "hřiště" },
+        ],
+      },
+      {
+        title: "Tréninky říjen - duben",
+        items: [
+          { day: "Úterý", time: "17:15 - 18:45", hall: "tělocvišna ZŠ K Milíčovu" },
+          { day: "Čtvrtek", time: "16:30 - 18:00", hall: "tělocvišna ZŠ Mendelova" },
+        ],
+      },
     ],
     players: [
       { name: "Bachynská Viktorie", position: "2017", number: "099871" },
