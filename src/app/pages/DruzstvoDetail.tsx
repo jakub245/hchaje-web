@@ -574,7 +574,7 @@ export default function DruzstvoDetail() {
                     </span>
                   )}
                 </div>
-                <h3 className="text-white mt-4 text-xl" style={{ fontFamily: inter }}>{n.title}</h3>
+                <h3 className="text-white mt-4 text-lg" style={{ fontFamily: inter }}>{n.title}</h3>
                 <p
                   className="mt-4 text-white/55 text-sm leading-6 min-h-[4.5rem]"
                   style={{
