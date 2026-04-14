@@ -556,7 +556,12 @@ export default function DruzstvoDetail() {
 
           <div ref={newsScrollRef} className="flex gap-4 overflow-x-auto pb-1 scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {displayedNews.map((n, i) => (
-              <article key={i} className="basis-[18rem] md:basis-[calc((100%-1rem)/2)] xl:basis-[calc((100%-2rem)/3)] flex-shrink-0 p-6 rounded-3xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/25 transition-all group">
+              <Link
+                key={i}
+                to={`/aktuality/${normalizeText(n.title)}`}
+                state={{ article: n, backTo: `/druzstva/${team.slug}#aktuality` }}
+                className="basis-[18rem] md:basis-[calc((100%-1rem)/2)] xl:basis-[calc((100%-2rem)/3)] flex-shrink-0 p-6 rounded-3xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/25 transition-all group block"
+              >
                 <div className="flex items-center justify-between gap-4">
                   <span className="text-white/35 text-sm" style={{ fontFamily: inter }}>{n.date}</span>
                   {i === 0 && (
@@ -578,16 +583,11 @@ export default function DruzstvoDetail() {
                 >
                   {n.excerpt}
                 </p>
-                <Link
-                  to={`/aktuality/${normalizeText(n.title)}`}
-                  state={{ article: n, backTo: `/druzstva/${team.slug}#aktuality` }}
-                  className="mt-5 inline-flex items-center gap-2 text-white/45 text-sm hover:text-[#6EE76D] underline-offset-4 hover:underline transition-colors"
-                  style={{ fontFamily: inter }}
-                >
-                  <span className="text-[#6EE76D]">→</span>
-                  <span>Zobrazit celou aktualitu</span>
-                </Link>
-              </article>
+                <div className="mt-5 inline-flex items-center gap-2 text-white/45 text-sm group-hover:text-[#6EE76D] transition-colors" style={{ fontFamily: inter }}>
+                  <span className="text-[#6EE76D] no-underline">→</span>
+                  <span className="underline-offset-4 group-hover:underline">Zobrazit celou aktualitu</span>
+                </div>
+              </Link>
             ))}
           </div>
         </div>
