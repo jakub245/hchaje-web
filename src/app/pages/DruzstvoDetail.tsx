@@ -581,10 +581,11 @@ export default function DruzstvoDetail() {
                 <Link
                   to={`/aktuality/${normalizeText(n.title)}`}
                   state={{ article: n, backTo: `/druzstva/${team.slug}#aktuality` }}
-                  className="mt-5 inline-flex text-[#6EE76D] text-sm uppercase tracking-[0.18em] hover:text-white transition-colors"
-                  style={{ fontFamily: bebas }}
+                  className="mt-5 inline-flex items-center gap-2 text-white/45 text-sm hover:text-[#6EE76D] underline-offset-4 hover:underline transition-colors"
+                  style={{ fontFamily: inter }}
                 >
-                  Zobrazit celou aktualitu
+                  <span className="text-[#6EE76D]">→</span>
+                  <span>Zobrazit celou aktualitu</span>
                 </Link>
               </article>
             ))}
