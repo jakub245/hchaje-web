@@ -127,7 +127,7 @@ export default function TreninkyPage() {
                         </div>
 
                         <div className="min-w-0">
-                          <div className="text-white text-[20px] leading-tight" style={{ fontFamily: inter }}>{slot.team}</div>
+                          <div className="text-white text-[17px] md:text-[18px] leading-tight" style={{ fontFamily: inter }}>{slot.team}</div>
                           {slot.season && (
                             <div className="mt-2">
                               <span className="inline-flex rounded-full border border-[#6EE76D]/20 bg-[#6EE76D]/8 px-2.5 py-1 text-[11px] text-white/75" style={{ fontFamily: inter }}>
