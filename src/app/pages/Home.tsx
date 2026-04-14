@@ -5,8 +5,8 @@ import {
   Clock, Users, Calendar, Trophy,
 } from "lucide-react";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
-import { Btn, SectionLabel, CtaStrip, bebas, inter } from "../components/shared";
-import { TEAMS } from "../data/teams";
+import { Btn, SectionLabel, CtaStrip, NewsCard, bebas, inter } from "../components/shared";
+import { TEAMS, getAllTeamNews } from "../data/teams";
 import heroBackground from "../../imports/hc-haje-pozadi.png";
 
 const totalPlayers = TEAMS.reduce((sum, team) => sum + team.playerCount, 0);
@@ -81,14 +81,7 @@ const getUpcomingTrainings = () => {
     .slice(0, 5);
 };
 
-const latestNews = TEAMS.flatMap((team) =>
-  team.news.map((item, index) => ({
-    id: `${team.slug}-${index}`,
-    date: item.date,
-    title: item.title,
-    tag: team.name,
-  })),
-)
+const latestNews = getAllTeamNews()
   .sort((a, b) => parseCzDate(b.date) - parseCzDate(a.date))
   .slice(0, 5);
 
@@ -334,33 +327,12 @@ function NewsAndTrainings() {
             <h2 className="text-3xl lg:text-4xl text-white uppercase mb-8" style={{ fontFamily: bebas }}>Aktuality</h2>
             <div className="space-y-2">
               {latestNews.map((item) => (
-                <Link
+                <NewsCard
                   key={item.id}
+                  article={{ title: item.title, date: item.date, excerpt: item.excerpt, content: item.content }}
                   to={`/aktuality/${toSlug(item.title)}`}
-                  state={{ article: { title: item.title, date: item.date }, backTo: "/" }}
-                  className="group block p-4 rounded-2xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/20 transition-all"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full bg-[#6EE76D]/10 flex items-center justify-center flex-shrink-0">
-                      <Calendar className="w-5 h-5 text-[#6EE76D]" />
-                    </div>
-
-                    <div className="flex-1 min-w-0">
-                      <h3
-                        className="text-white text-[16px] leading-tight group-hover:text-[#6EE76D] transition-colors"
-                        style={{ fontFamily: inter, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}
-                      >
-                        {item.title}
-                      </h3>
-                      <div className="flex flex-wrap items-center gap-3 text-sm text-white/35 mt-1.5">
-                        <span>{item.date}</span>
-                        <span className="px-3 py-0.5 rounded-full bg-[#6EE76D]/10 text-[#6EE76D] text-[11px] tracking-wider" style={{ fontFamily: bebas }}>{item.tag}</span>
-                      </div>
-                    </div>
-
-                    <ChevronRight className="w-5 h-5 text-white/15 group-hover:text-[#6EE76D] transition-colors flex-shrink-0" />
-                  </div>
-                </Link>
+                  backTo="/"
+                />
               ))}
             </div>
             <Btn variant="secondary" to="/aktuality" className="mt-6">Všechny aktuality</Btn>

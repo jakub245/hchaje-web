@@ -11,7 +11,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import { bebas, inter, CtaStrip } from "../components/shared";
+import { bebas, inter, CtaStrip, NewsCard } from "../components/shared";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { getTeamBySlug, TEAMS } from "../data/teams";
 
@@ -530,38 +530,13 @@ export default function DruzstvoDetail() {
 
           <div ref={newsScrollRef} className="flex gap-4 overflow-x-auto pb-1 scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {displayedNews.map((n, i) => (
-              <Link
+              <NewsCard
                 key={i}
+                article={{ title: n.title, date: n.date, excerpt: n.excerpt, content: n.excerpt }}
                 to={`/aktuality/${normalizeText(n.title)}`}
-                state={{ article: n, backTo: `/druzstva/${team.slug}#aktuality` }}
-                className="basis-[18rem] md:basis-[calc((100%-1rem)/2)] xl:basis-[calc((100%-2rem)/3)] flex-shrink-0 p-6 rounded-3xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/25 transition-all group block"
-              >
-                <div className="flex items-center justify-between gap-4">
-                  <span className="text-white/35 text-sm" style={{ fontFamily: inter }}>{n.date}</span>
-                  {i === 0 && (
-                    <span className="inline-flex items-center rounded-full bg-[#6EE76D]/10 px-2 py-1 text-[11px] uppercase tracking-[0.2em] text-[#6EE76D]" style={{ fontFamily: inter }}>
-                      NOVÉ
-                    </span>
-                  )}
-                </div>
-                <h3 className="text-white mt-4 text-lg" style={{ fontFamily: inter }}>{n.title}</h3>
-                <p
-                  className="mt-4 text-white/55 text-sm leading-6 min-h-[4.5rem]"
-                  style={{
-                    fontFamily: inter,
-                    display: "-webkit-box",
-                    WebkitLineClamp: 3,
-                    WebkitBoxOrient: "vertical",
-                    overflow: "hidden",
-                  }}
-                >
-                  {n.excerpt}
-                </p>
-                <div className="mt-5 inline-flex items-center gap-2 text-white/45 text-sm group-hover:text-[#6EE76D] transition-colors" style={{ fontFamily: inter }}>
-                  <span className="text-[#6EE76D] no-underline">→</span>
-                  <span className="underline-offset-4 group-hover:underline">Zobrazit celou aktualitu</span>
-                </div>
-              </Link>
+                backTo={`/druzstva/${team.slug}#aktuality`}
+                className="basis-[18rem] md:basis-[calc((100%-1rem)/2)] xl:basis-[calc((100%-2rem)/3)] flex-shrink-0 p-6 rounded-3xl"
+              />
             ))}
           </div>
         </div>

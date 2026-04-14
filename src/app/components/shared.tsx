@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router";
 import {
-  Menu, X, Phone, Mail, MapPin, Instagram, Activity, ArrowRight, Facebook,
+  Menu, X, Phone, Mail, MapPin, Instagram, Activity, ArrowRight, Facebook, Calendar, ChevronRight,
 } from "lucide-react";
 import logoSvg from "../../imports/hc-haje-nove.svg";
 
@@ -47,6 +47,71 @@ export function SectionLabel({ children }: { children: React.ReactNode }) {
     <span className="text-[#6EE76D] text-sm tracking-[0.2em] uppercase mb-3 block" style={{ fontFamily: bebas }}>
       {children}
     </span>
+  );
+}
+
+const newsSlug = (value: string) =>
+  value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]/g, "");
+
+export function NewsCard({
+  article,
+  tag,
+  to,
+  backTo,
+  className = "",
+}: {
+  article: { title: string; date: string; excerpt?: string; content?: string };
+  tag?: string;
+  to?: string;
+  backTo?: string;
+  className?: string;
+}) {
+  return (
+    <Link
+      to={to || `/aktuality/${newsSlug(article.title)}`}
+      state={{ article, backTo }}
+      className={`group block rounded-2xl bg-[#0e160e] border border-[#6EE76D]/8 p-4 hover:border-[#6EE76D]/20 transition-all ${className}`}
+    >
+      <div className="flex flex-wrap items-center gap-3 mb-3">
+        <span className="inline-flex items-center gap-2 text-white/35 text-sm" style={{ fontFamily: inter }}>
+          <Calendar className="w-4 h-4 text-[#6EE76D]" />
+          {article.date}
+        </span>
+        {tag && (
+          <span className="px-3 py-0.5 rounded-full bg-[#6EE76D]/10 text-[#6EE76D] text-[11px] tracking-wider" style={{ fontFamily: bebas }}>
+            {tag}
+          </span>
+        )}
+      </div>
+
+      <h3 className="text-white text-[16px] leading-tight group-hover:text-[#6EE76D] transition-colors" style={{ fontFamily: inter }}>
+        {article.title}
+      </h3>
+
+      {article.excerpt && (
+        <p
+          className="mt-3 text-white/45 text-sm leading-6"
+          style={{
+            fontFamily: inter,
+            display: "-webkit-box",
+            WebkitLineClamp: 3,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+          }}
+        >
+          {article.excerpt}
+        </p>
+      )}
+
+      <div className="mt-4 inline-flex items-center gap-1.5 text-sm text-[#6EE76D] group-hover:translate-x-0.5 transition-all" style={{ fontFamily: inter }}>
+        <span>Zobrazit celou aktualitu</span>
+        <ChevronRight className="w-4 h-4" />
+      </div>
+    </Link>
   );
 }
 

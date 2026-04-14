@@ -18,6 +18,8 @@ export interface TrainingSection {
 export interface TeamNews {
   date: string;
   title: string;
+  excerpt?: string;
+  content?: string;
 }
 
 export interface TeamEvent {
@@ -75,9 +77,9 @@ export const TEAMS: Team[] = [
       { name: "Michaela Králová", position: "Brankářka", number: 12 },
     ],
     news: [
-      { date: "10. 4. 2026", title: "Postup do semifinále krajského přeboru!" },
-      { date: "5. 4. 2026", title: "Výhra nad Slavií Praha 28:24" },
-      { date: "29. 3. 2026", title: "Přátelský zápas s Duklou — 22:25" },
+      { date: "10. 4. 2026", title: "Postup do semifinále krajského přeboru!", excerpt: "Naše ženy zvládly důležitý duel a vybojovaly si účast v semifinále krajského přeboru." },
+      { date: "5. 4. 2026", title: "Výhra nad Slavií Praha 28:24", excerpt: "A-tým potvrdil dobrou formu a po bojovném výkonu bere cenné vítězství." },
+      { date: "29. 3. 2026", title: "Přátelský zápas s Duklou — 22:25", excerpt: "Přátelské utkání nabídlo kvalitní prověrku a další zkušenosti pro závěr sezóny." },
     ],
     events: [
       { date: "25. 04. 2026", title: "Turnaj 4+1", location: "Sportovní hala Háje" },
@@ -111,8 +113,8 @@ export const TEAMS: Team[] = [
       { name: "Karolína Benešová", position: "Křídlo", number: 15 },
     ],
     news: [
-      { date: "8. 4. 2026", title: "Turnaj v Berouně — 2. místo" },
-      { date: "1. 4. 2026", title: "Výhra v Pražské lize: HC Háje vs. Kobylisy 19:14" },
+      { date: "8. 4. 2026", title: "Turnaj v Berouně — 2. místo", excerpt: "Starší žákyně předvedly na turnaji velmi dobré výkony a odváží si krásné druhé místo." },
+      { date: "1. 4. 2026", title: "Výhra v Pražské lize: HC Háje vs. Kobylisy 19:14", excerpt: "Důležitý zápas v Pražské lize zvládl tým skvěle a potvrdil svůj herní posun." },
     ],
   },
   {
@@ -137,8 +139,8 @@ export const TEAMS: Team[] = [
       { name: "Anežka Říhová", position: "Pivotka", number: 5 },
     ],
     news: [
-      { date: "6. 4. 2026", title: "Mini turnaj v Háji — skvělé výkony!" },
-      { date: "25. 3. 2026", title: "Nové dresy pro mladší žákyně" },
+      { date: "6. 4. 2026", title: "Mini turnaj v Háji — skvělé výkony!", excerpt: "Mladší žákyně ukázaly v domácím prostředí energii, týmovost a velkou chuť do hry." },
+      { date: "25. 3. 2026", title: "Nové dresy pro mladší žákyně", excerpt: "Tým se představil v nových dresech, které budou provázet jarní část sezóny." },
     ],
   },
   {
@@ -197,8 +199,8 @@ export const TEAMS: Team[] = [
       { name: "Žďánská Tereza", position: "2015", number: "089840" },
     ],
     news: [
-      { date: "9. 4. 2026", title: "Nábor mini žákyň — přijďte si to zkusit!" },
-      { date: "3. 4. 2026", title: "Účast na jarním festivalu v Modřanech" },
+      { date: "9. 4. 2026", title: "Nábor mini žákyň — přijďte si to zkusit!", excerpt: "Do minižákyň hledáme nové holčičky, které chtějí objevovat házenou zábavnou formou." },
+      { date: "3. 4. 2026", title: "Účast na jarním festivalu v Modřanech", excerpt: "Minižákyně si odvezly z festivalu spoustu zážitků, radosti a nových herních zkušeností." },
     ],
   },
   {
@@ -254,12 +256,23 @@ export const TEAMS: Team[] = [
       { name: "Zemanová Justýna", position: "2020", number: "099275" },
     ],
     news: [
-      { date: "7. 4. 2026", title: "Přípravka — nábor nových holčiček!" },
-      { date: "30. 3. 2026", title: "Závěrečný turnaj přípravek v Háji" },
+      { date: "7. 4. 2026", title: "Přípravka — nábor nových holčiček!", excerpt: "Přípravka otevírá dveře novým zájemkyním, které chtějí začít se sportem a pohybem." },
+      { date: "30. 3. 2026", title: "Závěrečný turnaj přípravek v Háji", excerpt: "Domácí turnaj přinesl radost ze hry, první góly i spoustu sportovních zážitků." },
     ],
   },
 ];
 
 export function getTeamBySlug(slug: string): Team | undefined {
   return TEAMS.find((t) => t.slug === slug);
+}
+
+export function getAllTeamNews() {
+  return TEAMS.flatMap((team) =>
+    team.news.map((item, index) => ({
+      ...item,
+      id: `${team.slug}-${index}`,
+      teamName: team.name,
+      teamSlug: team.slug,
+    })),
+  );
 }
