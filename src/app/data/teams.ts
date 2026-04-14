@@ -141,8 +141,8 @@ export const TEAMS: Team[] = [
     desc: "Nejmladší házenkářky 8–10 let.",
     longDesc: "Mini žákyně jsou budoucností našeho klubu. Trénujeme formou her a zábavných cvičení, která děti baví a zároveň rozvíjejí koordinaci, rychlost a základní házenkářské dovednosti. Každá holčička je u nás vítaná!",
     img: miniPhoto,
-    coach: "Lucie Svobodová",
-    assistantCoach: "Markéta Tichá",
+    coach: "Petr Zálešák",
+    assistantCoach: "Kateřina Bláhová",
     playerCount: 19,
     ageRange: "8–10 let",
     trainings: [

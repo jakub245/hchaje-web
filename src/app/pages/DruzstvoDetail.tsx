@@ -4,6 +4,8 @@ import {
   ArrowLeft,
   Calendar,
   MapPin,
+  Mars,
+  Venus,
   Users,
   User,
   ChevronLeft,
@@ -28,6 +30,8 @@ const normalizeText = (value: string) =>
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9]/g, "");
+
+const isFemaleName = (name: string) => normalizeText(name.split(" ")[0] || "").endsWith("a");
 
 export default function DruzstvoDetail() {
   const { slug } = useParams();
@@ -250,20 +254,21 @@ export default function DruzstvoDetail() {
                     { day: "čtvrtek", time: "16:30 - 18:00", place: "hřiště" },
                   ].map((item) => (
                     <div key={item.day} className="rounded-3xl border border-[#6EE76D]/8 bg-[#0e160e] p-6">
-                      <div className="flex items-center gap-3 mb-5">
+                      <div className="flex items-center gap-3 mb-4">
                         <div className="w-12 h-12 rounded-2xl bg-[#6EE76D]/10 flex items-center justify-center">
                           <Calendar className="w-5 h-5 text-[#6EE76D]" />
                         </div>
-                        <div>
-                          <div className="text-white/35 text-sm uppercase tracking-[0.2em]" style={{ fontFamily: bebas }}>Den</div>
-                          <div className="text-white text-xl" style={{ fontFamily: bebas }}>{item.day}</div>
-                        </div>
+                        <div className="text-white text-xl" style={{ fontFamily: bebas }}>{item.day}</div>
                       </div>
-                      <div className="space-y-2 text-sm" style={{ fontFamily: inter }}>
-                        <div className="text-white/40">Čas</div>
-                        <div className="text-white/80">{item.time}</div>
-                        <div className="text-white/40 pt-2">Místo</div>
-                        <div className="text-white/80">{item.place}</div>
+                      <div className="grid grid-cols-2 gap-4 text-sm" style={{ fontFamily: inter }}>
+                        <div>
+                          <div className="text-white/40 mb-1">Čas</div>
+                          <div className="text-white/80">{item.time}</div>
+                        </div>
+                        <div>
+                          <div className="text-white/40 mb-1">Místo</div>
+                          <div className="text-white/80">{item.place}</div>
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -279,20 +284,21 @@ export default function DruzstvoDetail() {
                     { day: "čtvrtek", time: "16:30 - 18:00", place: "tělocvična ZŠ Mendelova" },
                   ].map((item) => (
                     <div key={item.day + item.time} className="rounded-3xl border border-[#6EE76D]/8 bg-[#0e160e] p-6">
-                      <div className="flex items-center gap-3 mb-5">
+                      <div className="flex items-center gap-3 mb-4">
                         <div className="w-12 h-12 rounded-2xl bg-[#6EE76D]/10 flex items-center justify-center">
                           <Calendar className="w-5 h-5 text-[#6EE76D]" />
                         </div>
-                        <div>
-                          <div className="text-white/35 text-sm uppercase tracking-[0.2em]" style={{ fontFamily: bebas }}>Den</div>
-                          <div className="text-white text-xl" style={{ fontFamily: bebas }}>{item.day}</div>
-                        </div>
+                        <div className="text-white text-xl" style={{ fontFamily: bebas }}>{item.day}</div>
                       </div>
-                      <div className="space-y-2 text-sm" style={{ fontFamily: inter }}>
-                        <div className="text-white/40">Čas</div>
-                        <div className="text-white/80">{item.time}</div>
-                        <div className="text-white/40 pt-2">Místo</div>
-                        <div className="text-white/80">{item.place}</div>
+                      <div className="grid grid-cols-2 gap-4 text-sm" style={{ fontFamily: inter }}>
+                        <div>
+                          <div className="text-white/40 mb-1">Čas</div>
+                          <div className="text-white/80">{item.time}</div>
+                        </div>
+                        <div>
+                          <div className="text-white/40 mb-1">Místo</div>
+                          <div className="text-white/80">{item.place}</div>
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -449,20 +455,42 @@ export default function DruzstvoDetail() {
           <span className="text-[#6EE76D] text-sm tracking-[0.2em] uppercase mb-3 block" style={{ fontFamily: bebas }}>Realizační tým</span>
           <h2 className="text-3xl lg:text-4xl text-white uppercase mb-8" style={{ fontFamily: bebas }}>Trenéři</h2>
 
-          <div className="overflow-hidden rounded-3xl border border-[#6EE76D]/8 bg-[#0a110a] shadow-lg shadow-black/20">
-            <div className="hidden md:grid grid-cols-[1.4fr_1fr_1.2fr] text-white/40 text-xs uppercase tracking-[0.25em] border-b border-white/10">
-              <div className="px-6 py-4">Jméno</div>
-              <div className="px-6 py-4">Telefon</div>
-              <div className="px-6 py-4">E-mail</div>
+          <div className="px-0">
+            <div className="hidden md:grid grid-cols-[1.2fr_1fr_1.1fr] gap-6 pb-3 text-white/45 text-sm" style={{ fontFamily: inter }}>
+              <div>Jméno</div>
+              <div>Telefon</div>
+              <div>E-mail</div>
             </div>
 
-            {displayedStaff.map((member, i) => (
-              <div key={member.name} className={`grid md:grid-cols-[1.4fr_1fr_1.2fr] gap-2 md:gap-0 border-t border-white/10 px-6 py-4 ${i === 0 ? "border-t-0" : ""}`}>
-                <div className="text-white" style={{ fontFamily: inter }}>{member.name}</div>
-                <div className="text-white/70" style={{ fontFamily: inter }}>{member.phone || "—"}</div>
-                <div className="text-white/70" style={{ fontFamily: inter }}>{member.email || "—"}</div>
-              </div>
-            ))}
+            <div>
+              {displayedStaff.map((member, i) => (
+                <div key={member.name} className={`grid gap-4 md:grid-cols-[1.2fr_1fr_1.1fr] py-5 ${i !== 0 ? "border-t border-[#6EE76D]/15" : ""}`}>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-2xl bg-[#6EE76D]/10 flex items-center justify-center flex-shrink-0">
+                      {isFemaleName(member.name) ? <Venus className="w-4 h-4 text-[#6EE76D]" /> : <Mars className="w-4 h-4 text-[#6EE76D]" />}
+                    </div>
+                    <div>
+                      <div className="text-white/45 text-sm md:hidden" style={{ fontFamily: inter }}>Jméno</div>
+                      <div className="text-white text-lg" style={{ fontFamily: inter }}>{member.name}</div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center">
+                    <div>
+                      <div className="text-white/45 text-sm md:hidden mb-1" style={{ fontFamily: inter }}>Telefon</div>
+                      <div className="text-white/75" style={{ fontFamily: inter }}>{member.phone || "—"}</div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center">
+                    <div>
+                      <div className="text-white/45 text-sm md:hidden mb-1" style={{ fontFamily: inter }}>E-mail</div>
+                      <div className="text-white/75 break-all" style={{ fontFamily: inter }}>{member.email || "—"}</div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
