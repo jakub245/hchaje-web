@@ -471,9 +471,9 @@ export default function DruzstvoDetail() {
             </div>
           </div>
 
-          <div ref={newsScrollRef} className="flex gap-4 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div ref={newsScrollRef} className="flex gap-4 overflow-x-auto pb-1 scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {displayedNews.map((n, i) => (
-              <div key={i} className="min-w-[20rem] lg:min-w-[calc((100%-2rem)/3)] flex-shrink-0 p-6 rounded-3xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/25 transition-all group">
+              <article key={i} className="basis-[18rem] md:basis-[calc((100%-1rem)/2)] xl:basis-[calc((100%-2rem)/3)] flex-shrink-0 p-6 rounded-3xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/25 transition-all group">
                 <div className="flex items-center justify-between gap-4">
                   <span className="text-white/35 text-sm" style={{ fontFamily: inter }}>{n.date}</span>
                   {i === 0 && (
@@ -483,11 +483,27 @@ export default function DruzstvoDetail() {
                   )}
                 </div>
                 <h3 className="text-white mt-4 text-xl" style={{ fontFamily: inter }}>{n.title}</h3>
-                <p className="mt-4 text-white/55 text-sm leading-6" style={{ fontFamily: inter }}>{n.excerpt}</p>
-                <div className="mt-5 text-[#6EE76D] text-sm uppercase tracking-[0.18em]" style={{ fontFamily: bebas }}>
+                <p
+                  className="mt-4 text-white/55 text-sm leading-6 min-h-[4.5rem]"
+                  style={{
+                    fontFamily: inter,
+                    display: "-webkit-box",
+                    WebkitLineClamp: 3,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                  }}
+                >
+                  {n.excerpt}
+                </p>
+                <Link
+                  to={`/aktuality/${normalizeText(n.title)}`}
+                  state={{ article: n, backTo: `/druzstva/${team.slug}#aktuality` }}
+                  className="mt-5 inline-flex text-[#6EE76D] text-sm uppercase tracking-[0.18em] hover:text-white transition-colors"
+                  style={{ fontFamily: bebas }}
+                >
                   Zobrazit celou aktualitu
-                </div>
-              </div>
+                </Link>
+              </article>
             ))}
           </div>
         </div>

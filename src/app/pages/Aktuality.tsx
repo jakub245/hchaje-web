@@ -3,6 +3,13 @@ import { ChevronRight, Calendar } from "lucide-react";
 import { PageHero, CtaStrip, bebas, inter } from "../components/shared";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 
+const toSlug = (value: string) =>
+  value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]/g, "");
+
 const ALL_NEWS = [
   { id: 1, date: "10. 4. 2026", title: "A-tým postoupil do semifinále krajského přeboru", tag: "Zápasy", desc: "Naše ženy zvítězily v rozhodujícím zápase nad Slavií Praha 28:24 a postupují do semifinále krajského přeboru." },
   { id: 2, date: "7. 4. 2026", title: "Nábor nových hráček — přijďte si vyzkoušet házenou!", tag: "Nábor", desc: "Otevíráme nábor pro dívky ve věku 6–15 let. První trénink zdarma, stačí si přinést sportovní oblečení a dobrou náladu." },
@@ -23,7 +30,12 @@ export default function AktualityPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-6">
             {ALL_NEWS.map((item) => (
-              <article key={item.id} className="p-6 rounded-2xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/25 transition-all group cursor-pointer">
+              <Link
+                key={item.id}
+                to={`/aktuality/${toSlug(item.title)}`}
+                state={{ article: { title: item.title, date: item.date, excerpt: item.desc, content: item.desc }, backTo: "/aktuality" }}
+                className="p-6 rounded-2xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/25 transition-all group block"
+              >
                 <div className="flex items-center gap-3 mb-3">
                   <Calendar className="w-4 h-4 text-[#6EE76D]" />
                   <span className="text-white/35 text-sm">{item.date}</span>
@@ -32,8 +44,16 @@ export default function AktualityPage() {
                 <h3 className="text-white text-lg group-hover:text-[#6EE76D] transition-colors mb-2" style={{ fontFamily: inter }}>
                   {item.title}
                 </h3>
-                <p className="text-white/40 text-sm" style={{ fontFamily: inter }}>{item.desc}</p>
-              </article>
+                <p
+                  className="text-white/40 text-sm mb-4"
+                  style={{ fontFamily: inter, display: "-webkit-box", WebkitLineClamp: 3, WebkitBoxOrient: "vertical", overflow: "hidden" }}
+                >
+                  {item.desc}
+                </p>
+                <span className="text-[#6EE76D] text-sm uppercase tracking-[0.18em]" style={{ fontFamily: bebas }}>
+                  Zobrazit celou aktualitu
+                </span>
+              </Link>
             ))}
           </div>
         </div>
