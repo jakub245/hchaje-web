@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router";
 import {
-  ChevronRight, ChevronLeft, Play, Instagram, ArrowRight,
+  ChevronRight, ChevronLeft, ChevronDown, Play, Instagram, ArrowRight,
   Clock, Users, Calendar, Trophy,
 } from "lucide-react";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
@@ -139,6 +139,18 @@ function Hero() {
             </div>
           ))}
         </div>
+
+        <button
+          type="button"
+          aria-label="Posunout níže"
+          onClick={() => document.getElementById("home-about")?.scrollIntoView({ behavior: "smooth" })}
+          className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/40 hover:text-white transition-colors"
+        >
+          <span className="text-[10px] uppercase tracking-[0.22em]" style={{ fontFamily: bebas }}>Scroll</span>
+          <span className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-black/20 backdrop-blur-sm animate-bounce">
+            <ChevronDown className="w-5 h-5 text-[#6EE76D]" />
+          </span>
+        </button>
       </div>
     </section>
   );
@@ -153,7 +165,7 @@ function About() {
   }, []);
 
   return (
-    <section className="reveal-on-scroll py-20 lg:py-28">
+    <section id="home-about" className="reveal-on-scroll py-20 lg:py-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <div>
