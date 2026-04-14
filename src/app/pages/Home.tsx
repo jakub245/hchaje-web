@@ -320,7 +320,7 @@ function NewsAndTrainings() {
                   key={item.id}
                   to={`/aktuality/${toSlug(item.title)}`}
                   state={{ article: { title: item.title, date: item.date }, backTo: "/" }}
-                  className="group block p-4 rounded-2xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/20 transition-all min-h-[92px]"
+                  className="group block p-4 rounded-2xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/20 transition-all"
                 >
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 rounded-full bg-[#6EE76D]/10 flex items-center justify-center flex-shrink-0">
@@ -328,7 +328,10 @@ function NewsAndTrainings() {
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-white text-[16px] leading-tight group-hover:text-[#6EE76D] transition-colors" style={{ fontFamily: inter }}>
+                      <h3
+                        className="text-white text-[16px] leading-tight group-hover:text-[#6EE76D] transition-colors"
+                        style={{ fontFamily: inter, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}
+                      >
                         {item.title}
                       </h3>
                       <div className="flex flex-wrap items-center gap-3 text-sm text-white/35 mt-1.5">
