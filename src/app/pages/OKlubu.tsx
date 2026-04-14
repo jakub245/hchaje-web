@@ -41,22 +41,22 @@ export default function OKlubuPage() {
                 je naším hlavním cílem získat a nadchnout co nejvíce dětí pro pravidelné sportování a
                 vytvořit prostředí, kam se budou rády vracet.
               </p>
-+
-+              <div className="rounded-2xl border border-[#6EE76D]/10 bg-[#0e160e] p-5 mb-8">
-+                <div className="flex items-start gap-3">
-+                  <div className="w-10 h-10 rounded-full bg-[#6EE76D]/10 flex items-center justify-center flex-shrink-0">
-+                    <Building2 className="w-5 h-5 text-[#6EE76D]" />
-+                  </div>
-+                  <div>
-+                    <div className="text-white mb-1" style={{ fontFamily: inter }}>
-+                      Tělovýchovná jednota Háje–Jižní Město, Handballclub, pobočný spolek
-+                    </div>
-+                    <div className="text-white/45 text-sm" style={{ fontFamily: inter }}>
-+                      IČO 629 38 045 • {CONTACT_EMAIL}
-+                    </div>
-+                  </div>
-+                </div>
-+              </div>
+
+              <div className="rounded-2xl border border-[#6EE76D]/10 bg-[#0e160e] p-5 mb-8">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-full bg-[#6EE76D]/10 flex items-center justify-center flex-shrink-0">
+                    <Building2 className="w-5 h-5 text-[#6EE76D]" />
+                  </div>
+                  <div>
+                    <div className="text-white mb-1" style={{ fontFamily: inter }}>
+                      Tělovýchovná jednota Háje–Jižní Město, Handballclub, pobočný spolek
+                    </div>
+                    <div className="text-white/45 text-sm" style={{ fontFamily: inter }}>
+                      IČO 629 38 045 • {CONTACT_EMAIL}
+                    </div>
+                  </div>
+                </div>
+              </div>
               <Btn variant="primary" to="/kontakty">Přijdu na trénink</Btn>
             </div>
             <div className="relative rounded-2xl overflow-hidden aspect-[4/3]">
