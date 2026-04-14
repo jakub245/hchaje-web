@@ -7,6 +7,7 @@ import {
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { Btn, SectionLabel, CtaStrip, bebas, inter } from "../components/shared";
 import { TEAMS } from "../data/teams";
+import heroBackground from "../../imports/hc-haje-pozadi.png";
 
 const STATS = [
   { value: "120+", label: "Aktivních hráček" },
@@ -93,8 +94,8 @@ function Hero() {
     <section className="reveal-on-scroll relative min-h-screen flex items-center overflow-hidden pt-20">
       <div className="absolute inset-0">
         <ImageWithFallback
-          src="https://images.unsplash.com/photo-1575367728985-8cb72541609a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxoYW5kYmFsbCUyMGdhbWUlMjBtYXRjaCUyMGFjdGlvbnxlbnwxfHx8fDE3NzYwODU5NjZ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
-          alt="Handball"
+          src={heroBackground}
+          alt="HC Háje"
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[#080C08] via-[#080C08]/85 to-[#080C08]/50" />
