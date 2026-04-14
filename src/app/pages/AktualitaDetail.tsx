@@ -29,7 +29,7 @@ const FALLBACK_ARTICLES: Array<Article & { slug: string }> = [
     title: "Mladší dorostenky dnes přivezly důležité 2 body z Českých Budějovic.",
     date: "15.02.2025",
     content:
-      "INFARKTOVÝ ZÁPAS, ALE NAŠE BABY TO DOTÁHLY DO VÍTĚZNÉHO KONCE! Tohle nebyl zápas pro slabé povahy. Kdo neměl nervy z ocele, ten si je dneska solidně pocuchal. Od první minuty se jelo bomby – jeden gól tam, druhý zpátky, drama a velké emoce až do závěru.",
+      "INFARKTOVÝ ZÁPAS, ALE NAŠE BABY TO DOTÁHLY DO VÍTĚZNÉHO KONCE!\n\nTohle nebyl zápas pro slabé povahy. Kdo neměl nervy z ocele, ten si je dneska solidně pocuchal. Od první minuty se jelo bomby – jeden gól tam, druhý zpátky, fauly, drama, emoce až do nebes. Holky z Budějovic hrály fakt dobře, ale my? My jsme hrály jako LVICE, co prostě odmítají prohrát.\n\nKaždý náš útok byl jako výstřel z děla, obrana makala jak stroje a brankářka? Bohyně mezi tyčemi! Ke konci to bylo vyloženě na umření, ale my jsme se hecly, hodily tam poslední gól a… BOOM! Výhra je naše! Baby, dneska jste to tam nechaly všechno a byl to MASTERPIECE.\n\nHC Háje ml. dorky = nejlepší drama, co můžeš v životě zažít.",
   },
   {
     slug: toSlug("Dvojitá porce házené pro naše mladší žákyně!"),
