@@ -1,5 +1,5 @@
-import { Target, Heart, Award, Users } from "lucide-react";
-import { PageHero, Btn, CtaStrip, SectionLabel, bebas, inter } from "../components/shared";
+import { Target, Heart, Award, Users, Building2 } from "lucide-react";
+import { PageHero, Btn, CtaStrip, SectionLabel, bebas, inter, CONTACT_EMAIL } from "../components/shared";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 
 const VALUES = [
@@ -10,13 +10,11 @@ const VALUES = [
 ];
 
 const MILESTONES = [
-  { year: "2005", text: "Založení klubu HC Háje" },
-  { year: "2008", text: "První účast v krajském přeboru" },
-  { year: "2012", text: "Otevření mládežnických družstev" },
-  { year: "2016", text: "Postup A-týmu do vyšší soutěže" },
-  { year: "2020", text: "Přes 100 registrovaných hráček" },
-  { year: "2024", text: "Rekonstrukce zázemí haly" },
-  { year: "2026", text: "Semifinále krajského přeboru" },
+  { year: "1980", text: "Založení oddílu házené HC Háje." },
+  { year: "6–8 let", text: "Přípravka rozvíjí sportovní základy formou her a soutěží." },
+  { year: "9–11 let", text: "Minižákyně navazují na přípravku a seznamují se se základy házené." },
+  { year: "13+", text: "Navazující žákovské a dorostenecké kategorie sbírají zkušenosti i úspěchy v soutěžích." },
+  { year: "Dnes", text: "Hlavním cílem klubu je nadchnout co nejvíce dětí pro pravidelné sportování." },
 ];
 
 export default function OKlubuPage() {
@@ -30,19 +28,35 @@ export default function OKlubuPage() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
               <p className="text-white/55 text-lg mb-4" style={{ fontFamily: inter }}>
-                HC Háje je ženský házenkářský klub se sídlem v Praze 11 – Háje. Od roku 2005
-                pěstujeme lásku k házené u dívek a žen všech věkových kategorií.
+                HC Háje je dívčí a ženský házenkářský klub z Prahy 4, který patří od svého založení
+                v roce 1980 mezi výrazná centra dívčí házené v Praze i v rámci celé České republiky.
               </p>
               <p className="text-white/55 mb-4" style={{ fontFamily: inter }}>
-                Náš klub je domovem pro více než 120 hráček — od šestiletých přípravkářek
-                po zkušené hráčky A-týmu. Trénujeme v moderní Sportovní hale Háje s profesionálním
-                zázemím a kvalifikovanými trenéry.
+                Klub je zaměřený na dlouhodobou sportovní přípravu děvčat od 6 do 17 let. V nejmladších
+                kategoriích stavíme na pohybových hrách, soutěžích a všeobecné sportovní průpravě,
+                na které postupně navazují další házenkářské dovednosti.
               </p>
               <p className="text-white/55 mb-8" style={{ fontFamily: inter }}>
-                Cílem klubu není jen sportovní výkon, ale především budování komunity, rozvoj
-                osobnosti a radost z pohybu. Každá hráčka je u nás vítaná — bez ohledu na
-                zkušenosti či talent.
+                Na žákovské a dorostenecké kategorie navazují ženská družstva. Vedle sportovních výsledků
+                je naším hlavním cílem získat a nadchnout co nejvíce dětí pro pravidelné sportování a
+                vytvořit prostředí, kam se budou rády vracet.
               </p>
++
++              <div className="rounded-2xl border border-[#6EE76D]/10 bg-[#0e160e] p-5 mb-8">
++                <div className="flex items-start gap-3">
++                  <div className="w-10 h-10 rounded-full bg-[#6EE76D]/10 flex items-center justify-center flex-shrink-0">
++                    <Building2 className="w-5 h-5 text-[#6EE76D]" />
++                  </div>
++                  <div>
++                    <div className="text-white mb-1" style={{ fontFamily: inter }}>
++                      Tělovýchovná jednota Háje–Jižní Město, Handballclub, pobočný spolek
++                    </div>
++                    <div className="text-white/45 text-sm" style={{ fontFamily: inter }}>
++                      IČO 629 38 045 • {CONTACT_EMAIL}
++                    </div>
++                  </div>
++                </div>
++              </div>
               <Btn variant="primary" to="/kontakty">Přijdu na trénink</Btn>
             </div>
             <div className="relative rounded-2xl overflow-hidden aspect-[4/3]">
