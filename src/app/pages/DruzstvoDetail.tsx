@@ -328,7 +328,7 @@ export default function DruzstvoDetail() {
 
           {displayedEvents.length ? (
             <div className="px-0">
-              <div className="hidden md:grid grid-cols-[1fr_1.4fr_1fr] gap-6 pb-3 text-[#6EE76D] text-sm uppercase tracking-[0.2em]" style={{ fontFamily: bebas }}>
+              <div className="hidden md:grid grid-cols-[1fr_1.4fr_1fr] gap-6 pb-3 text-white/45 text-sm" style={{ fontFamily: inter }}>
                 <div>Datum</div>
                 <div>Akce</div>
                 <div>Místo</div>
@@ -342,14 +342,14 @@ export default function DruzstvoDetail() {
                         <Calendar className="w-4 h-4 text-[#6EE76D]" />
                       </div>
                       <div>
-                        <div className="text-[11px] uppercase tracking-[0.2em] text-[#6EE76D] md:hidden" style={{ fontFamily: bebas }}>Datum</div>
+                        <div className="text-white/45 text-sm md:hidden" style={{ fontFamily: inter }}>Datum</div>
                         <div className="text-white text-lg whitespace-pre-line" style={{ fontFamily: bebas }}>{event.date}</div>
                       </div>
                     </div>
 
                     <div className="flex items-center">
                       <div>
-                        <div className="text-[11px] uppercase tracking-[0.2em] text-[#6EE76D] md:hidden mb-1" style={{ fontFamily: bebas }}>Akce</div>
+                        <div className="text-white/45 text-sm md:hidden mb-1" style={{ fontFamily: inter }}>Akce</div>
                         <div className="text-white text-base sm:text-lg whitespace-pre-line" style={{ fontFamily: inter }}>{event.title}</div>
                       </div>
                     </div>
@@ -359,7 +359,7 @@ export default function DruzstvoDetail() {
                         <MapPin className="w-4 h-4 text-[#6EE76D]" />
                       </div>
                       <div>
-                        <div className="text-[11px] uppercase tracking-[0.2em] text-[#6EE76D] md:hidden" style={{ fontFamily: bebas }}>Místo</div>
+                        <div className="text-white/45 text-sm md:hidden" style={{ fontFamily: inter }}>Místo</div>
                         <div className="text-white/75 whitespace-pre-line" style={{ fontFamily: inter }}>{event.location}</div>
                       </div>
                     </div>
