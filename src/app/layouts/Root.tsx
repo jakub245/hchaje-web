@@ -1,10 +1,50 @@
-import { Outlet, useLocation } from "react-router";
-import { useLayoutEffect } from "react";
+import { Outlet, useLocation, useNavigationType } from "react-router";
+import { useEffect, useLayoutEffect } from "react";
 import { Navbar, Footer } from "../components/shared";
 import { inter } from "../components/shared";
 
 export default function Root() {
   const location = useLocation();
+  const navigationType = useNavigationType();
+  const scrollKey = `${location.pathname}${location.search}${location.hash}`;
+
+  useEffect(() => {
+    const saveScrollPosition = () => {
+      sessionStorage.setItem(
+        `scroll:${scrollKey}`,
+        JSON.stringify({ x: window.scrollX, y: window.scrollY }),
+      );
+    };
+
+    window.addEventListener("pagehide", saveScrollPosition);
+
+    return () => {
+      saveScrollPosition();
+      window.removeEventListener("pagehide", saveScrollPosition);
+    };
+  }, [scrollKey]);
+
+  useLayoutEffect(() => {
+    if (navigationType === "POP") {
+      const savedPosition = sessionStorage.getItem(`scroll:${scrollKey}`);
+
+      if (savedPosition) {
+        const { x, y } = JSON.parse(savedPosition) as { x: number; y: number };
+        window.scrollTo(x, y);
+        return;
+      }
+    }
+
+    if (location.hash) {
+      const target = document.getElementById(location.hash.replace("#", ""));
+      if (target) {
+        target.scrollIntoView();
+        return;
+      }
+    }
+
+    window.scrollTo(0, 0);
+  }, [location.key, location.hash, navigationType, scrollKey]);
 
   useLayoutEffect(() => {
     const observer = new IntersectionObserver(

@@ -63,7 +63,7 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => { setOpen(false); window.scrollTo(0, 0); }, [location.pathname]);
+  useEffect(() => { setOpen(false); }, [location.pathname]);
 
   const navTextStyle = { fontFamily: bebas, fontSize: "17px", letterSpacing: "0.08em", fontWeight: 200 as const };
 

@@ -140,18 +140,19 @@ function Hero() {
           ))}
         </div>
 
-        <button
-          type="button"
-          aria-label="Posunout níže"
-          onClick={() => document.getElementById("home-about")?.scrollIntoView({ behavior: "smooth" })}
-          className="absolute left-1/2 -translate-x-1/2 bottom-[-28px] sm:bottom-[-20px] flex flex-col items-center gap-2 text-white/40 hover:text-white transition-colors z-20"
-        >
-          <span className="text-[10px] uppercase tracking-[0.22em]" style={{ fontFamily: bebas }}>Scroll</span>
-          <span className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-black/20 backdrop-blur-sm animate-bounce">
-            <ChevronDown className="w-5 h-5 text-[#6EE76D]" />
-          </span>
-        </button>
       </div>
+
+      <button
+        type="button"
+        aria-label="Posunout níže"
+        onClick={() => document.getElementById("home-about")?.scrollIntoView({ behavior: "smooth" })}
+        className="absolute left-1/2 bottom-2 sm:bottom-3 -translate-x-1/2 flex flex-col items-center gap-2 text-white/40 hover:text-white transition-colors z-20"
+      >
+        <span className="text-[10px] uppercase tracking-[0.22em]" style={{ fontFamily: bebas }}>Scroll</span>
+        <span className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-black/20 backdrop-blur-sm animate-bounce">
+          <ChevronDown className="w-5 h-5 text-[#6EE76D]" />
+        </span>
+      </button>
     </section>
   );
 }
