@@ -327,8 +327,8 @@ export default function DruzstvoDetail() {
           <h2 className="text-3xl lg:text-4xl text-white uppercase mb-8" style={{ fontFamily: bebas }}>Akce</h2>
 
           {displayedEvents.length ? (
-            <div className="rounded-3xl bg-[#0a110a]/40 px-2 sm:px-4">
-              <div className="hidden md:grid grid-cols-[1fr_1.4fr_1fr] gap-6 px-4 pb-3 text-[#6EE76D] text-sm uppercase tracking-[0.2em]" style={{ fontFamily: bebas }}>
+            <div className="px-0">
+              <div className="hidden md:grid grid-cols-[1fr_1.4fr_1fr] gap-6 pb-3 text-[#6EE76D] text-sm uppercase tracking-[0.2em]" style={{ fontFamily: bebas }}>
                 <div>Datum</div>
                 <div>Akce</div>
                 <div>Místo</div>
@@ -336,8 +336,8 @@ export default function DruzstvoDetail() {
 
               <div>
                 {displayedEvents.map((event, i) => (
-                  <div key={i} className={`grid gap-4 md:grid-cols-[1fr_1.4fr_1fr] px-4 py-5 ${i !== 0 ? "border-t border-[#6EE76D]/15" : ""}`}>
-                    <div className="flex items-start gap-3">
+                  <div key={i} className={`grid gap-4 md:grid-cols-[1fr_1.4fr_1fr] py-5 ${i !== 0 ? "border-t border-[#6EE76D]/15" : ""}`}>
+                    <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-2xl bg-[#6EE76D]/10 flex items-center justify-center flex-shrink-0">
                         <Calendar className="w-4 h-4 text-[#6EE76D]" />
                       </div>
@@ -347,12 +347,14 @@ export default function DruzstvoDetail() {
                       </div>
                     </div>
 
-                    <div>
-                      <div className="text-[11px] uppercase tracking-[0.2em] text-[#6EE76D] md:hidden mb-1" style={{ fontFamily: bebas }}>Akce</div>
-                      <div className="text-white text-base sm:text-lg whitespace-pre-line" style={{ fontFamily: inter }}>{event.title}</div>
+                    <div className="flex items-center">
+                      <div>
+                        <div className="text-[11px] uppercase tracking-[0.2em] text-[#6EE76D] md:hidden mb-1" style={{ fontFamily: bebas }}>Akce</div>
+                        <div className="text-white text-base sm:text-lg whitespace-pre-line" style={{ fontFamily: inter }}>{event.title}</div>
+                      </div>
                     </div>
 
-                    <div className="flex items-start gap-3">
+                    <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-2xl bg-[#6EE76D]/10 flex items-center justify-center flex-shrink-0">
                         <MapPin className="w-4 h-4 text-[#6EE76D]" />
                       </div>
