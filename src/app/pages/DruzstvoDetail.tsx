@@ -3,6 +3,7 @@ import { useParams, Link, Navigate } from "react-router";
 import {
   ArrowLeft,
   Calendar,
+  MapPin,
   Users,
   User,
   ChevronLeft,
@@ -326,25 +327,43 @@ export default function DruzstvoDetail() {
           <h2 className="text-3xl lg:text-4xl text-white uppercase mb-8" style={{ fontFamily: bebas }}>Akce</h2>
 
           {displayedEvents.length ? (
-            <div className="overflow-x-auto rounded-3xl border border-[#6EE76D]/8 bg-[#0a110a] shadow-lg shadow-black/20">
-              <table className="min-w-full border-separate border-spacing-0">
-                <thead>
-                  <tr className="text-white/40 text-left text-xs uppercase tracking-[0.25em]">
-                    <th className="px-6 py-4">DATUM</th>
-                    <th className="px-6 py-4">AKCE</th>
-                    <th className="px-6 py-4">MÍSTO</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {displayedEvents.map((event, i) => (
-                    <tr key={i} className={`border-t border-white/10 ${i % 2 === 0 ? "bg-[#0e160e]/80" : "bg-[#0e160e]/60"}`}>
-                      <td className="px-6 py-4 text-white/70 whitespace-pre-line align-top" style={{ fontFamily: inter }}>{event.date}</td>
-                      <td className="px-6 py-4 text-white whitespace-pre-line align-top" style={{ fontFamily: inter }}>{event.title}</td>
-                      <td className="px-6 py-4 text-white/60 whitespace-pre-line align-top" style={{ fontFamily: inter }}>{event.location}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="rounded-3xl bg-[#0a110a]/40 px-2 sm:px-4">
+              <div className="hidden md:grid grid-cols-[1fr_1.4fr_1fr] gap-6 px-4 pb-3 text-[#6EE76D] text-sm uppercase tracking-[0.2em]" style={{ fontFamily: bebas }}>
+                <div>Datum</div>
+                <div>Akce</div>
+                <div>Místo</div>
+              </div>
+
+              <div>
+                {displayedEvents.map((event, i) => (
+                  <div key={i} className={`grid gap-4 md:grid-cols-[1fr_1.4fr_1fr] px-4 py-5 ${i !== 0 ? "border-t border-[#6EE76D]/15" : ""}`}>
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 rounded-2xl bg-[#6EE76D]/10 flex items-center justify-center flex-shrink-0">
+                        <Calendar className="w-4 h-4 text-[#6EE76D]" />
+                      </div>
+                      <div>
+                        <div className="text-[11px] uppercase tracking-[0.2em] text-[#6EE76D] md:hidden" style={{ fontFamily: bebas }}>Datum</div>
+                        <div className="text-white text-lg whitespace-pre-line" style={{ fontFamily: bebas }}>{event.date}</div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="text-[11px] uppercase tracking-[0.2em] text-[#6EE76D] md:hidden mb-1" style={{ fontFamily: bebas }}>Akce</div>
+                      <div className="text-white text-base sm:text-lg whitespace-pre-line" style={{ fontFamily: inter }}>{event.title}</div>
+                    </div>
+
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 rounded-2xl bg-[#6EE76D]/10 flex items-center justify-center flex-shrink-0">
+                        <MapPin className="w-4 h-4 text-[#6EE76D]" />
+                      </div>
+                      <div>
+                        <div className="text-[11px] uppercase tracking-[0.2em] text-[#6EE76D] md:hidden" style={{ fontFamily: bebas }}>Místo</div>
+                        <div className="text-white/75 whitespace-pre-line" style={{ fontFamily: inter }}>{event.location}</div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           ) : (
             <div className="rounded-3xl border border-[#6EE76D]/8 bg-[#0e160e] p-8 text-white/70" style={{ fontFamily: inter }}>
