@@ -41,7 +41,7 @@ export default function DruzstvoDetail() {
   const playersScrollRef = useRef<HTMLDivElement | null>(null);
   const newsScrollRef = useRef<HTMLDivElement | null>(null);
 
-  const miniPlayerPhotos = import.meta.glob("../../imports/foto/mini-zakyne/*.{jpg,jpeg,png}", { eager: true, as: "url" }) as Record<string, string>;
+  const teamPlayerPhotos = import.meta.glob("../../imports/foto/*/*.{jpg,jpeg,png}", { eager: true, as: "url" }) as Record<string, string>;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -75,6 +75,8 @@ export default function DruzstvoDetail() {
   };
 
   const isMiniTeam = team.slug === "mini-zakyne";
+  const isPripravkaTeam = team.slug === "pripravka";
+  const isKidsTeam = isMiniTeam || isPripravkaTeam;
 
   const scrollPlayers = (direction: number) => {
     playersScrollRef.current?.scrollBy({ left: direction * 900, behavior: "smooth" });
@@ -84,12 +86,14 @@ export default function DruzstvoDetail() {
     newsScrollRef.current?.scrollBy({ left: direction * 900, behavior: "smooth" });
   };
 
-  const getMiniPhoto = (name: string) => {
+  const getTeamPhoto = (name: string) => {
     const normalizedName = normalizeText(name);
     const surname = normalizeText(name.split(" ")[0] || "");
+    const currentTeamSlug = normalizeText(team.slug);
 
-    for (const [path, url] of Object.entries(miniPlayerPhotos)) {
+    for (const [path, url] of Object.entries(teamPlayerPhotos)) {
       const normalizedPath = normalizeText(path);
+      if (!normalizedPath.includes(currentTeamSlug)) continue;
       if (normalizedPath.includes(normalizedName) || normalizedPath.includes(surname)) {
         return url;
       }
@@ -107,12 +111,16 @@ export default function DruzstvoDetail() {
         { date: "02.05.2026", title: "Memoriál Karla Šulce 4+1", location: "Plzeň" },
         { date: "08.05.2026\naž\n10.05.2026", title: "MEMORIÁL KARLA ŠULCE 2026", location: "Plzeň" },
       ]
-    : (team.events ?? []).map((event) => ({
-        date: event.date,
-        title: event.title,
-        location: event.location,
-      }));
-
+    : isPripravkaTeam
+      ? [
+          { date: "05.09.2023", title: "Pohádková stezka Hostivařským lesoparkem", location: "Hřiště HC Háje" },
+          { date: "05.09.2023", title: "Malování na obličej od Lukáše Phoenixe Bureše", location: "Hřiště HC Háje" },
+        ]
+      : (team.events ?? []).map((event) => ({
+          date: event.date,
+          title: event.title,
+          location: event.location,
+        }));
   const displayedStaff = isMiniTeam
     ? [
         { name: "Petr Zálešák", phone: "777 721 282", email: "minihchaje@gmail.com" },
@@ -120,11 +128,15 @@ export default function DruzstvoDetail() {
         { name: "Veronika Zálešáková", phone: "", email: "" },
         { name: "Barbora Bláhová", phone: "", email: "" },
       ]
-    : [
-        { name: team.coach, phone: "", email: "" },
-        ...(team.assistantCoach ? [{ name: team.assistantCoach, phone: "", email: "" }] : []),
-      ];
-
+    : isPripravkaTeam
+      ? [
+          { name: team.coach, phone: "", email: "vybor@hchaje.cz" },
+          ...(team.assistantCoach ? [{ name: team.assistantCoach, phone: "", email: "vybor@hchaje.cz" }] : []),
+        ]
+      : [
+          { name: team.coach, phone: "", email: "" },
+          ...(team.assistantCoach ? [{ name: team.assistantCoach, phone: "", email: "" }] : []),
+        ];
   const displayedNews = isMiniTeam
     ? [
         {
@@ -146,11 +158,63 @@ export default function DruzstvoDetail() {
             "V pátek si holky zahrály hned dva přátelské zápasy – nejprve proti TJ Sokol Vršovice a poté proti TJ Chodov. První utkání bylo opatrné, jako by holky na hřišti teprve hledaly jistotu. Přihrávky občas postrádaly přesnost a chyběla dravost v obraně, ale...",
         },
       ]
-    : newsSorted.map((item) => ({
-        ...item,
-        excerpt: "Nejnovější aktualita z týmu.",
-      }));
+    : isPripravkaTeam
+      ? [
+          {
+            title: "Mladší dorostenky dnes přivezly důležité 2 body z Českých Budějovic.",
+            date: "15.02.2025",
+            excerpt:
+              "INFARKTOVÝ ZÁPAS, ALE NAŠE BABY TO DOTÁHLY DO VÍTĚZNÉHO KONCE! Tohle nebyl zápas pro slabé povahy. Kdo neměl nervy z ocele, ten si je dneska solidně pocuchal. Od první minuty se jelo bomby – jeden gól tam, druhý zpátky, fauly, drama, emoce až do nebes...",
+          },
+          {
+            title: "Dvojitá porce házené pro naše mladší žákyně!",
+            date: "09.02.2025",
+            excerpt:
+              "V pátek si holky zahrály hned dva přátelské zápasy – nejprve proti TJ Sokol Vršovice a poté proti TJ Chodov. První utkání bylo opatrné, jako by holky na hřišti teprve hledaly jistotu. Přihrávky občas postrádaly přesnost a chyběla dravost v obraně, ale...",
+          },
+          {
+            title: "Zimní příprava žen \"A\" a části mladšího dorostu",
+            date: "05.02.2025",
+            excerpt:
+              "Ve dnech 1.2. až 3.2.2025 proběhl v Železném Brodě zimní přípravný kemp \"A\" družstva žen a části mladšího dorostu, kde se hráčky připravovaly na blížící se druhou část soutěžní sezony 2024 - 2025.",
+          },
+        ]
+      : newsSorted.map((item) => ({
+          ...item,
+          excerpt: "Nejnovější aktualita z týmu.",
+        }));
 
+  const trainingBlocks = isMiniTeam
+    ? [
+        {
+          title: "Tréninky září, květen - červen",
+          items: [
+            { day: "pondělí", time: "17:00 - 18:30", place: "hala TJ JM Chodov" },
+            { day: "úterý", time: "16:30 - 18:00", place: "hřiště" },
+            { day: "čtvrtek", time: "16:30 - 18:00", place: "hřiště" },
+          ],
+        },
+        {
+          title: "Tréninky říjen - duben",
+          items: [
+            { day: "pondělí", time: "17:00 - 18:30", place: "hala TJ JM Chodov" },
+            { day: "úterý", time: "17:15 - 18:45", place: "tělocvična ZŠ K Milíčovu" },
+            { day: "čtvrtek", time: "16:30 - 18:00", place: "tělocvična ZŠ Mendelova" },
+          ],
+        },
+      ]
+    : isPripravkaTeam
+      ? [
+          {
+            title: "Tréninky přípravky",
+            items: team.trainings.map((training) => ({
+              day: training.day.toLowerCase(),
+              time: training.time.replace("–", "-").replace("  ", " "),
+              place: training.hall,
+            })),
+          },
+        ]
+      : [];
   return (
     <>
       <section className="relative pt-24 pb-10 lg:pt-32 lg:pb-14">
@@ -243,67 +307,35 @@ export default function DruzstvoDetail() {
           <span className="text-[#6EE76D] text-sm tracking-[0.2em] uppercase mb-3 block" style={{ fontFamily: bebas }}>Rozvrh</span>
           <h2 className="text-3xl lg:text-4xl text-white uppercase mb-8" style={{ fontFamily: bebas }}>Tréninky</h2>
 
-          {isMiniTeam ? (
+          {isKidsTeam ? (
             <div className="space-y-10">
-              <div>
-                <h3 className="text-2xl text-white mb-4" style={{ fontFamily: bebas }}>Tréninky září, květen - červen</h3>
-                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                  {[
-                    { day: "pondělí", time: "17:00 - 18:30", place: "hala TJ JM Chodov" },
-                    { day: "úterý", time: "16:30 - 18:00", place: "hřiště" },
-                    { day: "čtvrtek", time: "16:30 - 18:00", place: "hřiště" },
-                  ].map((item) => (
-                    <div key={item.day} className="rounded-3xl border border-[#6EE76D]/8 bg-[#0e160e] p-6">
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="w-12 h-12 rounded-2xl bg-[#6EE76D]/10 flex items-center justify-center">
-                          <Calendar className="w-5 h-5 text-[#6EE76D]" />
+              {trainingBlocks.map((block) => (
+                <div key={block.title}>
+                  <h3 className="text-2xl text-white mb-4" style={{ fontFamily: bebas }}>{block.title}</h3>
+                  <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                    {block.items.map((item) => (
+                      <div key={item.day + item.time} className="rounded-3xl border border-[#6EE76D]/8 bg-[#0e160e] p-6">
+                        <div className="flex items-center gap-3 mb-4">
+                          <div className="w-12 h-12 rounded-2xl bg-[#6EE76D]/10 flex items-center justify-center">
+                            <Calendar className="w-5 h-5 text-[#6EE76D]" />
+                          </div>
+                          <div className="text-white text-xl" style={{ fontFamily: bebas }}>{item.day}</div>
                         </div>
-                        <div className="text-white text-xl" style={{ fontFamily: bebas }}>{item.day}</div>
-                      </div>
-                      <div className="grid grid-cols-2 gap-4 text-sm" style={{ fontFamily: inter }}>
-                        <div>
-                          <div className="text-white/40 mb-1">Čas</div>
-                          <div className="text-white/80">{item.time}</div>
-                        </div>
-                        <div>
-                          <div className="text-white/40 mb-1">Místo</div>
-                          <div className="text-white/80">{item.place}</div>
+                        <div className="grid grid-cols-2 gap-4 text-sm" style={{ fontFamily: inter }}>
+                          <div>
+                            <div className="text-white/40 mb-1">Čas</div>
+                            <div className="text-white/80">{item.time}</div>
+                          </div>
+                          <div>
+                            <div className="text-white/40 mb-1">Místo</div>
+                            <div className="text-white/80">{item.place}</div>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
-
-              <div>
-                <h3 className="text-2xl text-white mb-4" style={{ fontFamily: bebas }}>Tréninky říjen - duben</h3>
-                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                  {[
-                    { day: "pondělí", time: "17:00 - 18:30", place: "hala TJ JM Chodov" },
-                    { day: "úterý", time: "17:15 - 18:45", place: "tělocvična ZŠ K Milíčovu" },
-                    { day: "čtvrtek", time: "16:30 - 18:00", place: "tělocvična ZŠ Mendelova" },
-                  ].map((item) => (
-                    <div key={item.day + item.time} className="rounded-3xl border border-[#6EE76D]/8 bg-[#0e160e] p-6">
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="w-12 h-12 rounded-2xl bg-[#6EE76D]/10 flex items-center justify-center">
-                          <Calendar className="w-5 h-5 text-[#6EE76D]" />
-                        </div>
-                        <div className="text-white text-xl" style={{ fontFamily: bebas }}>{item.day}</div>
-                      </div>
-                      <div className="grid grid-cols-2 gap-4 text-sm" style={{ fontFamily: inter }}>
-                        <div>
-                          <div className="text-white/40 mb-1">Čas</div>
-                          <div className="text-white/80">{item.time}</div>
-                        </div>
-                        <div>
-                          <div className="text-white/40 mb-1">Místo</div>
-                          <div className="text-white/80">{item.place}</div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              ))}
             </div>
           ) : (
             <div className="flex gap-4 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -388,7 +420,7 @@ export default function DruzstvoDetail() {
               <span className="text-[#6EE76D] text-sm tracking-[0.2em] uppercase mb-3 block" style={{ fontFamily: bebas }}>Soupiska</span>
               <h2 className="text-3xl lg:text-4xl text-white uppercase" style={{ fontFamily: bebas }}>Hráčky</h2>
             </div>
-            {isMiniTeam && (
+            {isKidsTeam && (
               <div className="flex gap-2">
                 <button
                   onClick={() => scrollPlayers(-1)}
@@ -408,10 +440,10 @@ export default function DruzstvoDetail() {
             )}
           </div>
 
-          {isMiniTeam ? (
+          {isKidsTeam ? (
             <div ref={playersScrollRef} className="flex gap-4 overflow-x-auto pb-4 scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               {team.players.map((p, i) => {
-                const photo = getMiniPhoto(p.name);
+                const photo = getTeamPhoto(p.name);
                 return (
                   <div key={i} className="min-w-[16rem] md:min-w-[calc((100%-1rem)/2)] lg:min-w-[calc((100%-2rem)/3)] xl:min-w-[calc((100%-3rem)/4)] flex-shrink-0 h-[21rem] rounded-3xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/20 transition-all p-6 flex flex-col items-center justify-center text-center">
                     <div className="w-24 h-24 rounded-full overflow-hidden bg-[#6EE76D]/10 border border-[#6EE76D]/20 flex items-center justify-center mb-5">
