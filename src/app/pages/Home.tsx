@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { Btn, SectionLabel, CtaStrip, bebas, inter } from "../components/shared";
+import { TEAMS } from "../data/teams";
 
 const STATS = [
   { value: "120+", label: "Aktivních hráček" },
@@ -34,23 +35,57 @@ const REELS = [
   { id: 6, thumbnail: "https://images.unsplash.com/photo-1606519740551-1fa9e7c68a02?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxoYW5kYmFsbCUyMGJhbGwlMjBjbG9zZSUyMHVwJTIwc3BvcnR8ZW58MXx8fHwxNzc2MDg1OTY3fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral", caption: "Naše vybavení" },
 ];
 
-const NEWS = [
-  { id: 1, date: "10. 4. 2026", title: "A-tým postoupil do semifinále krajského přeboru", tag: "Zápasy" },
-  { id: 2, date: "7. 4. 2026", title: "Nábor nových hráček — přijďte si vyzkoušet házenou!", tag: "Nábor" },
-  { id: 3, date: "2. 4. 2026", title: "Turnaj přípravek v Háji — výsledky a fotky", tag: "Turnaje" },
-  { id: 4, date: "28. 3. 2026", title: "Letní kemp 2026 — registrace otevřena", tag: "Kempy" },
-];
+const DAY_ORDER = ["Pondělí", "Úterý", "Středa", "Čtvrtek", "Pátek", "Sobota", "Neděle"];
 
-const TRAININGS = [
-  { day: "Pondělí", date: "14. 4.", time: "16:00 – 17:30", team: "Přípravka" },
-  { day: "Pondělí", date: "14. 4.", time: "17:45 – 19:15", team: "Mladší žákyně" },
-  { day: "Úterý", date: "15. 4.", time: "16:00 – 17:30", team: "Starší žákyně" },
-  { day: "Úterý", date: "15. 4.", time: "18:00 – 19:30", team: "A-tým ženy" },
-  { day: "Středa", date: "16. 4.", time: "16:00 – 17:30", team: "Přípravka" },
-  { day: "Středa", date: "16. 4.", time: "17:45 – 19:15", team: "Mladší žákyně" },
-  { day: "Čtvrtek", date: "17. 4.", time: "17:00 – 18:30", team: "Starší žákyně" },
-  { day: "Čtvrtek", date: "17. 4.", time: "19:00 – 20:30", team: "A-tým ženy" },
-];
+const toSlug = (value: string) =>
+  value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]/g, "");
+
+const parseCzDate = (value: string) => {
+  const [day, month, year] = value.replace(/\s/g, "").split(".").filter(Boolean);
+  return new Date(Number(year), Number(month) - 1, Number(day)).getTime();
+};
+
+const getUpcomingTrainings = () => {
+  const now = new Date();
+  const currentDayIndex = now.getDay() === 0 ? 6 : now.getDay() - 1;
+
+  return TEAMS.flatMap((team) =>
+    team.trainings.map((training) => {
+      const dayIndex = DAY_ORDER.indexOf(training.day);
+      const distance = dayIndex >= currentDayIndex ? dayIndex - currentDayIndex : dayIndex + 7 - currentDayIndex;
+      const startTime = training.time.split(/[–-]/)[0].trim();
+      const [hours = 0, minutes = 0] = startTime.split(":").map(Number);
+      const nextDate = new Date(now);
+      nextDate.setHours(0, 0, 0, 0);
+      nextDate.setDate(now.getDate() + distance);
+
+      return {
+        ...training,
+        team: team.name,
+        slug: team.slug,
+        date: `${nextDate.getDate()}. ${nextDate.getMonth() + 1}.`,
+        sortValue: distance * 1440 + hours * 60 + minutes,
+      };
+    }),
+  )
+    .sort((a, b) => a.sortValue - b.sortValue)
+    .slice(0, 5);
+};
+
+const latestNews = TEAMS.flatMap((team) =>
+  team.news.map((item, index) => ({
+    id: `${team.slug}-${index}`,
+    date: item.date,
+    title: item.title,
+    tag: team.name,
+  })),
+)
+  .sort((a, b) => parseCzDate(b.date) - parseCzDate(a.date))
+  .slice(0, 5);
 
 /* ══════════════ HERO ══════════════ */
 function Hero() {
@@ -270,6 +305,8 @@ function ReelsSection() {
 
 /* ══════════════ NEWS + TRAININGS ══════════════ */
 function NewsAndTrainings() {
+  const upcomingTrainings = getUpcomingTrainings();
+
   return (
     <section className="reveal-on-scroll py-20 lg:py-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -278,13 +315,18 @@ function NewsAndTrainings() {
             <SectionLabel>Novinky</SectionLabel>
             <h2 className="text-3xl lg:text-4xl text-white uppercase mb-8" style={{ fontFamily: bebas }}>Aktuality</h2>
             <div className="space-y-4">
-              {NEWS.map((item) => (
-                <Link key={item.id} to="/aktuality" className="block p-5 rounded-2xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/25 transition-all group">
+              {latestNews.map((item) => (
+                <Link
+                  key={item.id}
+                  to={`/aktuality/${toSlug(item.title)}`}
+                  state={{ article: { title: item.title, date: item.date }, backTo: "/" }}
+                  className="block p-5 rounded-2xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/25 transition-all group"
+                >
                   <div className="flex items-start justify-between gap-4">
                     <div>
                       <div className="flex items-center gap-3 mb-2">
                         <span className="text-white/35 text-sm">{item.date}</span>
-                        <span className="px-3 py-0.5 rounded-full bg-[#6EE76D]/10 text-[#6EE76D] text-xs uppercase tracking-wider" style={{ fontFamily: bebas }}>{item.tag}</span>
+                        <span className="px-3 py-0.5 rounded-full bg-[#6EE76D]/10 text-[#6EE76D] text-xs tracking-wider" style={{ fontFamily: bebas }}>{item.tag}</span>
                       </div>
                       <h3 className="text-white group-hover:text-[#6EE76D] transition-colors" style={{ fontFamily: inter }}>{item.title}</h3>
                     </div>
@@ -298,21 +340,26 @@ function NewsAndTrainings() {
 
           <div>
             <SectionLabel>Rozvrh</SectionLabel>
-            <h2 className="text-3xl lg:text-4xl text-white uppercase mb-8" style={{ fontFamily: bebas }}>Tréninky</h2>
+            <h2 className="text-3xl lg:text-4xl text-white uppercase mb-8" style={{ fontFamily: bebas }}>Nejbližší trénink</h2>
             <div className="space-y-2">
-              {TRAININGS.map((t, i) => (
-                <div key={i} className="flex items-center gap-4 p-4 rounded-2xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/20 transition-all">
+              {upcomingTrainings.map((t, i) => (
+                <Link
+                  key={t.slug + t.day + t.time + i}
+                  to={`/druzstva/${t.slug}`}
+                  className="flex items-center gap-4 p-4 rounded-2xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/20 transition-all group"
+                >
                   <div className="w-10 h-10 rounded-full bg-[#6EE76D]/10 flex items-center justify-center flex-shrink-0">
-                    {t.team === "A-tým ženy" ? <Trophy className="w-5 h-5 text-[#6EE76D]" /> : <Users className="w-5 h-5 text-[#6EE76D]" />}
+                    {t.slug === "zeny" ? <Trophy className="w-5 h-5 text-[#6EE76D]" /> : <Users className="w-5 h-5 text-[#6EE76D]" />}
                   </div>
                   <div className="flex-1 min-w-0">
                     <span className="text-white" style={{ fontFamily: inter }}>{t.team}</span>
-                    <div className="flex items-center gap-3 text-sm text-white/35 mt-0.5">
-                      <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5" /> {t.day} {t.date}</span>
-                      <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {t.time}</span>
+                    <div className="flex flex-wrap items-center gap-3 text-sm text-white/35 mt-0.5">
+                      <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5 text-[#6EE76D]" /> {t.day} {t.date}</span>
+                      <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5 text-[#6EE76D]" /> {t.time}</span>
                     </div>
                   </div>
-                </div>
+                  <ChevronRight className="w-5 h-5 text-white/15 group-hover:text-[#6EE76D] transition-colors flex-shrink-0" />
+                </Link>
               ))}
             </div>
             <Btn variant="secondary" to="/treninky" className="mt-6">Kompletní rozvrh</Btn>
