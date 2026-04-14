@@ -15,6 +15,12 @@ export interface TeamNews {
   title: string;
 }
 
+export interface TeamEvent {
+  date: string;
+  title: string;
+  location: string;
+}
+
 export interface Team {
   slug: string;
   name: string;
@@ -29,6 +35,7 @@ export interface Team {
   trainings: Training[];
   players: Player[];
   news: TeamNews[];
+  events?: TeamEvent[];
 }
 
 export const TEAMS: Team[] = [
@@ -62,6 +69,14 @@ export const TEAMS: Team[] = [
       { date: "10. 4. 2026", title: "Postup do semifinále krajského přeboru!" },
       { date: "5. 4. 2026", title: "Výhra nad Slavií Praha 28:24" },
       { date: "29. 3. 2026", title: "Přátelský zápas s Duklou — 22:25" },
+    ],
+    events: [
+      { date: "25. 04. 2026", title: "Turnaj 4+1", location: "Sportovní hala Háje" },
+      { date: "02. 05. 2026", title: "Memoriál Karla Šulce 4+1", location: "Plzeň" },
+      { date: "17. 05. 2026", title: "Turnaj 4+1", location: "Sportovní hala Háje" },
+      { date: "30. 05. 2026", title: "Turnaj 4+1 + Pořadatelství HC Háje", location: "Hřiště HC Háje" },
+      { date: "06. 06. 2026", title: "Mináček 4+1", location: "DHC Slavia" },
+      { date: "14. 06. 2026", title: "Závěrečný turnaj 4+1", location: "Astra" },
     ],
   },
   {

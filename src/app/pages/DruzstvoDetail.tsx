@@ -10,6 +10,7 @@ import { getTeamBySlug, TEAMS } from "../data/teams";
 const SECTIONS = [
   { id: "prehled", label: "Přehled" },
   { id: "treninky", label: "Tréninky" },
+  { id: "akce", label: "Akce" },
   { id: "hracky", label: "Hráčky" },
   { id: "aktuality", label: "Aktuality" },
 ];
@@ -42,9 +43,16 @@ export default function DruzstvoDetail() {
 
   if (!team) return <Navigate to="/druzstva" replace />;
 
+  const parseCzDate = (date: string) => {
+    const [day, month, year] = date.split(".").map((value) => parseInt(value.trim(), 10));
+    return new Date(year, month - 1, day).getTime();
+  };
+
   const scrollTo = (id: string) => {
     sectionRefs.current[id]?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
+
+  const newsSorted = [...team.news].sort((a, b) => parseCzDate(b.date) - parseCzDate(a.date));
 
   return (
     <>
@@ -142,22 +150,58 @@ export default function DruzstvoDetail() {
           <span className="text-[#6EE76D] text-sm tracking-[0.2em] uppercase mb-3 block" style={{ fontFamily: bebas }}>Rozvrh</span>
           <h2 className="text-3xl lg:text-4xl text-white uppercase mb-8" style={{ fontFamily: bebas }}>Tréninky</h2>
 
-          <div className="space-y-3 max-w-2xl">
+          <div className="flex gap-4 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
             {team.trainings.map((t, i) => (
-              <div key={i} className="flex items-center gap-4 p-5 rounded-2xl bg-[#0e160e] border border-[#6EE76D]/8">
-                <div className="w-12 h-12 rounded-full bg-[#6EE76D]/10 flex items-center justify-center flex-shrink-0">
-                  <Calendar className="w-5 h-5 text-[#6EE76D]" />
-                </div>
-                <div className="flex-1">
-                  <span className="text-white text-lg" style={{ fontFamily: bebas, letterSpacing: "0.05em" }}>{t.day}</span>
-                  <div className="flex items-center gap-4 text-sm text-white/40 mt-0.5">
-                    <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {t.time}</span>
-                    <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> {t.hall}</span>
+              <div key={i} className="min-w-[18rem] flex-shrink-0 p-5 rounded-3xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/20 transition-all">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 rounded-2xl bg-[#6EE76D]/10 flex items-center justify-center">
+                    <Calendar className="w-5 h-5 text-[#6EE76D]" />
+                  </div>
+                  <div>
+                    <div className="text-sm uppercase tracking-[0.2em] text-white/40" style={{ fontFamily: bebas }}>Trénink</div>
+                    <div className="text-white/70 text-sm mt-1">{t.hall}</div>
                   </div>
                 </div>
+                <div className="text-2xl text-white" style={{ fontFamily: bebas }}>{t.day}</div>
+                <div className="text-white/40 mt-1">{t.time}</div>
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ── AKCE ── */}
+      <section id="akce" ref={(el) => { sectionRefs.current["akce"] = el; }} className="py-16 lg:py-20 scroll-mt-32">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <span className="text-[#6EE76D] text-sm tracking-[0.2em] uppercase mb-3 block" style={{ fontFamily: bebas }}>Kalendář</span>
+          <h2 className="text-3xl lg:text-4xl text-white uppercase mb-8" style={{ fontFamily: bebas }}>Akce</h2>
+
+          {team.events?.length ? (
+            <div className="overflow-x-auto rounded-3xl border border-[#6EE76D]/8 bg-[#0a110a] shadow-lg shadow-black/20">
+              <table className="min-w-full border-separate border-spacing-0">
+                <thead>
+                  <tr className="text-white/40 text-left text-xs uppercase tracking-[0.25em]">
+                    <th className="px-6 py-4">DATUM</th>
+                    <th className="px-6 py-4">AKCE</th>
+                    <th className="px-6 py-4">MÍSTO</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {team.events.map((event, i) => (
+                    <tr key={i} className={`border-t border-white/10 ${i % 2 === 0 ? "bg-[#0e160e]/80" : "bg-[#0e160e]/60"}`}>
+                      <td className="px-6 py-4 text-white/70" style={{ fontFamily: inter }}>{event.date}</td>
+                      <td className="px-6 py-4 text-white" style={{ fontFamily: inter }}>{event.title}</td>
+                      <td className="px-6 py-4 text-white/60" style={{ fontFamily: inter }}>{event.location}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="rounded-3xl border border-[#6EE76D]/8 bg-[#0e160e] p-8 text-white/70" style={{ fontFamily: inter }}>
+              Žádné nadcházející akce nejsou zatím naplánované.
+            </div>
+          )}
         </div>
       </section>
 
@@ -193,15 +237,20 @@ export default function DruzstvoDetail() {
           <span className="text-[#6EE76D] text-sm tracking-[0.2em] uppercase mb-3 block" style={{ fontFamily: bebas }}>Novinky</span>
           <h2 className="text-3xl lg:text-4xl text-white uppercase mb-8" style={{ fontFamily: bebas }}>Aktuality</h2>
 
-          <div className="space-y-3 max-w-2xl">
-            {team.news.map((n, i) => (
-              <div key={i} className="p-5 rounded-2xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/25 transition-all group cursor-pointer">
-                <div className="flex items-start justify-between gap-4">
-                  <div>
-                    <span className="text-white/35 text-sm">{n.date}</span>
-                    <h3 className="text-white mt-1 group-hover:text-[#6EE76D] transition-colors" style={{ fontFamily: inter }}>{n.title}</h3>
-                  </div>
-                  <ChevronRight className="w-5 h-5 text-white/15 group-hover:text-[#6EE76D] transition-colors flex-shrink-0 mt-2" />
+          <div className="flex gap-4 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
+            {newsSorted.map((n, i) => (
+              <div key={i} className="min-w-[22rem] flex-shrink-0 p-6 rounded-3xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/25 transition-all group">
+                <div className="flex items-center justify-between gap-4">
+                  <span className="text-white/35 text-sm" style={{ fontFamily: inter }}>{n.date}</span>
+                  {i === 0 && (
+                    <span className="inline-flex items-center rounded-full bg-[#6EE76D]/10 px-2 py-1 text-[11px] uppercase tracking-[0.2em] text-[#6EE76D]" style={{ fontFamily: inter }}>
+                      NOVÉ
+                    </span>
+                  )}
+                </div>
+                <h3 className="text-white mt-4 text-xl" style={{ fontFamily: inter }}>{n.title}</h3>
+                <div className="mt-4 text-white/40 text-sm" style={{ fontFamily: inter }}>
+                  Nejnovější aktualita z týmu.
                 </div>
               </div>
             ))}
