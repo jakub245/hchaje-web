@@ -241,14 +241,9 @@ export default function DruzstvoDetail() {
           <h1 className="text-5xl lg:text-7xl text-white uppercase" style={{ fontFamily: bebas, lineHeight: 1 }}>
             {team.name}
           </h1>
-          <div className="flex flex-wrap items-center gap-4 mt-4">
+          <div className="mt-4">
             <span className="text-[#6EE76D] text-lg" style={{ fontFamily: bebas }}>{team.ageRange}</span>
-            <span className="text-white/25">•</span>
-            <span className="text-white/45" style={{ fontFamily: inter }}>{team.playerCount} hráček</span>
-            <span className="text-white/25">•</span>
-            <span className="text-white/45" style={{ fontFamily: inter }}>Trenér: {team.coach}</span>
           </div>
-          <div className="w-20 h-1 bg-[#6EE76D] rounded-full mt-6" />
         </div>
       </section>
 
@@ -295,14 +290,10 @@ export default function DruzstvoDetail() {
               <div className="space-y-3">
                 <div className="flex items-center gap-3">
                   <User className="w-5 h-5 text-[#6EE76D]" />
-                  <span className="text-white/60" style={{ fontFamily: inter }}>Trenér: <span className="text-white">{team.coach}</span></span>
+                  <span className="text-white/60" style={{ fontFamily: inter }}>
+                    Trenéři: <span className="text-white">{displayedStaff.slice(0, 2).map((member) => member.name).join(" • ")}</span>
+                  </span>
                 </div>
-                {team.assistantCoach && (
-                  <div className="flex items-center gap-3">
-                    <User className="w-5 h-5 text-[#6EE76D]/60" />
-                    <span className="text-white/60" style={{ fontFamily: inter }}>Asistent: <span className="text-white">{team.assistantCoach}</span></span>
-                  </div>
-                )}
               </div>
             </div>
 
