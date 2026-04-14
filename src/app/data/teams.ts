@@ -83,7 +83,7 @@ export const TEAMS: Team[] = [
       { date: "25. 04. 2026", title: "Turnaj 4+1", location: "Sportovní hala Háje" },
       { date: "02. 05. 2026", title: "Memoriál Karla Šulce 4+1", location: "Plzeň" },
       { date: "17. 05. 2026", title: "Turnaj 4+1", location: "Sportovní hala Háje" },
-      { date: "30. 05. 2026", title: "Turnaj 4+1 + Pořadatelství HC Háje", location: "Hřiště HC Háje" },
+      { date: "30. 05. 2026", title: "Turnaj 4+1 + Pořadatelství HC Háje", location: "Areál TJ Háje" },
       { date: "06. 06. 2026", title: "Mináček 4+1", location: "DHC Slavia" },
       { date: "14. 06. 2026", title: "Závěrečný turnaj 4+1", location: "Astra" },
     ],
@@ -153,25 +153,25 @@ export const TEAMS: Team[] = [
     playerCount: 19,
     ageRange: "8–10 let",
     trainings: [
-      { day: "Pondělí", time: "17:00 - 18:30", hall: "hala TJ JM Chodov" },
-      { day: "Úterý", time: "17:15 - 18:45", hall: "tělocvična ZŠ K Milíčovu" },
-      { day: "Čtvrtek", time: "16:30 - 18:00", hall: "tělocvična ZŠ Mendelova" },
+      { day: "Pondělí", time: "17:00 - 18:30", hall: "Hala TJ JM Chodov" },
+      { day: "Úterý", time: "17:15 - 18:45", hall: "Tělocvična ZŠ K Milíčovu" },
+      { day: "Čtvrtek", time: "16:30 - 18:00", hall: "Tělocvična ZŠ Mendelova" },
     ],
     trainingSections: [
       {
         title: "Tréninky září, květen - červen",
         items: [
-          { day: "Pondělí", time: "17:00 - 18:30", hall: "hala TJ JM Chodov" },
-          { day: "Úterý", time: "16:30 - 18:00", hall: "hřiště" },
-          { day: "Čtvrtek", time: "16:30 - 18:00", hall: "hřiště" },
+          { day: "Pondělí", time: "17:00 - 18:30", hall: "Hala TJ JM Chodov" },
+          { day: "Úterý", time: "16:30 - 18:00", hall: "Areál TJ Háje" },
+          { day: "Čtvrtek", time: "16:30 - 18:00", hall: "Areál TJ Háje" },
         ],
       },
       {
         title: "Tréninky říjen - duben",
         items: [
-          { day: "Pondělí", time: "17:00 - 18:30", hall: "hala TJ JM Chodov" },
-          { day: "Úterý", time: "17:15 - 18:45", hall: "tělocvična ZŠ K Milíčovu" },
-          { day: "Čtvrtek", time: "16:30 - 18:00", hall: "tělocvična ZŠ Mendelova" },
+          { day: "Pondělí", time: "17:00 - 18:30", hall: "Hala TJ JM Chodov" },
+          { day: "Úterý", time: "17:15 - 18:45", hall: "Tělocvična ZŠ K Milíčovu" },
+          { day: "Čtvrtek", time: "16:30 - 18:00", hall: "Tělocvična ZŠ Mendelova" },
         ],
       },
     ],
@@ -213,22 +213,22 @@ export const TEAMS: Team[] = [
     playerCount: 18,
     ageRange: "6–8 let",
     trainings: [
-      { day: "Úterý", time: "17:15 - 18:45", hall: "tělocvišna ZŠ K Milíčovu" },
-      { day: "Čtvrtek", time: "16:30 - 18:00", hall: "tělocvišna ZŠ Mendelova" },
+      { day: "Úterý", time: "17:15 - 18:45", hall: "Tělocvična ZŠ K Milíčovu" },
+      { day: "Čtvrtek", time: "16:30 - 18:00", hall: "Tělocvična ZŠ Mendelova" },
     ],
     trainingSections: [
       {
         title: "Tréninky září, květen - červen",
         items: [
-          { day: "Úterý", time: "17:00 - 18:30", hall: "hřiště" },
-          { day: "Čtvrtek", time: "17:00 - 18:30", hall: "hřiště" },
+          { day: "Úterý", time: "17:00 - 18:30", hall: "Areál TJ Háje" },
+          { day: "Čtvrtek", time: "17:00 - 18:30", hall: "Areál TJ Háje" },
         ],
       },
       {
         title: "Tréninky říjen - duben",
         items: [
-          { day: "Úterý", time: "17:15 - 18:45", hall: "tělocvišna ZŠ K Milíčovu" },
-          { day: "Čtvrtek", time: "16:30 - 18:00", hall: "tělocvišna ZŠ Mendelova" },
+          { day: "Úterý", time: "17:15 - 18:45", hall: "Tělocvična ZŠ K Milíčovu" },
+          { day: "Čtvrtek", time: "16:30 - 18:00", hall: "Tělocvična ZŠ Mendelova" },
         ],
       },
     ],

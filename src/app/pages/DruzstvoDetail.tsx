@@ -117,17 +117,17 @@ export default function DruzstvoDetail() {
 
   const displayedEvents = isMiniTeam
     ? [
-        { date: "18.04.2026", title: "Turnaj 6+1", location: "hala ZŠ a MŠ Chýně" },
-        { date: "25.04.2026", title: "Turnaj 4+1", location: "hala Kobylisy" },
+        { date: "18.04.2026", title: "Turnaj 6+1", location: "Hala ZŠ a MŠ Chýně" },
+        { date: "25.04.2026", title: "Turnaj 4+1", location: "Hala Kobylisy" },
         { date: "02.05.2026", title: "Memoriál Karla Šulce 4+1", location: "Plzeň" },
         { date: "08.05.2026\naž\n10.05.2026", title: "MEMORIÁL KARLA ŠULCE 2026", location: "Plzeň" },
       ]
     : isPripravkaTeam
       ? [
-          { date: "25.04.2026", title: "Turnaj 4+1", location: "hala Kobylisy" },
+          { date: "25.04.2026", title: "Turnaj 4+1", location: "Hala Kobylisy" },
           { date: "02.05.2026", title: "Memoriál Karla Šulce 4+1", location: "Plzeň" },
           { date: "17.05.2026", title: "Turnaj 4+1", location: "" },
-          { date: "30.05.2026", title: "Turnaj 4+1\nPořadatelství HC Háje", location: "Hřiště HC Háje" },
+          { date: "30.05.2026", title: "Turnaj 4+1\nPořadatelství HC Háje", location: "Areál TJ Háje" },
           { date: "06.06.2026", title: "Mináček 4+1\n2017 a mladší", location: "DHC Slavia" },
           { date: "14.06.2026", title: "Závěrečný turnaj 4+1", location: "Astra" },
         ]

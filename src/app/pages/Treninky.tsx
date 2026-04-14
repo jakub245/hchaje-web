@@ -5,14 +5,31 @@ import { PageHero, CtaStrip, bebas, inter } from "../components/shared";
 import { TEAMS } from "../data/teams";
 
 const DAY_ORDER = ["Pondělí", "Úterý", "Středa", "Čtvrtek", "Pátek", "Sobota", "Neděle"];
-const FIELD_ADDRESS = "Areál TJ Háje, K Jezeru";
 
 function normalizePlace(place: string) {
   return place.trim().toLowerCase();
 }
 
 function formatPlace(place: string) {
-  return normalizePlace(place) === "hřiště" ? "Hřiště" : place;
+  const normalized = normalizePlace(place);
+
+  if (normalized === "hřiště" || normalized === "areál tj háje" || normalized === "areál tj háje, k jezeru") {
+    return "Areál TJ Háje";
+  }
+
+  if (normalized === "hala tj jm chodov") {
+    return "Hala TJ JM Chodov";
+  }
+
+  if (normalized === "tělocvišna zš k milíčovu" || normalized === "tělocvična zš k milíčovu") {
+    return "Tělocvična ZŠ K Milíčovu";
+  }
+
+  if (normalized === "tělocvišna zš mendelova" || normalized === "tělocvična zš mendelova") {
+    return "Tělocvična ZŠ Mendelova";
+  }
+
+  return place.trim();
 }
 
 const allScheduleSlots = Array.from(
@@ -39,7 +56,7 @@ const allScheduleSlots = Array.from(
   ).values(),
 );
 
-const placeOptions = Array.from(new Set(allScheduleSlots.map((slot) => slot.hall)));
+const placeOptions = Array.from(new Set(allScheduleSlots.map((slot) => formatPlace(slot.hall))));
 
 export default function TreninkyPage() {
   const [selectedPlace, setSelectedPlace] = useState<string>("all");
@@ -47,7 +64,7 @@ export default function TreninkyPage() {
   const filteredScheduleByDay = DAY_ORDER.map((day) => ({
     day,
     slots: allScheduleSlots.filter(
-      (slot) => slot.day === day && (selectedPlace === "all" || normalizePlace(slot.hall) === selectedPlace),
+      (slot) => slot.day === day && (selectedPlace === "all" || normalizePlace(formatPlace(slot.hall)) === selectedPlace),
     ),
   })).filter((item) => item.slots.length > 0);
 
@@ -60,15 +77,15 @@ export default function TreninkyPage() {
 
       <section className="reveal-on-scroll pb-20 lg:pb-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-12 rounded-2xl bg-[#0e160e] border border-[#6EE76D]/10 p-6">
-            <div className="flex items-center gap-2 text-white mb-4" style={{ fontFamily: bebas }}>
+          <div className="mb-10">
+            <div className="flex items-center gap-2 text-white/80 mb-4" style={{ fontFamily: bebas }}>
               <MapPin className="w-4 h-4 text-[#6EE76D]" />
               Filtrovat podle místa
             </div>
             <div className="flex flex-wrap gap-3">
               <button
                 onClick={() => setSelectedPlace("all")}
-                className={`rounded-full border px-4 py-2 text-sm transition-all ${selectedPlace === "all" ? "border-[#6EE76D] bg-[#6EE76D]/12 text-white" : "border-white/10 bg-[#091109] text-white/70 hover:border-[#6EE76D]/30 hover:text-white"}`}
+                className={`rounded-full border px-4 py-2 text-sm transition-all ${selectedPlace === "all" ? "border-[#6EE76D] bg-[#6EE76D]/12 text-white" : "border-white/10 text-white/70 hover:border-[#6EE76D]/30 hover:text-white"}`}
                 style={{ fontFamily: inter }}
               >
                 Všechna místa
@@ -80,20 +97,14 @@ export default function TreninkyPage() {
                   <button
                     key={place}
                     onClick={() => setSelectedPlace(normalizePlace(place))}
-                    className={`rounded-full border px-4 py-2 text-sm transition-all ${isActive ? "border-[#6EE76D] bg-[#6EE76D]/12 text-white" : "border-white/10 bg-[#091109] text-white/70 hover:border-[#6EE76D]/30 hover:text-white"}`}
+                    className={`rounded-full border px-4 py-2 text-sm transition-all ${isActive ? "border-[#6EE76D] bg-[#6EE76D]/12 text-white" : "border-white/10 text-white/70 hover:border-[#6EE76D]/30 hover:text-white"}`}
                     style={{ fontFamily: inter }}
                   >
-                    {formatPlace(place)}
+                    {place}
                   </button>
                 );
               })}
             </div>
-
-            {(selectedPlace === normalizePlace("hřiště") || selectedPlace === "all") && (
-              <div className="mt-4 text-sm text-white/55" style={{ fontFamily: inter }}>
-                Hřiště: <span className="text-white/80">{FIELD_ADDRESS}</span>
-              </div>
-            )}
           </div>
 
           <div className="space-y-8">
@@ -119,9 +130,6 @@ export default function TreninkyPage() {
                           <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {slot.time}</span>
                           <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> {formatPlace(slot.hall)}</span>
                         </div>
-                        {normalizePlace(slot.hall) === normalizePlace("hřiště") && (
-                          <div className="text-xs text-white/45 mt-1" style={{ fontFamily: inter }}>{FIELD_ADDRESS}</div>
-                        )}
                         {slot.season && (
                           <div className="mt-2">
                             <span className="inline-flex rounded-full border border-[#6EE76D]/20 bg-[#6EE76D]/8 px-2.5 py-1 text-[11px] text-white/75" style={{ fontFamily: inter }}>
