@@ -399,7 +399,7 @@ export default function DruzstvoDetail() {
                     <div className="flex items-center">
                       <div>
                         <div className="text-white/45 text-sm md:hidden mb-1" style={{ fontFamily: inter }}>Akce</div>
-                        <div className="text-white/75 text-base whitespace-pre-line" style={{ fontFamily: inter }}>{event.title}</div>
+                        <div className="text-white text-base whitespace-pre-line" style={{ fontFamily: inter }}>{event.title}</div>
                       </div>
                     </div>
 
