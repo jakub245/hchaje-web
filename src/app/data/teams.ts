@@ -39,6 +39,7 @@ export interface Team {
 }
 
 import miniPhoto from "../../imports/mini2025.jpg";
+import pripravkaPhoto from "../../imports/pripravka.png";
 
 export const TEAMS: Team[] = [
   {
@@ -182,19 +183,33 @@ export const TEAMS: Team[] = [
     shortName: "Přípravka",
     desc: "Sportovní kroužek pro děvčata 6–8 let.",
     longDesc: "Přípravka je určená pro úplné začátečnice. Formou hry a pohybových aktivit se děvčata učí základům házené i obecné sportovní přípravě. Cílem je hlavně radost z pohybu a kamarádství.",
-    img: "https://images.unsplash.com/photo-1606519740551-1fa9e7c68a02?w=800",
+    img: pripravkaPhoto,
     coach: "Markéta Tichá",
-    playerCount: 25,
+    playerCount: 18,
     ageRange: "6–8 let",
     trainings: [
       { day: "Pondělí", time: "15:00 – 16:00", hall: "Sportovní hala Háje" },
       { day: "Pátek", time: "15:00 – 16:00", hall: "Sportovní hala Háje" },
     ],
     players: [
-      { name: "Nikolka Hrubá", position: "Hráčka" },
-      { name: "Zuzanka Vlčková", position: "Hráčka" },
-      { name: "Johanka Němcová", position: "Hráčka" },
-      { name: "Andělka Sýkorová", position: "Hráčka" },
+      { name: "Bachynská Viktorie", position: "2018" },
+      { name: "Barroso Lilien", position: "2018" },
+      { name: "Fuchsová Diana Patricie", position: "2017" },
+      { name: "Hromasová Bára", position: "2018" },
+      { name: "Jakýmová Melisa", position: "2018" },
+      { name: "Kiszová Veronika", position: "2018" },
+      { name: "Krupková Magdaléna", position: "2018" },
+      { name: "Macečková Sofie", position: "2018" },
+      { name: "Machová Anežka", position: "2017" },
+      { name: "Málková Anežka", position: "2018" },
+      { name: "Málková Štěpánka", position: "2018" },
+      { name: "Marušková Magdaléna", position: "2018" },
+      { name: "Mrázová Adéla", position: "2018" },
+      { name: "Mrázová Amálie", position: "2018" },
+      { name: "Paulínová Adina", position: "2018" },
+      { name: "Petníková Julie", position: "2018" },
+      { name: "Šimonová Vanda", position: "2018" },
+      { name: "Zemanová Justyna", position: "2018" },
     ],
     news: [
       { date: "7. 4. 2026", title: "Přípravka — nábor nových holčiček!" },
