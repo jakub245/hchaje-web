@@ -1,4 +1,4 @@
-import { Phone, Mail, MapPin, Clock, Instagram, ArrowUpRight } from "lucide-react";
+import { Phone, Mail, MapPin, Clock, Instagram, Facebook, ArrowUpRight } from "lucide-react";
 import {
   PageHero,
   Btn,
@@ -11,6 +11,8 @@ import {
   CONTACT_ADDRESS_TITLE,
   CONTACT_ADDRESS,
   MAP_URL,
+  FACEBOOK_URL,
+  INSTAGRAM_URL,
 } from "../components/shared";
 
 export default function KontaktyPage() {
@@ -71,8 +73,11 @@ export default function KontaktyPage() {
               </div>
 
               <div className="flex gap-3">
-                <a href="#" className="w-10 h-10 rounded-full border border-[#6EE76D]/15 flex items-center justify-center text-white/35 hover:text-[#6EE76D] hover:border-[#6EE76D]/30 transition-all">
+                <a href={INSTAGRAM_URL} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full border border-[#6EE76D]/15 flex items-center justify-center text-white/35 hover:text-[#6EE76D] hover:border-[#6EE76D]/30 transition-all">
                   <Instagram className="w-5 h-5" />
+                </a>
+                <a href={FACEBOOK_URL} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full border border-[#6EE76D]/15 flex items-center justify-center text-white/35 hover:text-[#6EE76D] hover:border-[#6EE76D]/30 transition-all">
+                  <Facebook className="w-5 h-5" />
                 </a>
               </div>
             </div>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router";
 import {
-  Menu, X, Phone, Mail, MapPin, Instagram, Activity, ArrowRight,
+  Menu, X, Phone, Mail, MapPin, Instagram, Activity, ArrowRight, Facebook,
 } from "lucide-react";
 import logoSvg from "../../imports/hc-haje-nove.svg";
 
@@ -15,6 +15,8 @@ export const CONTACT_EMAIL = "vybor@hchaje.cz";
 export const CONTACT_ADDRESS_TITLE = "Areál TJ Háje";
 export const CONTACT_ADDRESS = "K Jezeru, Praha 4";
 export const MAP_URL = "https://www.google.com/maps?q=50.0365389,14.5359419";
+export const FACEBOOK_URL = "https://www.facebook.com/hchajeprahacze/photos/?ref=page_internal";
+export const INSTAGRAM_URL = "https://www.instagram.com/hchajeprahacze";
 
 const NAV = [
   { label: "Aktuality", to: "/aktuality" },
@@ -157,8 +159,11 @@ export function Footer() {
           <div>
             <h4 className="text-white mb-4 uppercase tracking-wider" style={{ fontFamily: bebas }}>Sociální sítě</h4>
             <div className="flex gap-3">
-              <a href="#" className="w-10 h-10 rounded-full border border-[#6EE76D]/15 flex items-center justify-center text-white/35 hover:text-[#6EE76D] hover:border-[#6EE76D]/30 transition-all">
+              <a href={INSTAGRAM_URL} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full border border-[#6EE76D]/15 flex items-center justify-center text-white/35 hover:text-[#6EE76D] hover:border-[#6EE76D]/30 transition-all">
                 <Instagram className="w-5 h-5" />
+              </a>
+              <a href={FACEBOOK_URL} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full border border-[#6EE76D]/15 flex items-center justify-center text-white/35 hover:text-[#6EE76D] hover:border-[#6EE76D]/30 transition-all">
+                <Facebook className="w-5 h-5" />
               </a>
             </div>
           </div>
