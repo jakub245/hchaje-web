@@ -351,7 +351,7 @@ function NewsAndTrainings() {
                       </div>
                     </div>
 
-                    <ArrowRight className="w-5 h-5 text-white/15 group-hover:text-[#6EE76D] group-hover:translate-x-0.5 transition-all flex-shrink-0" />
+                    <ArrowRight className="w-5 h-5 text-[#8F988F] group-hover:text-[#6EE76D] group-hover:translate-x-0.5 transition-all flex-shrink-0" />
                   </div>
                 </Link>
               ))}
@@ -379,7 +379,7 @@ function NewsAndTrainings() {
                       <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5 text-[#6EE76D]" /> {t.time}</span>
                     </div>
                   </div>
-                  <ArrowRight className="w-5 h-5 text-white/15 group-hover:text-[#6EE76D] group-hover:translate-x-0.5 transition-all flex-shrink-0" />
+                  <ArrowRight className="w-5 h-5 text-[#8F988F] group-hover:text-[#6EE76D] group-hover:translate-x-0.5 transition-all flex-shrink-0" />
                 </Link>
               ))}
             </div>

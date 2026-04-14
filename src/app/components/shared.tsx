@@ -121,8 +121,8 @@ export function NewsCard({
       )}
 
       <div className="mt-4 inline-flex items-center gap-1.5 text-sm" style={{ fontFamily: inter }}>
-        <ArrowRight className="w-4 h-4 text-white/45 group-hover:text-[#6EE76D] group-hover:translate-x-0.5 transition-all" />
-        <span className="text-white/45 underline-offset-4 group-hover:text-[#6EE76D] group-hover:underline">Zobrazit detail</span>
+        <ArrowRight className="w-4 h-4 text-[#8F988F] group-hover:text-[#6EE76D] group-hover:translate-x-0.5 transition-all" />
+        <span className="text-[#8F988F] underline-offset-4 group-hover:text-[#6EE76D] group-hover:underline">Zobrazit detail</span>
       </div>
     </Link>
   );

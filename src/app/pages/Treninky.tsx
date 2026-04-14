@@ -147,7 +147,7 @@ export default function TreninkyPage() {
                           <span className="text-white truncate">{formatPlace(slot.hall)}</span>
                         </div>
 
-                        <div className="flex items-center justify-end text-white/45 group-hover:text-[#6EE76D] group-hover:translate-x-1 transition-all">
+                        <div className="flex items-center justify-end text-[#8F988F] group-hover:text-[#6EE76D] group-hover:translate-x-1 transition-all">
                           <ArrowRight className="w-5 h-5" />
                         </div>
                       </div>
