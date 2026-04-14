@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { Clock, Calendar, MapPin, Users, Trophy } from "lucide-react";
 import { PageHero, CtaStrip, bebas, inter } from "../components/shared";
 import { TEAMS } from "../data/teams";
