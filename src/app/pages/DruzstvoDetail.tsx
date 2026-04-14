@@ -313,7 +313,7 @@ export default function DruzstvoDetail() {
             <div className="space-y-10">
               {trainingBlocks.map((block) => (
                 <div key={block.title}>
-                  <h3 className="text-2xl text-white mb-4" style={{ fontFamily: bebas }}>{block.title}</h3>
+                  <h3 className="text-xl text-white/45 mb-4 normal-case" style={{ fontFamily: inter }}>{block.title}</h3>
                   <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                     {block.items.map((item) => (
                       <div key={item.day + item.time} className="rounded-3xl border border-[#6EE76D]/8 bg-[#0e160e] p-6">
