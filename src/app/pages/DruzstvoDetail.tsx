@@ -87,17 +87,26 @@ export default function DruzstvoDetail() {
   };
 
   const getTeamPhoto = (name: string) => {
-    const normalizedName = normalizeText(name);
-    const surname = normalizeText(name.split(" ")[0] || "");
     const currentTeamSlug = normalizeText(team.slug);
+    const normalizedName = normalizeText(name);
+    const parts = name.split(/\s+/).map(normalizeText).filter(Boolean);
+    const reversedName = [...parts].reverse().join("");
 
-    for (const [path, url] of Object.entries(teamPlayerPhotos)) {
-      const normalizedPath = normalizeText(path);
-      if (!normalizedPath.includes(currentTeamSlug)) continue;
-      if (normalizedPath.includes(normalizedName) || normalizedPath.includes(surname)) {
-        return url;
-      }
-    }
+    const candidates = Object.entries(teamPlayerPhotos)
+      .filter(([path]) => normalizeText(path).includes(currentTeamSlug))
+      .map(([path, url]) => {
+        const fileName = path.split("/").pop()?.replace(/\.(jpg|jpeg|png)$/i, "") || "";
+        return { baseName: normalizeText(fileName), url };
+      });
+
+    const exactMatch = candidates.find(
+      (candidate) => candidate.baseName === normalizedName || candidate.baseName === reversedName
+    );
+    if (exactMatch) return exactMatch.url;
+
+    const surname = parts[0] || "";
+    const surnameMatches = candidates.filter((candidate) => candidate.baseName.startsWith(surname));
+    if (surnameMatches.length === 1) return surnameMatches[0].url;
 
     return "";
   };
@@ -444,10 +453,10 @@ export default function DruzstvoDetail() {
 
           {isKidsTeam ? (
             <div ref={playersScrollRef} className="flex gap-4 overflow-x-auto pb-4 scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              {team.players.map((p, i) => {
+              {team.players.map((p) => {
                 const photo = getTeamPhoto(p.name);
                 return (
-                  <div key={i} className="min-w-[16rem] md:min-w-[calc((100%-1rem)/2)] lg:min-w-[calc((100%-2rem)/3)] xl:min-w-[calc((100%-3rem)/4)] flex-shrink-0 h-[21rem] rounded-3xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/20 transition-all p-6 flex flex-col items-center justify-center text-center">
+                  <div key={p.name} className="min-w-[16rem] md:min-w-[calc((100%-1rem)/2)] lg:min-w-[calc((100%-2rem)/3)] xl:min-w-[calc((100%-3rem)/4)] flex-shrink-0 h-[21rem] rounded-3xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/20 transition-all p-6 flex flex-col items-center justify-center text-center">
                     <div className="w-24 h-24 rounded-full overflow-hidden bg-[#6EE76D]/10 border border-[#6EE76D]/20 flex items-center justify-center mb-5">
                       {photo ? (
                         <ImageWithFallback src={photo} alt={p.name} className="w-full h-full object-cover" />
