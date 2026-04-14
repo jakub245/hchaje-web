@@ -81,9 +81,9 @@ export default function DruzstvoDetail() {
               <button
                 key={s.id}
                 onClick={() => scrollTo(s.id)}
-                className={`px-5 py-3 uppercase tracking-wider text-[17px] transition-all whitespace-nowrap cursor-pointer rounded-full ${
+                className={`px-5 py-3 uppercase tracking-wider text-[17px] transition-all whitespace-nowrap cursor-pointer relative ${
                   active === s.id
-                    ? "text-[#6EE76D] border-b-[3px] border-[#6EE76D]"
+                    ? "text-[#6EE76D] after:content-[''] after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:bg-[#6EE76D] after:rounded-full"
                     : "text-white/45 hover:text-white"
                 }`}
                 style={{ fontFamily: bebas, letterSpacing: "0.1em" }}
