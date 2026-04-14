@@ -88,7 +88,7 @@ export function NewsCard({
         )}
       </div>
 
-      <h3 className="text-white text-[16px] leading-tight group-hover:text-[#6EE76D] transition-colors" style={{ fontFamily: inter }}>
+      <h3 className="text-white text-[16px] leading-tight" style={{ fontFamily: inter }}>
         {article.title}
       </h3>
 
@@ -107,9 +107,9 @@ export function NewsCard({
         </p>
       )}
 
-      <div className="mt-4 inline-flex items-center gap-1.5 text-sm text-[#6EE76D] group-hover:translate-x-0.5 transition-all" style={{ fontFamily: inter }}>
-        <span>Zobrazit celou aktualitu</span>
-        <ChevronRight className="w-4 h-4" />
+      <div className="mt-4 inline-flex items-center gap-1.5 text-sm" style={{ fontFamily: inter }}>
+        <ChevronRight className="w-4 h-4 text-[#6EE76D]" />
+        <span className="text-white/45 underline-offset-4 group-hover:underline">Zobrazit detail</span>
       </div>
     </Link>
   );
