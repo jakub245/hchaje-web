@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router";
-import { Clock, MapPin, Users, Trophy } from "lucide-react";
+import { ArrowRight, Clock, MapPin } from "lucide-react";
 import { PageHero, CtaStrip, bebas, inter } from "../components/shared";
 import { TEAMS } from "../data/teams";
 
@@ -119,24 +119,35 @@ export default function TreninkyPage() {
                     <Link
                       key={slot.slug + slot.day + slot.time + slot.hall + (slot.season ?? "")}
                       to={`/druzstva/${slot.slug}`}
-                      className="flex items-center gap-4 p-4 rounded-2xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/20 hover:bg-[#111c11] transition-all"
+                      className="group rounded-2xl bg-[#0e160e] border border-[#6EE76D]/8 px-4 py-4 hover:border-[#6EE76D]/20 hover:bg-[#111c11] transition-all"
                     >
-                      <div className="w-10 h-10 rounded-full bg-[#6EE76D]/10 flex items-center justify-center flex-shrink-0">
-                        {slot.slug === "zeny" ? <Trophy className="w-5 h-5 text-[#6EE76D]" /> : <Users className="w-5 h-5 text-[#6EE76D]" />}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <span className="text-white" style={{ fontFamily: inter }}>{slot.team}</span>
-                        <div className="flex flex-wrap items-center gap-3 text-sm text-white/45 mt-0.5">
-                          <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> {slot.time}</span>
-                          <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> {formatPlace(slot.hall)}</span>
+                      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:gap-6">
+                        <div className="min-w-0 lg:w-[240px] xl:w-[280px]">
+                          <div className="text-white" style={{ fontFamily: inter }}>{slot.team}</div>
+                          {slot.season && (
+                            <div className="mt-2">
+                              <span className="inline-flex rounded-full border border-[#6EE76D]/20 bg-[#6EE76D]/8 px-2.5 py-1 text-[11px] text-white/75" style={{ fontFamily: inter }}>
+                                {slot.season}
+                              </span>
+                            </div>
+                          )}
                         </div>
-                        {slot.season && (
-                          <div className="mt-2">
-                            <span className="inline-flex rounded-full border border-[#6EE76D]/20 bg-[#6EE76D]/8 px-2.5 py-1 text-[11px] text-white/75" style={{ fontFamily: inter }}>
-                              {slot.season}
-                            </span>
+
+                        <div className="flex-1 flex flex-col gap-2 md:flex-row md:flex-wrap md:items-center md:gap-6 min-w-0">
+                          <div className="flex items-center gap-2 text-sm min-w-0 text-white" style={{ fontFamily: inter }}>
+                            <Clock className="w-4 h-4 text-[#6EE76D] flex-shrink-0" />
+                            <span className="text-white">{slot.time}</span>
                           </div>
-                        )}
+
+                          <div className="flex items-center gap-2 text-sm min-w-0 text-white" style={{ fontFamily: inter }}>
+                            <MapPin className="w-4 h-4 text-[#6EE76D] flex-shrink-0" />
+                            <span className="text-white">{formatPlace(slot.hall)}</span>
+                          </div>
+                        </div>
+
+                        <div className="hidden lg:flex items-center justify-end text-white/45 group-hover:text-[#6EE76D] transition-colors">
+                          <ArrowRight className="w-5 h-5" />
+                        </div>
                       </div>
                     </Link>
                   ))}
