@@ -1,13 +1,15 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, Link, Navigate } from "react-router";
 import {
-  ArrowLeft, Clock, MapPin, Calendar, Users, User, Newspaper, ChevronLeft, ChevronRight,
+  ArrowLeft,
+  Calendar,
+  Users,
+  User,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
-import { Btn, bebas, inter, CtaStrip } from "../components/shared";
+import { bebas, inter, CtaStrip } from "../components/shared";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
-import akceMini from "../../imports/akce-mini.png";
-import treninkyMini from "../../imports/treninky-mini.png";
-import treneriMini from "../../imports/treneri-mini.png";
 import { getTeamBySlug, TEAMS } from "../data/teams";
 
 const SECTIONS = [
@@ -15,8 +17,16 @@ const SECTIONS = [
   { id: "treninky", label: "Tréninky" },
   { id: "akce", label: "Akce" },
   { id: "hracky", label: "Hráčky" },
+  { id: "treneri", label: "Trenéři" },
   { id: "aktuality", label: "Aktuality" },
 ];
+
+const normalizeText = (value: string) =>
+  value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]/g, "");
 
 export default function DruzstvoDetail() {
   const { slug } = useParams();
@@ -24,6 +34,9 @@ export default function DruzstvoDetail() {
   const [active, setActive] = useState("prehled");
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
   const playersScrollRef = useRef<HTMLDivElement | null>(null);
+  const newsScrollRef = useRef<HTMLDivElement | null>(null);
+
+  const miniPlayerPhotos = import.meta.glob("../../imports/foto/mini-zakyne/*.{jpg,jpeg,png}", { eager: true, as: "url" }) as Record<string, string>;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -59,14 +72,82 @@ export default function DruzstvoDetail() {
   const isMiniTeam = team.slug === "mini-zakyne";
 
   const scrollPlayers = (direction: number) => {
-    playersScrollRef.current?.scrollBy({ left: direction * 360, behavior: "smooth" });
+    playersScrollRef.current?.scrollBy({ left: direction * 900, behavior: "smooth" });
+  };
+
+  const scrollNews = (direction: number) => {
+    newsScrollRef.current?.scrollBy({ left: direction * 900, behavior: "smooth" });
+  };
+
+  const getMiniPhoto = (name: string) => {
+    const normalizedName = normalizeText(name);
+    const surname = normalizeText(name.split(" ")[0] || "");
+
+    for (const [path, url] of Object.entries(miniPlayerPhotos)) {
+      const normalizedPath = normalizeText(path);
+      if (normalizedPath.includes(normalizedName) || normalizedPath.includes(surname)) {
+        return url;
+      }
+    }
+
+    return "";
   };
 
   const newsSorted = [...team.news].sort((a, b) => parseCzDate(b.date) - parseCzDate(a.date));
 
+  const displayedEvents = isMiniTeam
+    ? [
+        { date: "18.04.2026", title: "Turnaj 6+1", location: "hala ZŠ a MŠ Chýně" },
+        { date: "25.04.2026", title: "Turnaj 4+1", location: "hala Kobylisy" },
+        { date: "02.05.2026", title: "Memoriál Karla Šulce 4+1", location: "Plzeň" },
+        { date: "08.05.2026\naž\n10.05.2026", title: "MEMORIÁL KARLA ŠULCE 2026", location: "Plzeň" },
+      ]
+    : (team.events ?? []).map((event) => ({
+        date: event.date,
+        title: event.title,
+        location: event.location,
+      }));
+
+  const displayedStaff = isMiniTeam
+    ? [
+        { name: "Petr Zálešák", phone: "777 721 282", email: "minihchaje@gmail.com" },
+        { name: "Kateřina Bláhová", phone: "608 981 667", email: "minihchaje@gmail.com" },
+        { name: "Veronika Zálešáková", phone: "", email: "" },
+        { name: "Barbora Bláhová", phone: "", email: "" },
+      ]
+    : [
+        { name: team.coach, phone: "", email: "" },
+        ...(team.assistantCoach ? [{ name: team.assistantCoach, phone: "", email: "" }] : []),
+      ];
+
+  const displayedNews = isMiniTeam
+    ? [
+        {
+          title: "5+1 v Heroldových sadech",
+          date: "03.03.2025",
+          excerpt:
+            "Druhá polovina sezóny je tu a naše MINI se dnes zúčastnily svazového turnaje 5+1 v hale Sokol Vršovice. Za skvělé podpory našich fanoušků se hájecké bojovnice utkaly s týmy Kobylek, Slávie, Vršovic, Chodova a Dukly. Hrály s nadšením a zápas od zápasu...",
+        },
+        {
+          title: "Mladší dorostenky dnes přivezly důležité 2 body z Českých Budějovic.",
+          date: "15.02.2025",
+          excerpt:
+            "INFARKTOVÝ ZÁPAS, ALE NAŠE BABY TO DOTÁHLY DO VÍTĚZNÉHO KONCE! Tohle nebyl zápas pro slabé povahy. Kdo neměl nervy z ocele, ten si je dneska solidně pocuchal. Od první minuty se jelo bomby – jeden gól tam, druhý zpátky, fauly, drama, emoce až do nebes...",
+        },
+        {
+          title: "Dvojitá porce házené pro naše mladší žákyně!",
+          date: "09.02.2025",
+          excerpt:
+            "V pátek si holky zahrály hned dva přátelské zápasy – nejprve proti TJ Sokol Vršovice a poté proti TJ Chodov. První utkání bylo opatrné, jako by holky na hřišti teprve hledaly jistotu. Přihrávky občas postrádaly přesnost a chyběla dravost v obraně, ale...",
+        },
+      ]
+    : newsSorted.map((item) => ({
+        ...item,
+        excerpt: "Nejnovější aktualita z týmu.",
+      }));
+
   return (
     <>
-      {/* Hero */}
       <section className="relative pt-24 pb-10 lg:pt-32 lg:pb-14">
         <div className="absolute inset-0">
           <ImageWithFallback src={team.img} alt={team.name} className="w-full h-full object-cover" />
@@ -91,10 +172,9 @@ export default function DruzstvoDetail() {
         </div>
       </section>
 
-      {/* Sticky submenu */}
       <div className="sticky top-16 lg:top-20 z-40 bg-[#080C08]/95 backdrop-blur-md border-b border-[#6EE76D]/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex gap-1 overflow-x-auto py-1" style={{ scrollbarWidth: "none" }}>
+          <div className="flex gap-1 overflow-x-auto py-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {SECTIONS.map((s) => (
               <button
                 key={s.id}
@@ -113,7 +193,6 @@ export default function DruzstvoDetail() {
         </div>
       </div>
 
-      {/* ── PŘEHLED ── */}
       <section id="prehled" ref={(el) => { sectionRefs.current["prehled"] = el; }} className="py-16 lg:py-20 scroll-mt-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-start">
@@ -154,61 +233,99 @@ export default function DruzstvoDetail() {
         </div>
       </section>
 
-      {isMiniTeam && (
-        <section className="py-8 lg:py-10">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-              {[
-                { src: akceMini, title: "Akce", subtitle: "Kalendář mini akcí a turnajů." },
-                { src: treninkyMini, title: "Tréninky", subtitle: "Rozvrh a program tréninků." },
-                { src: treneriMini, title: "Trenéři", subtitle: "Kdo vede tým mini žákyň." },
-              ].map((item) => (
-                <div key={item.title} className="rounded-3xl overflow-hidden border border-[#6EE76D]/10 bg-[#0e160e] shadow-black/20 shadow-sm">
-                  <ImageWithFallback src={item.src} alt={item.title} className="w-full h-48 object-cover" />
-                  <div className="p-5">
-                    <div className="text-sm uppercase tracking-[0.2em] text-[#6EE76D]" style={{ fontFamily: bebas }}>{item.title}</div>
-                    <p className="mt-3 text-white/70 text-sm" style={{ fontFamily: inter }}>{item.subtitle}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* ── TRÉNINKY ── */}
       <section id="treninky" ref={(el) => { sectionRefs.current["treninky"] = el; }} className="py-16 lg:py-20 bg-[#0e160e]/30 scroll-mt-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <span className="text-[#6EE76D] text-sm tracking-[0.2em] uppercase mb-3 block" style={{ fontFamily: bebas }}>Rozvrh</span>
           <h2 className="text-3xl lg:text-4xl text-white uppercase mb-8" style={{ fontFamily: bebas }}>Tréninky</h2>
 
-          <div className={isMiniTeam ? "space-y-4" : "flex gap-4 overflow-x-auto pb-1"} style={isMiniTeam ? undefined : { scrollbarWidth: "none" }}>
-            {team.trainings.map((t, i) => (
-              <div key={i} className={`p-5 rounded-3xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/20 transition-all ${isMiniTeam ? "w-full" : "min-w-[18rem] flex-shrink-0"}`}>
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="w-12 h-12 rounded-2xl bg-[#6EE76D]/10 flex items-center justify-center">
-                    <Calendar className="w-5 h-5 text-[#6EE76D]" />
-                  </div>
-                  <div>
-                    <div className="text-sm uppercase tracking-[0.2em] text-white/40" style={{ fontFamily: bebas }}>Trénink</div>
-                    <div className="text-white/70 text-sm mt-1">{t.hall}</div>
-                  </div>
+          {isMiniTeam ? (
+            <div className="space-y-10">
+              <div>
+                <h3 className="text-2xl text-white mb-4" style={{ fontFamily: bebas }}>Tréninky září, květen - červen</h3>
+                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                  {[
+                    { day: "pondělí", time: "17:00 - 18:30", place: "hala TJ JM Chodov" },
+                    { day: "úterý", time: "16:30 - 18:00", place: "hřiště" },
+                    { day: "čtvrtek", time: "16:30 - 18:00", place: "hřiště" },
+                  ].map((item) => (
+                    <div key={item.day} className="rounded-3xl border border-[#6EE76D]/8 bg-[#0e160e] p-6">
+                      <div className="flex items-center gap-3 mb-5">
+                        <div className="w-12 h-12 rounded-2xl bg-[#6EE76D]/10 flex items-center justify-center">
+                          <Calendar className="w-5 h-5 text-[#6EE76D]" />
+                        </div>
+                        <div>
+                          <div className="text-white/35 text-sm uppercase tracking-[0.2em]" style={{ fontFamily: bebas }}>Den</div>
+                          <div className="text-white text-xl" style={{ fontFamily: bebas }}>{item.day}</div>
+                        </div>
+                      </div>
+                      <div className="space-y-2 text-sm" style={{ fontFamily: inter }}>
+                        <div className="text-white/40">Čas</div>
+                        <div className="text-white/80">{item.time}</div>
+                        <div className="text-white/40 pt-2">Místo</div>
+                        <div className="text-white/80">{item.place}</div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                <div className="text-2xl text-white" style={{ fontFamily: bebas }}>{t.day}</div>
-                <div className="text-white/40 mt-1">{t.time}</div>
               </div>
-            ))}
-          </div>
+
+              <div>
+                <h3 className="text-2xl text-white mb-4" style={{ fontFamily: bebas }}>Tréninky říjen - duben</h3>
+                <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+                  {[
+                    { day: "pondělí", time: "17:00 - 18:30", place: "hala TJ JM Chodov" },
+                    { day: "úterý", time: "17:15 - 18:45", place: "tělocvična ZŠ K Milíčovu" },
+                    { day: "čtvrtek", time: "16:30 - 18:00", place: "tělocvična ZŠ Mendelova" },
+                  ].map((item) => (
+                    <div key={item.day + item.time} className="rounded-3xl border border-[#6EE76D]/8 bg-[#0e160e] p-6">
+                      <div className="flex items-center gap-3 mb-5">
+                        <div className="w-12 h-12 rounded-2xl bg-[#6EE76D]/10 flex items-center justify-center">
+                          <Calendar className="w-5 h-5 text-[#6EE76D]" />
+                        </div>
+                        <div>
+                          <div className="text-white/35 text-sm uppercase tracking-[0.2em]" style={{ fontFamily: bebas }}>Den</div>
+                          <div className="text-white text-xl" style={{ fontFamily: bebas }}>{item.day}</div>
+                        </div>
+                      </div>
+                      <div className="space-y-2 text-sm" style={{ fontFamily: inter }}>
+                        <div className="text-white/40">Čas</div>
+                        <div className="text-white/80">{item.time}</div>
+                        <div className="text-white/40 pt-2">Místo</div>
+                        <div className="text-white/80">{item.place}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="flex gap-4 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {team.trainings.map((t, i) => (
+                <div key={i} className="min-w-[18rem] flex-shrink-0 p-5 rounded-3xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/20 transition-all">
+                  <div className="flex items-center gap-4 mb-4">
+                    <div className="w-12 h-12 rounded-2xl bg-[#6EE76D]/10 flex items-center justify-center">
+                      <Calendar className="w-5 h-5 text-[#6EE76D]" />
+                    </div>
+                    <div>
+                      <div className="text-sm uppercase tracking-[0.2em] text-white/40" style={{ fontFamily: bebas }}>Trénink</div>
+                      <div className="text-white/70 text-sm mt-1">{t.hall}</div>
+                    </div>
+                  </div>
+                  <div className="text-2xl text-white" style={{ fontFamily: bebas }}>{t.day}</div>
+                  <div className="text-white/40 mt-1">{t.time}</div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
-      {/* ── AKCE ── */}
       <section id="akce" ref={(el) => { sectionRefs.current["akce"] = el; }} className="py-16 lg:py-20 scroll-mt-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <span className="text-[#6EE76D] text-sm tracking-[0.2em] uppercase mb-3 block" style={{ fontFamily: bebas }}>Kalendář</span>
           <h2 className="text-3xl lg:text-4xl text-white uppercase mb-8" style={{ fontFamily: bebas }}>Akce</h2>
 
-          {team.events?.length ? (
+          {displayedEvents.length ? (
             <div className="overflow-x-auto rounded-3xl border border-[#6EE76D]/8 bg-[#0a110a] shadow-lg shadow-black/20">
               <table className="min-w-full border-separate border-spacing-0">
                 <thead>
@@ -219,11 +336,11 @@ export default function DruzstvoDetail() {
                   </tr>
                 </thead>
                 <tbody>
-                  {team.events.map((event, i) => (
+                  {displayedEvents.map((event, i) => (
                     <tr key={i} className={`border-t border-white/10 ${i % 2 === 0 ? "bg-[#0e160e]/80" : "bg-[#0e160e]/60"}`}>
-                      <td className="px-6 py-4 text-white/70" style={{ fontFamily: inter }}>{event.date}</td>
-                      <td className="px-6 py-4 text-white" style={{ fontFamily: inter }}>{event.title}</td>
-                      <td className="px-6 py-4 text-white/60" style={{ fontFamily: inter }}>{event.location}</td>
+                      <td className="px-6 py-4 text-white/70 whitespace-pre-line align-top" style={{ fontFamily: inter }}>{event.date}</td>
+                      <td className="px-6 py-4 text-white whitespace-pre-line align-top" style={{ fontFamily: inter }}>{event.title}</td>
+                      <td className="px-6 py-4 text-white/60 whitespace-pre-line align-top" style={{ fontFamily: inter }}>{event.location}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -237,15 +354,15 @@ export default function DruzstvoDetail() {
         </div>
       </section>
 
-      {/* ── HRÁČKY ── */}
       <section id="hracky" ref={(el) => { sectionRefs.current["hracky"] = el; }} className="py-16 lg:py-20 scroll-mt-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <span className="text-[#6EE76D] text-sm tracking-[0.2em] uppercase mb-3 block" style={{ fontFamily: bebas }}>Soupiska</span>
-          <h2 className="text-3xl lg:text-4xl text-white uppercase mb-8" style={{ fontFamily: bebas }}>Hráčky</h2>
-
-          {isMiniTeam ? (
-            <div className="relative">
-              <div className="absolute right-0 top-0 flex gap-2 z-10">
+          <div className="flex items-end justify-between gap-4 mb-8">
+            <div>
+              <span className="text-[#6EE76D] text-sm tracking-[0.2em] uppercase mb-3 block" style={{ fontFamily: bebas }}>Soupiska</span>
+              <h2 className="text-3xl lg:text-4xl text-white uppercase" style={{ fontFamily: bebas }}>Hráčky</h2>
+            </div>
+            {isMiniTeam && (
+              <div className="flex gap-2">
                 <button
                   onClick={() => scrollPlayers(-1)}
                   className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#0e160e]/90 border border-[#6EE76D]/15 text-white/70 hover:text-white transition"
@@ -261,24 +378,28 @@ export default function DruzstvoDetail() {
                   <ChevronRight className="w-5 h-5" />
                 </button>
               </div>
+            )}
+          </div>
 
-              <div ref={playersScrollRef} className="flex gap-4 overflow-x-auto pb-4 scroll-smooth">
-                {team.players.map((p, i) => (
-                  <div key={i} className="min-w-[18rem] flex-shrink-0 flex items-center gap-4 p-4 rounded-2xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/20 transition-all">
-                    <div className="w-12 h-12 rounded-full bg-[#6EE76D]/10 flex items-center justify-center flex-shrink-0">
-                      {p.number ? (
-                        <span className="text-[#6EE76D] text-lg" style={{ fontFamily: bebas }}>{p.number}</span>
+          {isMiniTeam ? (
+            <div ref={playersScrollRef} className="flex gap-4 overflow-x-auto pb-4 scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {team.players.map((p, i) => {
+                const photo = getMiniPhoto(p.name);
+                return (
+                  <div key={i} className="min-w-[16rem] md:min-w-[calc((100%-1rem)/2)] lg:min-w-[calc((100%-2rem)/3)] xl:min-w-[calc((100%-3rem)/4)] flex-shrink-0 h-[21rem] rounded-3xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/20 transition-all p-6 flex flex-col items-center justify-center text-center">
+                    <div className="w-24 h-24 rounded-full overflow-hidden bg-[#6EE76D]/10 border border-[#6EE76D]/20 flex items-center justify-center mb-5">
+                      {photo ? (
+                        <ImageWithFallback src={photo} alt={p.name} className="w-full h-full object-cover" />
                       ) : (
-                        <Users className="w-5 h-5 text-[#6EE76D]" />
+                        <Users className="w-8 h-8 text-[#6EE76D]" />
                       )}
                     </div>
-                    <div>
-                      <div className="text-white" style={{ fontFamily: inter }}>{p.name}</div>
-                      <div className="text-white/35 text-sm" style={{ fontFamily: inter }}>Ročník {p.position}</div>
-                    </div>
+                    <div className="text-white text-lg" style={{ fontFamily: inter }}>{p.name}</div>
+                    <div className="text-white/45 text-sm mt-2" style={{ fontFamily: inter }}>Ročník {p.position}</div>
+                    <div className="text-[#6EE76D] text-2xl mt-3" style={{ fontFamily: bebas }}>{p.number}</div>
                   </div>
-                ))}
-              </div>
+                );
+              })}
             </div>
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
@@ -302,15 +423,57 @@ export default function DruzstvoDetail() {
         </div>
       </section>
 
-      {/* ── AKTUALITY ── */}
-      <section id="aktuality" ref={(el) => { sectionRefs.current["aktuality"] = el; }} className="py-16 lg:py-20 bg-[#0e160e]/30 scroll-mt-32">
+      <section id="treneri" ref={(el) => { sectionRefs.current["treneri"] = el; }} className="py-16 lg:py-20 bg-[#0e160e]/30 scroll-mt-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <span className="text-[#6EE76D] text-sm tracking-[0.2em] uppercase mb-3 block" style={{ fontFamily: bebas }}>Novinky</span>
-          <h2 className="text-3xl lg:text-4xl text-white uppercase mb-8" style={{ fontFamily: bebas }}>Aktuality</h2>
+          <span className="text-[#6EE76D] text-sm tracking-[0.2em] uppercase mb-3 block" style={{ fontFamily: bebas }}>Realizační tým</span>
+          <h2 className="text-3xl lg:text-4xl text-white uppercase mb-8" style={{ fontFamily: bebas }}>Trenéři</h2>
 
-          <div className="flex gap-4 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
-            {newsSorted.map((n, i) => (
-              <div key={i} className="min-w-[22rem] flex-shrink-0 p-6 rounded-3xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/25 transition-all group">
+          <div className="overflow-hidden rounded-3xl border border-[#6EE76D]/8 bg-[#0a110a] shadow-lg shadow-black/20">
+            <div className="hidden md:grid grid-cols-[1.4fr_1fr_1.2fr] text-white/40 text-xs uppercase tracking-[0.25em] border-b border-white/10">
+              <div className="px-6 py-4">Jméno</div>
+              <div className="px-6 py-4">Telefon</div>
+              <div className="px-6 py-4">E-mail</div>
+            </div>
+
+            {displayedStaff.map((member, i) => (
+              <div key={member.name} className={`grid md:grid-cols-[1.4fr_1fr_1.2fr] gap-2 md:gap-0 border-t border-white/10 px-6 py-4 ${i === 0 ? "border-t-0" : ""}`}>
+                <div className="text-white" style={{ fontFamily: inter }}>{member.name}</div>
+                <div className="text-white/70" style={{ fontFamily: inter }}>{member.phone || "—"}</div>
+                <div className="text-white/70" style={{ fontFamily: inter }}>{member.email || "—"}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="aktuality" ref={(el) => { sectionRefs.current["aktuality"] = el; }} className="py-16 lg:py-20 scroll-mt-32">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-end justify-between gap-4 mb-8">
+            <div>
+              <span className="text-[#6EE76D] text-sm tracking-[0.2em] uppercase mb-3 block" style={{ fontFamily: bebas }}>Novinky</span>
+              <h2 className="text-3xl lg:text-4xl text-white uppercase" style={{ fontFamily: bebas }}>Aktuality</h2>
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={() => scrollNews(-1)}
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#0e160e]/90 border border-[#6EE76D]/15 text-white/70 hover:text-white transition"
+                aria-label="Posunout aktuality doleva"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button
+                onClick={() => scrollNews(1)}
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#0e160e]/90 border border-[#6EE76D]/15 text-white/70 hover:text-white transition"
+                aria-label="Posunout aktuality doprava"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+
+          <div ref={newsScrollRef} className="flex gap-4 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {displayedNews.map((n, i) => (
+              <div key={i} className="min-w-[20rem] lg:min-w-[calc((100%-2rem)/3)] flex-shrink-0 p-6 rounded-3xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/25 transition-all group">
                 <div className="flex items-center justify-between gap-4">
                   <span className="text-white/35 text-sm" style={{ fontFamily: inter }}>{n.date}</span>
                   {i === 0 && (
@@ -320,8 +483,9 @@ export default function DruzstvoDetail() {
                   )}
                 </div>
                 <h3 className="text-white mt-4 text-xl" style={{ fontFamily: inter }}>{n.title}</h3>
-                <div className="mt-4 text-white/40 text-sm" style={{ fontFamily: inter }}>
-                  Nejnovější aktualita z týmu.
+                <p className="mt-4 text-white/55 text-sm leading-6" style={{ fontFamily: inter }}>{n.excerpt}</p>
+                <div className="mt-5 text-[#6EE76D] text-sm uppercase tracking-[0.18em]" style={{ fontFamily: bebas }}>
+                  Zobrazit celou aktualitu
                 </div>
               </div>
             ))}
@@ -329,7 +493,6 @@ export default function DruzstvoDetail() {
         </div>
       </section>
 
-      {/* Other teams */}
       <section className="py-16 lg:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl text-white uppercase mb-8" style={{ fontFamily: bebas }}>Další družstva</h2>
