@@ -11,7 +11,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import { bebas, inter, CtaStrip, NewsCard } from "../components/shared";
+import { bebas, inter, CtaStrip, NewsCard, nbspShortWords } from "../components/shared";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { getTeamBySlug, TEAMS } from "../data/teams";
 
@@ -248,7 +248,7 @@ export default function DruzstvoDetail() {
             <div>
               <span className="text-[#6EE76D] text-sm tracking-[0.2em] uppercase mb-3 block" style={{ fontFamily: bebas }}>O družstvu</span>
               <h2 className="text-3xl lg:text-4xl text-white uppercase mb-6" style={{ fontFamily: bebas }}>{team.name}</h2>
-              <p className="text-white/50 text-lg mb-6" style={{ fontFamily: inter }}>{team.longDesc}</p>
+              <p className="text-white/50 text-lg mb-6" style={{ fontFamily: inter }}>{nbspShortWords(team.longDesc)}</p>
 
               <div className="grid grid-cols-2 gap-4 mb-8">
                 <div className="mobile-solid-card p-4 rounded-2xl bg-[#101a10] border border-[#6EE76D]/12">
@@ -364,7 +364,7 @@ export default function DruzstvoDetail() {
                     <div className="flex items-center">
                       <div>
                         <div className="text-white/45 text-sm md:hidden mb-1" style={{ fontFamily: inter }}>Akce</div>
-                        <div className="text-white text-base whitespace-pre-line" style={{ fontFamily: inter }}>{event.title}</div>
+                        <div className="text-white text-base whitespace-pre-line" style={{ fontFamily: inter }}>{nbspShortWords(event.title)}</div>
                       </div>
                     </div>
 
@@ -374,7 +374,7 @@ export default function DruzstvoDetail() {
                       </div>
                       <div>
                         <div className="text-white/45 text-sm md:hidden" style={{ fontFamily: inter }}>Místo</div>
-                        <div className="text-white/75 whitespace-pre-line" style={{ fontFamily: inter }}>{event.location}</div>
+                        <div className="text-white/75 whitespace-pre-line" style={{ fontFamily: inter }}>{nbspShortWords(event.location)}</div>
                       </div>
                     </div>
                   </div>

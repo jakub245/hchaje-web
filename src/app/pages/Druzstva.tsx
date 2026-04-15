@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import { ArrowRight, Users } from "lucide-react";
-import { PageHero, bebas, inter } from "../components/shared";
+import { PageHero, bebas, inter, nbspShortWords } from "../components/shared";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { TEAMS } from "../data/teams";
 
@@ -34,7 +34,7 @@ export default function DruzstvaPage() {
                     <div className="w-8 h-8 rounded-full bg-[#6EE76D]/15 flex items-center justify-center">
                       <Users className="w-4 h-4 text-[#6EE76D]" />
                     </div>
-                    <span className="text-white/85 text-sm" style={{ fontFamily: inter }}>{team.ageRange}</span>
+                    <span className="text-white/85 text-sm" style={{ fontFamily: inter }}>{nbspShortWords(team.ageRange)}</span>
                   </div>
                   <h3
                     className="text-2xl lg:text-3xl text-white uppercase group-hover:text-[#6EE76D] transition-colors"
@@ -43,7 +43,7 @@ export default function DruzstvaPage() {
                     {team.name}
                   </h3>
                   <p className="text-white/80 text-sm mt-1 line-clamp-2" style={{ fontFamily: inter }}>
-                    {team.desc}
+                    {nbspShortWords(team.desc)}
                   </p>
                   <div className="mt-3 flex items-center text-[#6EE76D] opacity-0 group-hover:opacity-100 transition-opacity">
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />

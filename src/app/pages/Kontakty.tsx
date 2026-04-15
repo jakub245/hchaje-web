@@ -13,6 +13,7 @@ import {
   MAP_URL,
   FACEBOOK_URL,
   INSTAGRAM_URL,
+  nbspShortWords,
 } from "../components/shared";
 
 export default function KontaktyPage() {
@@ -49,14 +50,14 @@ export default function KontaktyPage() {
                   </div>
                   <div>
                     <p className="text-white/35 text-sm mb-1">Kde nás najdete</p>
-                    <p className="text-white">{CONTACT_ADDRESS_TITLE}</p>
+                    <p className="text-white">{nbspShortWords(CONTACT_ADDRESS_TITLE)}</p>
                     <a
                       href={MAP_URL}
                       target="_blank"
                       rel="noreferrer"
                       className="text-white/50 hover:text-[#6EE76D] transition-colors inline-flex items-center gap-1"
                     >
-                      {CONTACT_ADDRESS} <ArrowUpRight className="w-3.5 h-3.5" />
+                      {nbspShortWords(CONTACT_ADDRESS)} <ArrowUpRight className="w-3.5 h-3.5" />
                     </a>
                     <p className="text-white/35 text-sm mt-1">GPS: 50.0365389N, 14.5359419E</p>
                   </div>
@@ -103,8 +104,7 @@ export default function KontaktyPage() {
               Chci se přijít podívat
             </h2>
             <p className="text-white/45 max-w-xl mx-auto mb-6" style={{ fontFamily: inter }}>
-              První trénink je u nás zdarma a nezávazně. Stačí si vzít sportovní oblečení,
-              sálové boty a dobrou náladu. Těšíme se na tebe!
+              {nbspShortWords("První trénink je u nás zdarma a nezávazně. Stačí si vzít sportovní oblečení, sálové boty a dobrou náladu. Těšíme se na tebe!")}
             </p>
             <Btn variant="primary" to={`mailto:${CONTACT_EMAIL}`} className="px-10 py-4">
               Napište nám <Mail className="w-4 h-4" />

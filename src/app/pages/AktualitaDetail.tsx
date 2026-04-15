@@ -1,6 +1,6 @@
 import { Link, Navigate, useLocation, useParams } from "react-router";
 import { ArrowLeft } from "lucide-react";
-import { bebas, inter } from "../components/shared";
+import { bebas, inter, nbspShortWords } from "../components/shared";
 
 type Article = {
   title: string;
@@ -94,11 +94,11 @@ export default function AktualitaDetail() {
             {article.date}
           </div>
           <h1 className="text-3xl lg:text-5xl text-white uppercase mb-6" style={{ fontFamily: bebas }}>
-            {article.title}
+            {nbspShortWords(article.title)}
           </h1>
           <div className="w-20 h-1 bg-[#6EE76D] rounded-full mb-6" />
           <div className="text-white/75 leading-8 whitespace-pre-line" style={{ fontFamily: inter }}>
-            {article.content || article.excerpt}
+            {nbspShortWords(article.content || article.excerpt || "")}
           </div>
         </div>
       </div>

@@ -26,6 +26,18 @@ const NAV = [
   { label: "Kontakty", to: "/kontakty" },
 ];
 
+export const nbspShortWords = (value: string) =>
+  value.replace(
+    /(^|\s)(a|i|k|o|s|u|v|z|A|I|K|O|S|U|V|Z|na|do|od|po|za|ve|se|ze|ke|ku|Na|Do|Od|Po|Za|Ve|Se|Ze|Ke|Ku)\s+/g,
+    (_, lead, word) => `${lead}${word}\u00A0`,
+  );
+
+const formatCzechTextNode = (node: ReactNode): ReactNode => {
+  if (typeof node === "string") return nbspShortWords(node);
+  if (Array.isArray(node)) return node.map((child) => formatCzechTextNode(child));
+  return node;
+};
+
 /* ── Button ── */
 export function Btn({ children, variant = "primary", className = "", as, to, ...props }: any) {
   const base =
@@ -36,8 +48,11 @@ export function Btn({ children, variant = "primary", className = "", as, to, ...
   const style = { fontFamily: bebas, letterSpacing: "0.08em" };
 
   const content = typeof children === "string"
-    ? children
+    ? nbspShortWords(children)
     : Children.map(children, (child: ReactNode) => {
+        if (typeof child === "string") {
+          return nbspShortWords(child);
+        }
         if (isValidElement(child) && typeof child.type !== "string") {
           const childProps = child.props as { className?: string };
           const iconClass = childProps.className?.includes("w-")
@@ -58,7 +73,7 @@ export function Btn({ children, variant = "primary", className = "", as, to, ...
 export function SectionLabel({ children }: { children: ReactNode }) {
   return (
     <span className="text-[#6EE76D] text-sm tracking-[0.2em] uppercase mb-3 block" style={{ fontFamily: bebas }}>
-      {children}
+      {formatCzechTextNode(children)}
     </span>
   );
 }
@@ -96,13 +111,13 @@ export function NewsCard({
         </span>
         {tag && (
           <span className="px-3.5 py-1 rounded-full bg-[#6EE76D]/10 text-[#6EE76D] text-[12px] tracking-[0.12em]" style={{ fontFamily: bebas }}>
-            {tag}
+            {nbspShortWords(tag)}
           </span>
         )}
       </div>
 
       <h3 className="text-white text-[16px] leading-tight" style={{ fontFamily: inter }}>
-        {article.title}
+        {nbspShortWords(article.title)}
       </h3>
 
       {article.excerpt && (
@@ -306,9 +321,9 @@ export function PageHero({ title, subtitle }: { title: string; subtitle?: string
     <section className="pt-28 pb-12 lg:pt-36 lg:pb-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h1 className="text-5xl lg:text-7xl text-white uppercase" style={{ fontFamily: bebas, lineHeight: 1 }}>
-          {title}
+          {nbspShortWords(title)}
         </h1>
-        {subtitle && <p className="text-white/45 text-lg mt-4 max-w-2xl" style={{ fontFamily: inter }}>{subtitle}</p>}
+        {subtitle && <p className="text-white/45 text-lg mt-4 max-w-2xl" style={{ fontFamily: inter }}>{nbspShortWords(subtitle)}</p>}
         <div className="w-20 h-1 bg-[#6EE76D] rounded-full mt-6" />
       </div>
     </section>

@@ -5,7 +5,7 @@ import {
   Clock, Users, Calendar, Trophy,
 } from "lucide-react";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
-import { Btn, SectionLabel, CtaStrip, bebas, inter } from "../components/shared";
+import { Btn, SectionLabel, CtaStrip, bebas, inter, nbspShortWords } from "../components/shared";
 import { TEAMS, getAllTeamNews } from "../data/teams";
 import heroBackground from "../../imports/hc-haje-pozadi.png";
 
@@ -117,8 +117,7 @@ function Hero() {
           </h1>
 
           <p className="text-white/50 text-lg mb-10 max-w-lg" style={{ fontFamily: inter }}>
-            Jsme HC Háje — dívčí a ženský házenkářský klub z Prahy 4. Od roku 1980 vedeme
-            hráčky k pravidelnému sportu, týmovosti a radosti z házené.
+            {nbspShortWords("Jsme HC Háje — dívčí a ženský házenkářský klub z Prahy 4. Od roku 1980 vedeme hráčky k pravidelnému sportu, týmovosti a radosti z házené.")}
           </p>
 
           <div className="flex flex-wrap gap-4">
@@ -173,12 +172,10 @@ function About() {
               Tradice a výchova<br />od roku 1980
             </h2>
             <p className="text-white/50 mb-4" style={{ fontFamily: inter }}>
-              HC Háje patří mezi tradiční centra dívčí házené v Praze. Zaměřujeme se na
-              dlouhodobou sportovní přípravu děvčat od přípravky až po ženské kategorie.
+              {nbspShortWords("HC Háje patří mezi tradiční centra dívčí házené v Praze. Zaměřujeme se na dlouhodobou sportovní přípravu děvčat od přípravky až po ženské kategorie.")}
             </p>
             <p className="text-white/50 mb-8" style={{ fontFamily: inter }}>
-              V nejmladších kategoriích stavíme na pohybových hrách a všeobecném rozvoji,
-              na které postupně navazují házenkářské dovednosti, soutěže i týmové zkušenosti.
+              {nbspShortWords("V nejmladších kategoriích stavíme na pohybových hrách a všeobecném rozvoji, na které postupně navazují házenkářské dovednosti, soutěže i týmové zkušenosti.")}
             </p>
             <div className="flex flex-wrap gap-4">
               <Btn variant="primary" to="/o-klubu">Více o klubu</Btn>

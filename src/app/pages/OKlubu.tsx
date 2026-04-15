@@ -1,5 +1,5 @@
 import { Target, Heart, Award, Users, Building2 } from "lucide-react";
-import { PageHero, Btn, CtaStrip, SectionLabel, bebas, inter, CONTACT_EMAIL } from "../components/shared";
+import { PageHero, Btn, CtaStrip, SectionLabel, bebas, inter, CONTACT_EMAIL, nbspShortWords } from "../components/shared";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 
 const VALUES = [
@@ -28,18 +28,13 @@ export default function OKlubuPage() {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
               <p className="text-white text-lg mb-4" style={{ fontFamily: inter }}>
-                HC Háje je dívčí a ženský házenkářský klub z Prahy 4, který patří od svého založení
-                v roce 1980 mezi výrazná centra dívčí házené v Praze i v rámci celé České republiky.
+                {nbspShortWords("HC Háje je dívčí a ženský házenkářský klub z Prahy 4, který patří od svého založení v roce 1980 mezi výrazná centra dívčí házené v Praze i v rámci celé České republiky.")}
               </p>
               <p className="text-white/55 mb-4" style={{ fontFamily: inter }}>
-                Klub je zaměřený na dlouhodobou sportovní přípravu děvčat od 6 do 17 let. V nejmladších
-                kategoriích stavíme na pohybových hrách, soutěžích a všeobecné sportovní průpravě,
-                na které postupně navazují další házenkářské dovednosti.
+                {nbspShortWords("Klub je zaměřený na dlouhodobou sportovní přípravu děvčat od 6 do 17 let. V nejmladších kategoriích stavíme na pohybových hrách, soutěžích a všeobecné sportovní průpravě, na které postupně navazují další házenkářské dovednosti.")}
               </p>
               <p className="text-white/55 mb-8" style={{ fontFamily: inter }}>
-                Na žákovské a dorostenecké kategorie navazují ženská družstva. Vedle sportovních výsledků
-                je naším hlavním cílem získat a nadchnout co nejvíce dětí pro pravidelné sportování a
-                vytvořit prostředí, kam se budou rády vracet.
+                {nbspShortWords("Na žákovské a dorostenecké kategorie navazují ženská družstva. Vedle sportovních výsledků je naším hlavním cílem získat a nadchnout co nejvíce dětí pro pravidelné sportování a vytvořit prostředí, kam se budou rády vracet.")}
               </p>
 
               <div className="rounded-2xl border border-[#6EE76D]/10 bg-[#0e160e] p-5 mb-8">
@@ -84,7 +79,7 @@ export default function OKlubuPage() {
                     <Icon className="w-6 h-6 text-[#6EE76D]" />
                   </div>
                   <h3 className="text-white text-xl uppercase tracking-[0.08em] mb-2" style={{ fontFamily: bebas }}>{v.title}</h3>
-                  <p className="text-white/40 text-sm" style={{ fontFamily: inter }}>{v.desc}</p>
+                  <p className="text-white/40 text-sm" style={{ fontFamily: inter }}>{nbspShortWords(v.desc)}</p>
                 </div>
               );
             })}
@@ -107,7 +102,7 @@ export default function OKlubuPage() {
                   </div>
                   <div>
                     <span className="text-[#6EE76D] text-xl" style={{ fontFamily: bebas }}>{m.year}</span>
-                    <p className="text-white/50 mt-1" style={{ fontFamily: inter }}>{m.text}</p>
+                    <p className="text-white/50 mt-1" style={{ fontFamily: inter }}>{nbspShortWords(m.text)}</p>
                   </div>
                 </div>
               ))}
