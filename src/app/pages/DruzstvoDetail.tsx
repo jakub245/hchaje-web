@@ -151,52 +151,7 @@ export default function DruzstvoDetail() {
           { name: team.coach, phone: "", email: "" },
           ...(team.assistantCoach ? [{ name: team.assistantCoach, phone: "", email: "" }] : []),
         ];
-  const displayedNews = isMiniTeam
-    ? [
-        {
-          title: "5+1 v Heroldových sadech",
-          date: "03.03.2025",
-          excerpt:
-            "Druhá polovina sezóny je tu a naše MINI se dnes zúčastnily svazového turnaje 5+1 v hale Sokol Vršovice. Za skvělé podpory našich fanoušků se hájecké bojovnice utkaly s týmy Kobylek, Slávie, Vršovic, Chodova a Dukly. Hrály s nadšením a zápas od zápasu...",
-        },
-        {
-          title: "Mladší dorostenky dnes přivezly důležité 2 body z Českých Budějovic.",
-          date: "15.02.2025",
-          excerpt:
-            "INFARKTOVÝ ZÁPAS, ALE NAŠE BABY TO DOTÁHLY DO VÍTĚZNÉHO KONCE! Tohle nebyl zápas pro slabé povahy. Kdo neměl nervy z ocele, ten si je dneska solidně pocuchal. Od první minuty se jelo bomby – jeden gól tam, druhý zpátky, fauly, drama, emoce až do nebes...",
-        },
-        {
-          title: "Dvojitá porce házené pro naše mladší žákyně!",
-          date: "09.02.2025",
-          excerpt:
-            "V pátek si holky zahrály hned dva přátelské zápasy – nejprve proti TJ Sokol Vršovice a poté proti TJ Chodov. První utkání bylo opatrné, jako by holky na hřišti teprve hledaly jistotu. Přihrávky občas postrádaly přesnost a chyběla dravost v obraně, ale...",
-        },
-      ]
-    : isPripravkaTeam
-      ? [
-          {
-            title: "Mladší dorostenky dnes přivezly důležité 2 body z Českých Budějovic.",
-            date: "15.02.2025",
-            excerpt:
-              "INFARKTOVÝ ZÁPAS, ALE NAŠE BABY TO DOTÁHLY DO VÍTĚZNÉHO KONCE! Tohle nebyl zápas pro slabé povahy. Kdo neměl nervy z ocele, ten si je dneska solidně pocuchal. Od první minuty se jelo bomby – jeden gól tam, druhý zpátky, fauly, drama, emoce až do nebes...",
-          },
-          {
-            title: "Dvojitá porce házené pro naše mladší žákyně!",
-            date: "09.02.2025",
-            excerpt:
-              "V pátek si holky zahrály hned dva přátelské zápasy – nejprve proti TJ Sokol Vršovice a poté proti TJ Chodov. První utkání bylo opatrné, jako by holky na hřišti teprve hledaly jistotu. Přihrávky občas postrádaly přesnost a chyběla dravost v obraně, ale...",
-          },
-          {
-            title: "Zimní příprava žen \"A\" a části mladšího dorostu",
-            date: "05.02.2025",
-            excerpt:
-              "Ve dnech 1.2. až 3.2.2025 proběhl v Železném Brodě zimní přípravný kemp \"A\" družstva žen a části mladšího dorostu, kde se hráčky připravovaly na blížící se druhou část soutěžní sezony 2024 - 2025.",
-          },
-        ]
-      : newsSorted.map((item) => ({
-          ...item,
-          excerpt: "Nejnovější aktualita z týmu.",
-        }));
+  const displayedNews = newsSorted;
 
   return (
     <>
