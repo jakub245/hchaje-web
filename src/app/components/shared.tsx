@@ -212,40 +212,15 @@ export function Navbar() {
 /* ── Footer ── */
 export function Footer() {
   return (
-    <footer className="bg-[#050805] border-t border-[#6EE76D]/8 pt-12 pb-6">
+    <footer className="bg-[#050805] border-t border-[#6EE76D]/8 pt-10 pb-6">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
-          <div>
-            <Link to="/" className="flex items-center gap-2 mb-4">
+        <div className="mb-8 space-y-6">
+          <div className="flex items-center justify-between gap-4">
+            <Link to="/" className="flex items-center gap-2">
               <img src={logoSvg} alt="HC Háje" className="h-10 w-auto" />
             </Link>
-            <p className="text-white/35 text-sm" style={{ fontFamily: inter }}>
-              Dívčí a ženský házenkářský klub z Prahy 4. Od roku 1980 vedeme hráčky od přípravky po ženy.
-            </p>
-          </div>
-          <div>
-            <h4 className="text-white mb-4 uppercase tracking-wider" style={{ fontFamily: bebas }}>Navigace</h4>
-            <div className="space-y-2">
-              {NAV.map((item) => (
-                <Link key={item.to} to={item.to} className="block text-white/35 hover:text-[#6EE76D] transition-colors text-sm">
-                  {item.label}
-                </Link>
-              ))}
-            </div>
-          </div>
-          <div>
-            <h4 className="text-white mb-4 uppercase tracking-wider" style={{ fontFamily: bebas }}>Kontakt</h4>
-            <div className="space-y-2 text-sm text-white/35">
-              <a href={`tel:${CONTACT_PHONE.replace(/\s/g, "")}`} className="block hover:text-[#6EE76D] transition-colors">{CONTACT_PHONE}</a>
-              <a href={`mailto:${CONTACT_EMAIL}`} className="block hover:text-[#6EE76D] transition-colors">{CONTACT_EMAIL}</a>
-              <a href={MAP_URL} target="_blank" rel="noreferrer" className="block hover:text-[#6EE76D] transition-colors">
-                {CONTACT_ADDRESS_TITLE}, {CONTACT_ADDRESS}
-              </a>
-            </div>
-          </div>
-          <div>
-            <h4 className="text-white mb-4 uppercase tracking-wider" style={{ fontFamily: bebas }}>Sociální sítě</h4>
-            <div className="flex gap-3">
+
+            <div className="flex items-center gap-3 shrink-0">
               <a href={INSTAGRAM_URL} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full border border-[#6EE76D]/15 flex items-center justify-center text-white/35 hover:text-[#6EE76D] hover:border-[#6EE76D]/30 transition-all">
                 <Instagram className="w-5 h-5" />
               </a>
@@ -254,7 +229,40 @@ export function Footer() {
               </a>
             </div>
           </div>
+
+          <div className="grid gap-6 lg:grid-cols-[1.2fr_1fr_1fr] lg:items-start">
+            <div>
+              <p className="text-white/35 text-sm max-w-md" style={{ fontFamily: inter }}>
+                Dívčí a ženský házenkářský klub z Prahy 4. Od roku 1980 vedeme hráčky od přípravky po ženy.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-6 lg:col-span-2">
+              <div>
+                <h4 className="text-white mb-4 uppercase tracking-wider" style={{ fontFamily: bebas }}>Navigace</h4>
+                <div className="space-y-2">
+                  {NAV.map((item) => (
+                    <Link key={item.to} to={item.to} className="block text-white/35 hover:text-[#6EE76D] transition-colors text-sm">
+                      {item.label}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h4 className="text-white mb-4 uppercase tracking-wider" style={{ fontFamily: bebas }}>Kontakt</h4>
+                <div className="space-y-2 text-sm text-white/35">
+                  <a href={`tel:${CONTACT_PHONE.replace(/\s/g, "")}`} className="block hover:text-[#6EE76D] transition-colors">{CONTACT_PHONE}</a>
+                  <a href={`mailto:${CONTACT_EMAIL}`} className="block hover:text-[#6EE76D] transition-colors">{CONTACT_EMAIL}</a>
+                  <a href={MAP_URL} target="_blank" rel="noreferrer" className="block hover:text-[#6EE76D] transition-colors">
+                    {CONTACT_ADDRESS_TITLE}, {CONTACT_ADDRESS}
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+
         <div className="border-t border-[#6EE76D]/8 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-white/25 text-sm">© 2026 HC Háje. Všechna práva vyhrazena.</p>
           <p className="text-white/15 text-xs">Vytvořeno s vášní pro házenou</p>
