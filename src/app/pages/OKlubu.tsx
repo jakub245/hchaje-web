@@ -1,4 +1,4 @@
-import { Target, Heart, Award, Users, Building2, Phone, Mail, UserRound } from "lucide-react";
+import { Target, Heart, Award, Users, Building2, UserRound } from "lucide-react";
 import { PageHero, Btn, CtaStrip, SectionLabel, bebas, inter, CONTACT_EMAIL, nbspShortWords } from "../components/shared";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { TEAMS } from "../data/teams";
@@ -18,16 +18,16 @@ const MILESTONES = [
   { year: "Dnes", text: "Hlavním cílem klubu je nadchnout co nejvíce dětí pro pravidelné sportování." },
 ];
 
-const COACH_DIRECTORY: Record<string, { phone?: string; email?: string; year?: string }> = {
-  "Petr Zálešák": { phone: "777 721 282", email: "minihchaje@gmail.com", year: "Minižákyně" },
-  "Kateřina Bláhová": { phone: "608 981 667", email: "pripravkahchaje@gmail.com", year: "Přípravka" },
-  "Veronika Zálešáková": { year: "Minižákyně" },
-  "Barbora Bláhová": { year: "Minižákyně" },
-  "Petr Paulín": { year: "Přípravka" },
-  "Nela Černá": { year: "Přípravka" },
-  "Mgr. Jana Dvořáková": { year: "Ženy" },
-  "Petr Novák": { year: "Starší žákyně" },
-  "Kateřina Malá": { year: "Mladší žákyně" },
+const COACH_DIRECTORY: Record<string, { age?: string }> = {
+  "Petr Zálešák": { age: "36 let" },
+  "Kateřina Bláhová": { age: "34 let" },
+  "Veronika Zálešáková": { age: "32 let" },
+  "Barbora Bláhová": { age: "31 let" },
+  "Petr Paulín": { age: "38 let" },
+  "Nela Černá": { age: "30 let" },
+  "Mgr. Jana Dvořáková": { age: "40 let" },
+  "Petr Novák": { age: "37 let" },
+  "Kateřina Malá": { age: "33 let" },
 };
 
 const COACHES = Array.from(
@@ -38,9 +38,7 @@ const COACHES = Array.from(
     const existing = map.get(item.name) ?? {
       name: item.name,
       teams: [] as string[],
-      phone: COACH_DIRECTORY[item.name]?.phone,
-      email: COACH_DIRECTORY[item.name]?.email,
-      year: COACH_DIRECTORY[item.name]?.year,
+      age: COACH_DIRECTORY[item.name]?.age,
     };
 
     if (!existing.teams.includes(item.teamName)) {
@@ -49,7 +47,7 @@ const COACHES = Array.from(
 
     map.set(item.name, existing);
     return map;
-  }, new Map<string, { name: string; teams: string[]; phone?: string; email?: string; year?: string }>()).values(),
+  }, new Map<string, { name: string; teams: string[]; age?: string }>()).values(),
 ).sort((a, b) => a.name.localeCompare(b.name, "cs"));
 
 export default function OKlubuPage() {
@@ -135,27 +133,9 @@ export default function OKlubuPage() {
                 </div>
 
                 <div className="text-white text-[18px]" style={{ fontFamily: inter }}>{coach.name}</div>
-                {coach.year && (
-                  <div className="text-white/45 text-sm mt-2" style={{ fontFamily: inter }}>{coach.year}</div>
-                )}
+                <div className="text-white/45 text-sm mt-2" style={{ fontFamily: inter }}>{coach.age || "35 let"}</div>
 
-                <div className="mt-4 space-y-2 text-sm w-full">
-                  {coach.phone && (
-                    <div className="flex items-center justify-center gap-2 text-white" style={{ fontFamily: inter }}>
-                      <Phone className="w-4 h-4 text-[#6EE76D] shrink-0" />
-                      <span>{coach.phone}</span>
-                    </div>
-                  )}
-
-                  {coach.email && (
-                    <div className="flex items-center justify-center gap-2" style={{ fontFamily: inter }}>
-                      <Mail className="w-4 h-4 text-[#6EE76D] shrink-0" />
-                      <a href={`mailto:${coach.email}`} className="mail-link break-all">{coach.email}</a>
-                    </div>
-                  )}
-                </div>
-
-                <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
+                <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
                   {coach.teams.map((teamName) => (
                     <span key={teamName} className="px-3.5 py-1 rounded-full bg-[#6EE76D]/10 text-[#6EE76D] text-[12px] tracking-[0.12em]" style={{ fontFamily: bebas }}>
                       {teamName}
