@@ -18,6 +18,7 @@ export default async function handler(req: any, res: any) {
   const {
     name,
     email,
+    phonePrefix,
     phone,
     childName,
     birthYear,
@@ -25,6 +26,7 @@ export default async function handler(req: any, res: any) {
     secondChildName,
     secondBirthYear,
     experience,
+    secondExperience,
     message,
     website,
   } = req.body ?? {};
@@ -33,11 +35,11 @@ export default async function handler(req: any, res: any) {
     return res.status(200).json({ ok: true });
   }
 
-  if (!name || !email || !childName || !birthYear || !experience || !message) {
+  if (!name || !email || !phone || !childName || !birthYear || !experience || !message) {
     return res.status(400).json({ error: "Vyplňte prosím údaje rodiče, dítěte a zprávu." });
   }
 
-  if (hasMoreChildren && (!secondChildName || !secondBirthYear)) {
+  if (hasMoreChildren && (!secondChildName || !secondBirthYear || !secondExperience)) {
     return res.status(400).json({ error: "Doplňte prosím i údaje o dalším dítěti." });
   }
 
@@ -50,7 +52,7 @@ export default async function handler(req: any, res: any) {
   try {
     const safeName = escapeHtml(String(name));
     const safeEmail = escapeHtml(String(email));
-    const safePhone = escapeHtml(String(phone || "—"));
+    const safePhone = escapeHtml(`${String(phonePrefix || "+420")} ${String(phone || "—")}`);
     const safeChildName = escapeHtml(String(childName));
     const safeBirthYear = escapeHtml(String(birthYear));
     const safeSecondChildName = escapeHtml(String(secondChildName || "—"));
@@ -61,6 +63,7 @@ export default async function handler(req: any, res: any) {
       advanced: "2 - hraje dobře - přechod z jiného družstva",
     };
     const safeExperience = escapeHtml(experienceMap[String(experience)] || String(experience));
+    const safeSecondExperience = escapeHtml(experienceMap[String(secondExperience)] || String(secondExperience || "—"));
     const safeMessage = escapeHtml(String(message)).replace(/\n/g, "<br />");
 
     await resend.emails.send({
@@ -78,7 +81,7 @@ export default async function handler(req: any, res: any) {
           <p><strong>Dítě:</strong> ${safeChildName}</p>
           <p><strong>Rok narození:</strong> ${safeBirthYear}</p>
           <p><strong>Zkušenosti s házenou:</strong> ${safeExperience}</p>
-          ${hasMoreChildren ? `<p><strong>Další dítě:</strong> ${safeSecondChildName} (${safeSecondBirthYear})</p>` : ""}
+          ${hasMoreChildren ? `<p><strong>Další dítě:</strong> ${safeSecondChildName} (${safeSecondBirthYear})</p><p><strong>Zkušenosti dalšího dítěte:</strong> ${safeSecondExperience}</p>` : ""}
           <p><strong>Zpráva:</strong><br />${safeMessage}</p>
         </div>
       `,

@@ -20,6 +20,7 @@ import {
 const INITIAL_FORM = {
   name: "",
   email: "",
+  phonePrefix: "+420",
   phone: "",
   childName: "",
   birthYear: "",
@@ -27,6 +28,7 @@ const INITIAL_FORM = {
   secondChildName: "",
   secondBirthYear: "",
   experience: "",
+  secondExperience: "",
   message: "",
   website: "",
 };
@@ -37,6 +39,20 @@ const EXPERIENCE_OPTIONS = [
   { value: "advanced", label: "2 - hraje dobře - přechod z jiného družstva" },
 ];
 
+const PHONE_PREFIXES = ["+420", "+421", "+49", "+43", "+48"];
+
+const isValidEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value.trim());
+
+const isValidPhone = (prefix: string, value: string) => {
+  const digits = value.replace(/\D/g, "");
+
+  if (prefix === "+420" || prefix === "+421") {
+    return digits.length === 9;
+  }
+
+  return digits.length >= 7 && digits.length <= 12;
+};
+
 export default function KontaktyPage() {
   const [formData, setFormData] = useState(INITIAL_FORM);
   const [isSending, setIsSending] = useState(false);
@@ -45,23 +61,54 @@ export default function KontaktyPage() {
     message: "",
   });
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = event.target;
     const checked = type === "checkbox" ? (event.target as HTMLInputElement).checked : undefined;
 
+    let nextValue = value;
+
+    if (name === "phone") {
+      nextValue = value.replace(/\D/g, "").slice(0, formData.phonePrefix === "+420" || formData.phonePrefix === "+421" ? 9 : 12);
+    }
+
+    if (name === "birthYear" || name === "secondBirthYear") {
+      nextValue = value.replace(/\D/g, "").slice(0, 4);
+    }
+
     setFormData((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? checked : value,
+      [name]: type === "checkbox" ? checked : nextValue,
       ...(name === "hasMoreChildren" && !checked
-        ? { secondChildName: "", secondBirthYear: "" }
+        ? { secondChildName: "", secondBirthYear: "", secondExperience: "" }
         : {}),
     }));
   };
+
+  const emailIsValid = formData.email.length > 0 && isValidEmail(formData.email);
+  const phoneIsValid = formData.phone.length > 0 && isValidPhone(formData.phonePrefix, formData.phone);
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsSending(true);
     setSubmitState({ type: "idle", message: "" });
+
+    if (!isValidEmail(formData.email)) {
+      setSubmitState({ type: "error", message: "Zadejte prosím platný e-mail." });
+      setIsSending(false);
+      return;
+    }
+
+    if (!isValidPhone(formData.phonePrefix, formData.phone)) {
+      setSubmitState({ type: "error", message: "Zadejte prosím platné telefonní číslo bez předvolby." });
+      setIsSending(false);
+      return;
+    }
+
+    if (formData.hasMoreChildren && !formData.secondExperience) {
+      setSubmitState({ type: "error", message: "Vyberte prosím zkušenosti s házenou i u dalšího dítěte." });
+      setIsSending(false);
+      return;
+    }
 
     try {
       const response = await fetch("/api/contact", {
@@ -230,29 +277,56 @@ export default function KontaktyPage() {
                         value={formData.email}
                         onChange={handleChange}
                         required
-                        className="w-full rounded-2xl border border-[#6EE76D]/15 bg-[#0d160d] px-4 py-3 text-white placeholder:text-white/35 outline-none focus:border-[#6EE76D]/45"
+                        className={`w-full rounded-2xl border bg-[#0d160d] px-4 py-3 text-white placeholder:text-white/35 outline-none ${formData.email.length > 0 ? (emailIsValid ? "border-[#6EE76D]/45" : "border-red-400/45") : "border-[#6EE76D]/15"}`}
                         placeholder="vas@email.cz"
                       />
+                      {formData.email.length > 0 && (
+                        <p className={`mt-2 text-sm ${emailIsValid ? "text-[#9CF59B]" : "text-red-300"}`} style={{ fontFamily: inter }}>
+                          {emailIsValid ? "E-mail vypadá správně." : "Zadejte prosím platný e-mail."}
+                        </p>
+                      )}
                     </label>
 
                     <label className="block">
                       <span className="mb-2 block text-white/75 text-sm" style={{ fontFamily: inter }}>Telefon</span>
-                      <input
-                        type="text"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleChange}
-                        className="w-full rounded-2xl border border-[#6EE76D]/15 bg-[#0d160d] px-4 py-3 text-white placeholder:text-white/35 outline-none focus:border-[#6EE76D]/45"
-                        placeholder="+420 ..."
-                      />
+                      <div className="grid grid-cols-[98px_1fr] gap-2">
+                        <select
+                          name="phonePrefix"
+                          value={formData.phonePrefix}
+                          onChange={handleChange}
+                          className="rounded-2xl border border-[#6EE76D]/15 bg-[#0d160d] px-3 py-3 text-white outline-none focus:border-[#6EE76D]/45"
+                        >
+                          {PHONE_PREFIXES.map((prefix) => (
+                            <option key={prefix} value={prefix}>{prefix}</option>
+                          ))}
+                        </select>
+                        <input
+                          type="tel"
+                          name="phone"
+                          value={formData.phone}
+                          onChange={handleChange}
+                          required
+                          inputMode="numeric"
+                          className={`w-full rounded-2xl border bg-[#0d160d] px-4 py-3 text-white placeholder:text-white/35 outline-none ${formData.phone.length > 0 ? (phoneIsValid ? "border-[#6EE76D]/45" : "border-red-400/45") : "border-[#6EE76D]/15"}`}
+                          placeholder="777 721 282"
+                        />
+                      </div>
+                      {formData.phone.length > 0 && (
+                        <p className={`mt-2 text-sm ${phoneIsValid ? "text-[#9CF59B]" : "text-red-300"}`} style={{ fontFamily: inter }}>
+                          {phoneIsValid ? "Telefon vypadá dobře." : "Zadejte telefon bez předvolby ve správném formátu."}
+                        </p>
+                      )}
                     </label>
                   </div>
                 </div>
 
                 <div className="rounded-2xl border border-[#6EE76D]/12 bg-[#0d160d]/80 p-5">
-                  <h3 className="text-white uppercase mb-4 tracking-[0.08em]" style={{ fontFamily: bebas }}>
-                    Údaje přihlašovaného dítěte
+                  <h3 className="text-white uppercase mb-3 tracking-[0.08em]" style={{ fontFamily: bebas }}>
+                    Údaje dítěte
                   </h3>
+                  <p className="text-white/55 text-sm mb-4" style={{ fontFamily: inter }}>
+                    {nbspShortWords("HC Háje je dívčí klub a tréninky jsou určené pro holky, které si chtějí házenou nezávazně vyzkoušet.")}
+                  </p>
 
                   <div className="grid md:grid-cols-2 gap-4">
                     <label className="block">
@@ -283,7 +357,34 @@ export default function KontaktyPage() {
                     </label>
                   </div>
 
-                  <label className="mt-4 inline-flex items-center gap-3 cursor-pointer select-none">
+                  <div className="mt-5">
+                    <span className="mb-2 block text-white/75 text-sm" style={{ fontFamily: inter }}>Zkušenosti s házenou</span>
+                    <div className="flex flex-wrap gap-3">
+                      {EXPERIENCE_OPTIONS.map((option) => {
+                        const isActive = formData.experience === option.value;
+                        return (
+                          <label
+                            key={option.value}
+                            className={`rounded-full border px-4 py-2 text-sm transition-all cursor-pointer ${isActive ? "border-[#6EE76D] bg-[#6EE76D]/12 text-white" : "border-white/10 text-white/70 hover:border-[#6EE76D]/30 hover:text-white"}`}
+                            style={{ fontFamily: inter }}
+                          >
+                            <input
+                              type="radio"
+                              name="experience"
+                              value={option.value}
+                              checked={isActive}
+                              onChange={handleChange}
+                              className="sr-only"
+                              required
+                            />
+                            {option.label}
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <label className="mt-5 inline-flex items-center gap-3 cursor-pointer select-none">
                     <input
                       type="checkbox"
                       name="hasMoreChildren"
@@ -325,35 +426,34 @@ export default function KontaktyPage() {
                           placeholder="Např. 2016"
                         />
                       </label>
+                      <div className="md:col-span-2 mt-1">
+                        <span className="mb-2 block text-white/75 text-sm" style={{ fontFamily: inter }}>Zkušenosti s házenou u dalšího dítěte</span>
+                        <div className="flex flex-wrap gap-3">
+                          {EXPERIENCE_OPTIONS.map((option) => {
+                            const isActive = formData.secondExperience === option.value;
+                            return (
+                              <label
+                                key={`second-${option.value}`}
+                                className={`rounded-full border px-4 py-2 text-sm transition-all cursor-pointer ${isActive ? "border-[#6EE76D] bg-[#6EE76D]/12 text-white" : "border-white/10 text-white/70 hover:border-[#6EE76D]/30 hover:text-white"}`}
+                                style={{ fontFamily: inter }}
+                              >
+                                <input
+                                  type="radio"
+                                  name="secondExperience"
+                                  value={option.value}
+                                  checked={isActive}
+                                  onChange={handleChange}
+                                  className="sr-only"
+                                  required={formData.hasMoreChildren}
+                                />
+                                {option.label}
+                              </label>
+                            );
+                          })}
+                        </div>
+                      </div>
                     </div>
                   )}
-
-                  <div className="mt-5">
-                    <span className="mb-2 block text-white/75 text-sm" style={{ fontFamily: inter }}>Zkušenosti s házenou</span>
-                    <div className="flex flex-wrap gap-3">
-                      {EXPERIENCE_OPTIONS.map((option) => {
-                        const isActive = formData.experience === option.value;
-                        return (
-                          <label
-                            key={option.value}
-                            className={`rounded-full border px-4 py-2 text-sm transition-all cursor-pointer ${isActive ? "border-[#6EE76D] bg-[#6EE76D]/12 text-white" : "border-white/10 text-white/70 hover:border-[#6EE76D]/30 hover:text-white"}`}
-                            style={{ fontFamily: inter }}
-                          >
-                            <input
-                              type="radio"
-                              name="experience"
-                              value={option.value}
-                              checked={isActive}
-                              onChange={handleChange}
-                              className="sr-only"
-                              required
-                            />
-                            {option.label}
-                          </label>
-                        );
-                      })}
-                    </div>
-                  </div>
                 </div>
 
                 <label className="block">
