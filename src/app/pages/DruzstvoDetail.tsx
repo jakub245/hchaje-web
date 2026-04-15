@@ -251,11 +251,11 @@ export default function DruzstvoDetail() {
               <p className="text-white/50 text-lg mb-6" style={{ fontFamily: inter }}>{team.longDesc}</p>
 
               <div className="grid grid-cols-2 gap-4 mb-8">
-                <div className="p-4 rounded-2xl bg-[#0e160e] border border-[#6EE76D]/8">
+                <div className="mobile-solid-card p-4 rounded-2xl bg-[#101a10] border border-[#6EE76D]/12">
                   <div className="text-3xl text-[#6EE76D]" style={{ fontFamily: bebas }}>{team.playerCount}</div>
                   <div className="text-white/35 text-sm" style={{ fontFamily: inter }}>Hráček</div>
                 </div>
-                <div className="p-4 rounded-2xl bg-[#0e160e] border border-[#6EE76D]/8">
+                <div className="mobile-solid-card p-4 rounded-2xl bg-[#101a10] border border-[#6EE76D]/12">
                   <div className="text-3xl text-[#6EE76D]" style={{ fontFamily: bebas }}>{trainingCount}×</div>
                   <div className="text-white/35 text-sm" style={{ fontFamily: inter }}>Tréninků týdně</div>
                 </div>
@@ -290,9 +290,9 @@ export default function DruzstvoDetail() {
                   <h3 className="text-xl text-white/45 mb-4 normal-case" style={{ fontFamily: inter }}>{block.title}</h3>
                   <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                     {block.items.map((item) => (
-                      <div key={item.day + item.time + item.hall} className="rounded-3xl border border-[#6EE76D]/8 bg-[#0e160e] p-6">
+                      <div key={item.day + item.time + item.hall} className="mobile-solid-card rounded-3xl border border-[#6EE76D]/12 bg-[#101a10] p-6">
                         <div className="flex items-center gap-3 mb-4">
-                          <div className="w-12 h-12 rounded-2xl bg-[#6EE76D]/10 flex items-center justify-center">
+                          <div className="mobile-solid-chip w-12 h-12 rounded-2xl bg-[#6EE76D]/14 flex items-center justify-center">
                             <Calendar className="w-5 h-5 text-[#6EE76D]" />
                           </div>
                           <div className="text-white text-xl" style={{ fontFamily: bebas }}>{item.day}</div>
@@ -316,9 +316,9 @@ export default function DruzstvoDetail() {
           ) : (
             <div className="flex gap-4 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               {team.trainings.map((t, i) => (
-                <div key={i} className="min-w-[18rem] flex-shrink-0 p-5 rounded-3xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/20 transition-all">
+                <div key={i} className="mobile-solid-card min-w-[18rem] flex-shrink-0 p-5 rounded-3xl bg-[#101a10] border border-[#6EE76D]/12 hover:border-[#6EE76D]/25 transition-all">
                   <div className="flex items-center gap-4 mb-4">
-                    <div className="w-12 h-12 rounded-2xl bg-[#6EE76D]/10 flex items-center justify-center">
+                    <div className="mobile-solid-chip w-12 h-12 rounded-2xl bg-[#6EE76D]/14 flex items-center justify-center">
                       <Calendar className="w-5 h-5 text-[#6EE76D]" />
                     </div>
                     <div>
@@ -352,7 +352,7 @@ export default function DruzstvoDetail() {
                 {displayedEvents.map((event, i) => (
                   <div key={i} className={`grid gap-4 md:grid-cols-[1fr_1.4fr_1fr] py-5 ${i !== 0 ? "border-t border-[#6EE76D]/15" : ""}`}>
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-2xl bg-[#6EE76D]/10 flex items-center justify-center flex-shrink-0">
+                      <div className="mobile-solid-chip w-10 h-10 rounded-2xl bg-[#6EE76D]/14 flex items-center justify-center flex-shrink-0">
                         <Calendar className="w-4 h-4 text-[#6EE76D]" />
                       </div>
                       <div>
@@ -369,7 +369,7 @@ export default function DruzstvoDetail() {
                     </div>
 
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-2xl bg-[#6EE76D]/10 flex items-center justify-center flex-shrink-0">
+                      <div className="mobile-solid-chip w-10 h-10 rounded-2xl bg-[#6EE76D]/14 flex items-center justify-center flex-shrink-0">
                         <MapPin className="w-4 h-4 text-[#6EE76D]" />
                       </div>
                       <div>
@@ -421,8 +421,8 @@ export default function DruzstvoDetail() {
               {team.players.map((p) => {
                 const photo = getTeamPhoto(p.name);
                 return (
-                  <div key={p.name} className="min-w-[16rem] md:min-w-[calc((100%-1rem)/2)] lg:min-w-[calc((100%-2rem)/3)] xl:min-w-[calc((100%-3rem)/4)] flex-shrink-0 h-[21rem] rounded-3xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/20 transition-all p-6 flex flex-col items-center justify-center text-center">
-                    <div className="w-24 h-24 rounded-full overflow-hidden bg-[#6EE76D]/10 border border-[#6EE76D]/20 flex items-center justify-center mb-5">
+                  <div key={p.name} className="mobile-solid-card min-w-[16rem] md:min-w-[calc((100%-1rem)/2)] lg:min-w-[calc((100%-2rem)/3)] xl:min-w-[calc((100%-3rem)/4)] flex-shrink-0 h-[21rem] rounded-3xl bg-[#101a10] border border-[#6EE76D]/12 hover:border-[#6EE76D]/25 transition-all p-6 flex flex-col items-center justify-center text-center">
+                    <div className="mobile-solid-chip w-24 h-24 rounded-full overflow-hidden bg-[#6EE76D]/14 border border-[#6EE76D]/20 flex items-center justify-center mb-5">
                       {photo ? (
                         <ImageWithFallback src={photo} alt={p.name} className="w-full h-full object-cover" />
                       ) : (
@@ -439,8 +439,8 @@ export default function DruzstvoDetail() {
           ) : (
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {team.players.map((p, i) => (
-                <div key={i} className="flex items-center gap-4 p-4 rounded-2xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/20 transition-all">
-                  <div className="w-12 h-12 rounded-full bg-[#6EE76D]/10 flex items-center justify-center flex-shrink-0">
+                <div key={i} className="mobile-solid-card flex items-center gap-4 p-4 rounded-2xl bg-[#101a10] border border-[#6EE76D]/12 hover:border-[#6EE76D]/25 transition-all">
+                  <div className="mobile-solid-chip w-12 h-12 rounded-full bg-[#6EE76D]/14 flex items-center justify-center flex-shrink-0">
                     {p.number ? (
                       <span className="text-[#6EE76D] text-lg" style={{ fontFamily: bebas }}>{p.number}</span>
                     ) : (
@@ -474,7 +474,7 @@ export default function DruzstvoDetail() {
               {displayedStaff.map((member, i) => (
                 <div key={member.name} className={`grid gap-4 md:grid-cols-[1.2fr_1fr_1.1fr] py-5 ${i !== 0 ? "border-t border-[#6EE76D]/15" : ""}`}>
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-2xl bg-[#6EE76D]/10 flex items-center justify-center flex-shrink-0">
+                      <div className="mobile-solid-chip w-10 h-10 rounded-2xl bg-[#6EE76D]/14 flex items-center justify-center flex-shrink-0">
                       {isFemaleName(member.name) ? <Venus className="w-4 h-4 text-[#6EE76D]" /> : <Mars className="w-4 h-4 text-[#6EE76D]" />}
                     </div>
                     <div>
@@ -550,7 +550,7 @@ export default function DruzstvoDetail() {
               <Link
                 key={t.slug}
                 to={`/druzstva/${t.slug}`}
-                className="p-5 rounded-2xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/25 transition-all group"
+                className="mobile-solid-card p-5 rounded-2xl bg-[#101a10] border border-[#6EE76D]/12 hover:border-[#6EE76D]/25 transition-all group"
               >
                 <h3 className="text-white uppercase group-hover:text-[#6EE76D] transition-colors text-xl" style={{ fontFamily: bebas }}>{t.name}</h3>
                 <p className="text-white/35 text-sm mt-1" style={{ fontFamily: inter }}>{t.ageRange} • {t.playerCount} hráček</p>

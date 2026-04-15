@@ -87,7 +87,7 @@ export function NewsCard({
     <Link
       to={to || `/aktuality/${newsSlug(article.title)}`}
       state={{ article, backTo }}
-      className={`group block rounded-2xl bg-[#0e160e] border border-[#6EE76D]/8 p-4 hover:border-[#6EE76D]/20 transition-all ${className}`}
+      className={`mobile-solid-card group block rounded-2xl bg-[#101a10] border border-[#6EE76D]/12 p-4 hover:border-[#6EE76D]/25 transition-all ${className}`}
     >
       <div className="flex flex-wrap items-center gap-3 mb-3">
         <span className="inline-flex items-center gap-2 text-white/35 text-sm" style={{ fontFamily: inter }}>
@@ -147,55 +147,59 @@ export function Navbar() {
 
   return (
     <nav className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${scrolled ? "bg-[#080C08]/95 backdrop-blur-md border-b border-[#6EE76D]/10 shadow-lg shadow-black/30" : "bg-transparent"}`}>
-      <div className="w-full px-12 lg:px-24 pt-2">
+      <div className="w-full px-6 lg:px-24 pt-2">
         <div className="flex items-center justify-between h-16 lg:h-20">
           <Link to="/" className="flex items-center gap-3">
             <img src={logoSvg} alt="HC Háje" className="h-14 w-auto" />
-        </Link>
+          </Link>
 
-        <div className="hidden lg:flex items-center gap-10">
-          {NAV.map((item) => (
+          <div className="hidden lg:flex items-center gap-10">
+            {NAV.map((item) => (
+              <Link
+                key={item.to}
+                to={item.to}
+                className={`uppercase transition-all duration-200 ease-out hover:text-[#6EE76D] active:-translate-y-[1px] active:text-[#6EE76D] ${location.pathname.startsWith(item.to) ? "text-[#6EE76D]" : "text-white/55"}`}
+                style={navTextStyle}
+              >
+                {item.label}
+              </Link>
+            ))}
             <Link
-              key={item.to}
-              to={item.to}
-              className={`uppercase transition-all duration-200 ease-out hover:text-[#6EE76D] active:-translate-y-[1px] active:text-[#6EE76D] ${location.pathname.startsWith(item.to) ? "text-[#6EE76D]" : "text-white/55"}`}
+              to="/kontakty"
+              className="rounded-full px-6 py-2 bg-[#6EE76D] text-[#080C08] hover:brightness-110 uppercase transition-all duration-300 inline-flex items-center gap-2"
               style={navTextStyle}
             >
-              {item.label}
+              Chci se přidat
             </Link>
-          ))}
-          <Link
-            to="/kontakty"
-            className="rounded-full px-6 py-2 bg-[#6EE76D] text-[#080C08] hover:brightness-110 uppercase transition-all duration-300 inline-flex items-center gap-2"
-            style={navTextStyle}
-          >
-            Chci se přidat
-          </Link>
-        </div>
+          </div>
 
-        <button className="lg:hidden text-white" onClick={() => setOpen(!open)}>
-          {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
+          <button className="lg:hidden text-white p-1" onClick={() => setOpen(!open)} aria-label={open ? "Zavřít menu" : "Otevřít menu"}>
+            {open ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
+          </button>
+        </div>
       </div>
 
       {open && (
-        <div className="lg:hidden bg-[#080C08]/98 backdrop-blur-lg border-t border-[#6EE76D]/10 px-4 pb-6 pt-2">
-          {NAV.map((item) => (
-            <Link
-              key={item.to}
-              to={item.to}
-              className="block py-3 text-white/60 hover:text-[#6EE76D] active:-translate-y-[1px] border-b border-white/5 uppercase tracking-wider transition-all duration-200 ease-out"
-              style={navTextStyle}
-            >
-              {item.label}
-            </Link>
-          ))}
-          <Btn variant="primary" to="/kontakty" className="mt-4 w-full justify-center">
-            Chci se přidat
-          </Btn>
+        <div className="lg:hidden border-t border-[#6EE76D]/10 bg-[#080C08]/98 backdrop-blur-lg">
+          <div className="px-6 pt-4 pb-8 min-h-[calc(100dvh-4.5rem)] flex flex-col">
+            <div className="flex flex-col items-center gap-2">
+              {NAV.map((item) => (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  className="block w-full rounded-2xl py-4 px-4 text-center text-white/80 hover:text-[#6EE76D] hover:bg-[#6EE76D]/8 active:-translate-y-[1px] border-b border-white/5 uppercase tracking-wider transition-all duration-200 ease-out"
+                  style={navTextStyle}
+                >
+                  {item.label}
+                </Link>
+              ))}
+            </div>
+            <Btn variant="primary" to="/kontakty" className="mt-6 w-full justify-center py-4">
+              Chci se přidat
+            </Btn>
+          </div>
         </div>
       )}
-      </div>
     </nav>
   );
 }

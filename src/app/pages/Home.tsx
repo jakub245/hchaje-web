@@ -331,10 +331,10 @@ function NewsAndTrainings() {
                   key={item.id}
                   to={`/aktuality/${toSlug(item.title)}`}
                   state={{ article: { title: item.title, date: item.date, excerpt: item.excerpt, content: item.content }, backTo: "/" }}
-                  className="group block p-4 rounded-2xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/20 transition-all"
+                  className="mobile-solid-card group block p-4 rounded-2xl bg-[#101a10] border border-[#6EE76D]/12 hover:border-[#6EE76D]/25 transition-all"
                 >
                   <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full bg-[#6EE76D]/10 flex items-center justify-center flex-shrink-0">
+                    <div className="mobile-solid-chip w-10 h-10 rounded-full bg-[#6EE76D]/14 flex items-center justify-center flex-shrink-0">
                       <Calendar className="w-5 h-5 text-[#6EE76D]" />
                     </div>
 
@@ -367,9 +367,9 @@ function NewsAndTrainings() {
                 <Link
                   key={t.slug + t.day + t.time + i}
                   to={`/druzstva/${t.slug}`}
-                  className="flex items-center gap-4 p-4 rounded-2xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/20 transition-all group"
+                  className="mobile-solid-card flex items-center gap-4 p-4 rounded-2xl bg-[#101a10] border border-[#6EE76D]/12 hover:border-[#6EE76D]/25 transition-all group"
                 >
-                  <div className="w-10 h-10 rounded-full bg-[#6EE76D]/10 flex items-center justify-center flex-shrink-0">
+                  <div className="mobile-solid-chip w-10 h-10 rounded-full bg-[#6EE76D]/14 flex items-center justify-center flex-shrink-0">
                     {t.slug === "zeny" ? <Trophy className="w-5 h-5 text-[#6EE76D]" /> : <Users className="w-5 h-5 text-[#6EE76D]" />}
                   </div>
                   <div className="flex-1 min-w-0">
