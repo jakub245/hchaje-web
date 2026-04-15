@@ -136,11 +136,19 @@ export default function OKlubuPage() {
                 <div className="text-white/45 text-sm mt-2" style={{ fontFamily: inter }}>{coach.age || "35 let"}</div>
 
                 <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
-                  {coach.teams.map((teamName) => (
-                    <span key={teamName} className="px-3.5 py-1 rounded-full bg-[#6EE76D]/10 text-[#6EE76D] text-[12px] tracking-[0.12em]" style={{ fontFamily: bebas }}>
-                      {teamName}
-                    </span>
-                  ))}
+                  {coach.teams.map((teamName) => {
+                    const team = TEAMS.find((item) => item.name === teamName);
+                    return (
+                      <Btn
+                        key={teamName}
+                        variant="secondary"
+                        to={team ? `/druzstva/${team.slug}` : "/druzstva"}
+                        className="px-3.5 py-1 text-[12px]"
+                      >
+                        {teamName}
+                      </Btn>
+                    );
+                  })}
                 </div>
               </div>
             ))}
