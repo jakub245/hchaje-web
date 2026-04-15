@@ -322,7 +322,7 @@ function NewsAndTrainings() {
           <div>
             <SectionLabel>Novinky</SectionLabel>
             <h2 className="text-3xl lg:text-4xl text-white uppercase mb-8" style={{ fontFamily: bebas }}>Aktuality</h2>
-            <div className="space-y-2">
+            <div className="space-y-3">
               {latestNews.map((item) => (
                 <Link
                   key={item.id}
@@ -359,7 +359,7 @@ function NewsAndTrainings() {
           <div>
             <SectionLabel>Rozvrh</SectionLabel>
             <h2 className="text-3xl lg:text-4xl text-white uppercase mb-8" style={{ fontFamily: bebas }}>Nejbližší trénink</h2>
-            <div className="space-y-2">
+            <div className="space-y-3">
               {upcomingTrainings.map((t, i) => (
                 <Link
                   key={t.slug + t.day + t.time + i}

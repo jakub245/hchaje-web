@@ -264,7 +264,7 @@ export default function AktualitaDetail() {
             className="inline-flex items-center gap-2 text-white/50 hover:text-[#6EE76D] transition-colors mb-6"
             style={{ fontFamily: inter }}
           >
-            <ArrowLeft className="w-4 h-4" /> Zpět na aktuality
+            <ArrowLeft className="w-4 h-4" /> Přehled aktualit
           </Link>
 
           <div className="rounded-3xl border border-[#6EE76D]/8 bg-[#0e160e] p-6 lg:p-8">
