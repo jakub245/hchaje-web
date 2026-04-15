@@ -111,7 +111,7 @@ export default function TreninkyPage() {
             {filteredScheduleByDay.map((day) => (
               <div key={day.day}>
                 <h3 className="text-2xl text-white uppercase mb-4 flex items-center gap-3" style={{ fontFamily: bebas }}>
-                  <div className="w-3 h-3 rounded-full bg-[#F587B9]" />
+                  <div className="w-3 h-3 rounded-full bg-[#6EE76D]" />
                   {day.day}
                 </h3>
                 <div className="space-y-3">

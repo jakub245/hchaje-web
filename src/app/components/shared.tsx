@@ -73,7 +73,7 @@ export function Btn({ children, variant = "primary", className = "", as, to, ...
 /* ── Section heading ── */
 export function SectionLabel({ children }: { children: ReactNode }) {
   return (
-    <span className="text-[#F587B9] text-sm tracking-[0.2em] uppercase mb-3 block" style={{ fontFamily: bebas }}>
+    <span className="text-[#6EE76D] text-sm tracking-[0.2em] uppercase mb-3 block" style={{ fontFamily: bebas }}>
       {formatCzechTextNode(children)}
     </span>
   );
@@ -140,8 +140,8 @@ export function NewsCard({
       )}
 
       <div className="mt-4 inline-flex items-center gap-1.5 text-sm" style={{ fontFamily: inter }}>
-        <ArrowRight className="w-4 h-4 text-[#8F988F] group-hover:text-[#F587B9] group-hover:translate-x-0.5 transition-all" />
-        <span className="text-[#8F988F] underline-offset-4 group-hover:text-[#F587B9] group-hover:underline">Zobrazit detail</span>
+        <ArrowRight className="w-4 h-4 text-[#8F988F] group-hover:text-[#6EE76D] group-hover:translate-x-0.5 transition-all" />
+        <span className="text-[#8F988F] underline-offset-4 group-hover:text-[#6EE76D] group-hover:underline">Zobrazit detail</span>
       </div>
     </Link>
   );
