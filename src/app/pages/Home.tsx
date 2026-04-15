@@ -93,9 +93,9 @@ function Hero() {
         <ImageWithFallback
           src={heroBackground}
           alt="HC Háje"
-          className="w-full h-full object-cover"
+          className="w-full h-full object-contain object-right scale-[0.86] sm:scale-100 sm:object-cover sm:object-center origin-right"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#080C08] via-[#080C08]/85 to-[#080C08]/50" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#080C08] via-[#080C08]/82 to-[#080C08]/42 sm:via-[#080C08]/85 sm:to-[#080C08]/50" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#080C08] via-transparent to-transparent" />
       </div>
 
