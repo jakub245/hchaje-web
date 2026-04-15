@@ -271,7 +271,7 @@ export function Footer() {
                     <Phone className="w-4 h-4 text-[#6EE76D] mt-0.5 shrink-0" />
                     <span>{CONTACT_PHONE}</span>
                   </a>
-                  <a href={`mailto:${CONTACT_EMAIL}`} className="flex items-start gap-2 text-[#6EE76D] underline underline-offset-4 hover:text-[#89ef88] transition-colors">
+                  <a href={`mailto:${CONTACT_EMAIL}`} className="mail-link flex items-start gap-2 transition-colors">
                     <Mail className="w-4 h-4 text-[#6EE76D] mt-0.5 shrink-0" />
                     <span>{CONTACT_EMAIL}</span>
                   </a>

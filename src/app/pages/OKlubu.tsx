@@ -1,6 +1,7 @@
-import { Target, Heart, Award, Users, Building2 } from "lucide-react";
+import { Target, Heart, Award, Users, Building2, Phone, Mail, UserRound } from "lucide-react";
 import { PageHero, Btn, CtaStrip, SectionLabel, bebas, inter, CONTACT_EMAIL, nbspShortWords } from "../components/shared";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
+import { TEAMS } from "../data/teams";
 
 const VALUES = [
   { icon: Heart, title: "Vášeň", desc: "Házená není jen sport — je to způsob života. Každý trénink dáváme maximum." },
@@ -16,6 +17,40 @@ const MILESTONES = [
   { year: "13+", text: "Navazující žákovské a dorostenecké kategorie sbírají zkušenosti i úspěchy v soutěžích." },
   { year: "Dnes", text: "Hlavním cílem klubu je nadchnout co nejvíce dětí pro pravidelné sportování." },
 ];
+
+const COACH_DIRECTORY: Record<string, { phone?: string; email?: string; year?: string }> = {
+  "Petr Zálešák": { phone: "777 721 282", email: "minihchaje@gmail.com", year: "Minižákyně" },
+  "Kateřina Bláhová": { phone: "608 981 667", email: "pripravkahchaje@gmail.com", year: "Přípravka" },
+  "Veronika Zálešáková": { year: "Minižákyně" },
+  "Barbora Bláhová": { year: "Minižákyně" },
+  "Petr Paulín": { year: "Přípravka" },
+  "Nela Černá": { year: "Přípravka" },
+  "Mgr. Jana Dvořáková": { year: "Ženy" },
+  "Petr Novák": { year: "Starší žákyně" },
+  "Kateřina Malá": { year: "Mladší žákyně" },
+};
+
+const COACHES = Array.from(
+  TEAMS.flatMap((team) => [
+    { name: team.coach, teamName: team.name },
+    ...(team.assistantCoach ? [{ name: team.assistantCoach, teamName: team.name }] : []),
+  ]).reduce((map, item) => {
+    const existing = map.get(item.name) ?? {
+      name: item.name,
+      teams: [] as string[],
+      phone: COACH_DIRECTORY[item.name]?.phone,
+      email: COACH_DIRECTORY[item.name]?.email,
+      year: COACH_DIRECTORY[item.name]?.year,
+    };
+
+    if (!existing.teams.includes(item.teamName)) {
+      existing.teams.push(item.teamName);
+    }
+
+    map.set(item.name, existing);
+    return map;
+  }, new Map<string, { name: string; teams: string[]; phone?: string; email?: string; year?: string }>()).values(),
+).sort((a, b) => a.name.localeCompare(b.name, "cs"));
 
 export default function OKlubuPage() {
   return (
@@ -83,6 +118,52 @@ export default function OKlubuPage() {
                 </div>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      {/* Coaches */}
+      <section className="py-16 lg:py-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <SectionLabel>Trenéři</SectionLabel>
+          <h2 className="text-3xl lg:text-4xl text-white uppercase mb-12" style={{ fontFamily: bebas }}>Kdo vede naše družstva</h2>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {COACHES.map((coach) => (
+              <div key={coach.name} className="mobile-solid-card rounded-3xl bg-[#101a10] border border-[#6EE76D]/12 hover:border-[#6EE76D]/25 transition-all p-6 flex flex-col items-center justify-center text-center min-h-[22rem]">
+                <div className="mobile-solid-chip w-24 h-24 rounded-full overflow-hidden bg-[#6EE76D]/14 border border-[#6EE76D]/20 flex items-center justify-center mb-5">
+                  <UserRound className="w-10 h-10 text-[#6EE76D]" />
+                </div>
+
+                <div className="text-white text-[18px]" style={{ fontFamily: inter }}>{coach.name}</div>
+                {coach.year && (
+                  <div className="text-white/45 text-sm mt-2" style={{ fontFamily: inter }}>{coach.year}</div>
+                )}
+
+                <div className="mt-4 space-y-2 text-sm w-full">
+                  {coach.phone && (
+                    <div className="flex items-center justify-center gap-2 text-white" style={{ fontFamily: inter }}>
+                      <Phone className="w-4 h-4 text-[#6EE76D] shrink-0" />
+                      <span>{coach.phone}</span>
+                    </div>
+                  )}
+
+                  {coach.email && (
+                    <div className="flex items-center justify-center gap-2" style={{ fontFamily: inter }}>
+                      <Mail className="w-4 h-4 text-[#6EE76D] shrink-0" />
+                      <a href={`mailto:${coach.email}`} className="mail-link break-all">{coach.email}</a>
+                    </div>
+                  )}
+                </div>
+
+                <div className="mt-5 flex flex-wrap items-center justify-center gap-2">
+                  {coach.teams.map((teamName) => (
+                    <span key={teamName} className="px-3.5 py-1 rounded-full bg-[#6EE76D]/10 text-[#6EE76D] text-[12px] tracking-[0.12em]" style={{ fontFamily: bebas }}>
+                      {teamName}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </section>

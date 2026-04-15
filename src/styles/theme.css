@@ -170,6 +170,18 @@
     transition: transform 180ms ease-out, color 180ms ease-out, filter 180ms ease-out;
   }
 
+  .mail-link {
+    color: rgb(255 255 255 / 0.92);
+    text-decoration: none;
+    text-underline-offset: 4px;
+    transition: color 180ms ease-out, text-decoration-color 180ms ease-out;
+  }
+
+  .mail-link:hover {
+    color: #6EE76D;
+    text-decoration: underline;
+  }
+
   @media (max-width: 767px) {
     .text-white\/15 {
       color: rgb(255 255 255 / 0.38) !important;
@@ -196,6 +208,11 @@
     .mobile-solid-chip {
       background: rgba(110, 231, 109, 0.16) !important;
       border: 1px solid rgba(110, 231, 109, 0.12);
+    }
+
+    .mail-link {
+      color: #6EE76D !important;
+      text-decoration: underline;
     }
   }
 }

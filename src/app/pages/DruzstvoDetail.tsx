@@ -507,7 +507,7 @@ export default function DruzstvoDetail() {
                         {member.email ? (
                           <a
                             href={`mailto:${member.email}`}
-                            className="text-[#6EE76D] underline underline-offset-4 hover:text-[#89ef88] transition-colors break-all"
+                            className="mail-link transition-colors break-all"
                             style={{ fontFamily: inter }}
                           >
                             {member.email}
