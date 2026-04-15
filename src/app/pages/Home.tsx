@@ -327,7 +327,7 @@ function NewsAndTrainings() {
                 <Link
                   key={item.id}
                   to={`/aktuality/${toSlug(item.title)}`}
-                  state={{ article: { title: item.title, date: item.date, excerpt: item.excerpt, content: item.content }, backTo: "/" }}
+                  state={{ article: { title: item.title, date: item.date, excerpt: item.excerpt, content: item.content }, backTo: "/aktuality" }}
                   className="mobile-solid-card group block p-4 rounded-2xl bg-[#101a10] border border-[#6EE76D]/12 hover:border-[#6EE76D]/25 transition-all"
                 >
                   <div className="flex items-center gap-4">
