@@ -253,11 +253,11 @@ export default function DruzstvoDetail() {
                         <div className="grid grid-cols-2 gap-4" style={{ fontFamily: inter }}>
                           <div>
                             <div className="mb-1 text-sm" style={{ color: "rgb(255 255 255 / 0.46)" }}>Čas</div>
-                            <div className="text-base leading-snug" style={{ color: "#FFFFFF", fontWeight: 600 }}>{item.time}</div>
+                            <div className="text-[15px] leading-snug" style={{ color: "#FFFFFF", fontWeight: 600 }}>{item.time}</div>
                           </div>
                           <div>
                             <div className="mb-1 text-sm" style={{ color: "rgb(255 255 255 / 0.46)" }}>Místo</div>
-                            <div className="text-base leading-snug" style={{ color: "#FFFFFF", fontWeight: 600 }}>{item.hall}</div>
+                            <div className="text-[15px] leading-snug" style={{ color: "#FFFFFF", fontWeight: 600 }}>{item.hall}</div>
                           </div>
                         </div>
                       </div>
@@ -276,11 +276,11 @@ export default function DruzstvoDetail() {
                     </div>
                     <div>
                       <div className="text-sm uppercase tracking-[0.2em]" style={{ fontFamily: bebas, color: "rgb(255 255 255 / 0.46)" }}>Trénink</div>
-                      <div className="mt-1 text-base leading-snug" style={{ fontFamily: inter, color: "#FFFFFF", fontWeight: 600 }}>{t.hall}</div>
+                      <div className="mt-1 text-[15px] leading-snug" style={{ fontFamily: inter, color: "#FFFFFF", fontWeight: 600 }}>{t.hall}</div>
                     </div>
                   </div>
                   <div className="text-2xl text-white" style={{ fontFamily: bebas }}>{t.day}</div>
-                  <div className="mt-1 text-base" style={{ fontFamily: inter, color: "#FFFFFF", fontWeight: 600 }}>{t.time}</div>
+                  <div className="mt-1 text-[15px]" style={{ fontFamily: inter, color: "#FFFFFF", fontWeight: 600 }}>{t.time}</div>
                 </div>
               ))}
             </div>
