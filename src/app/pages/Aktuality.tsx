@@ -41,7 +41,7 @@ export default function AktualityPage() {
                   <button
                     key={team}
                     onClick={() => setSelectedTeam(team)}
-                    className={`rounded-full border px-4 py-2 text-sm transition-all ${isActive ? "border-[#6EE76D] bg-[#6EE76D]/12 text-white" : "border-white/10 text-white/70 hover:border-[#6EE76D]/30 hover:text-white"}`}
+                    className={`rounded-full border px-4 py-2 text-sm transition-all ${isActive ? "border-[#F587B9] bg-[#F587B9]/12 text-white shadow-[0_0_18px_rgba(245,135,185,0.12)]" : "border-white/10 text-white/70 hover:border-[#F587B9]/40 hover:text-white"}`}
                     style={{ fontFamily: inter }}
                   >
                     {team}

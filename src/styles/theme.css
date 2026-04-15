@@ -10,11 +10,11 @@
   --popover-foreground: #e8ffe8;
   --primary: #6EE76D;
   --primary-foreground: #080C08;
-  --secondary: #162016;
-  --secondary-foreground: #e8ffe8;
+  --secondary: #22111a;
+  --secondary-foreground: #ffe8f2;
   --muted: #121c12;
   --muted-foreground: #a8b8a8;
-  --accent: #6EE76D;
+  --accent: #F587B9;
   --accent-foreground: #080C08;
   --destructive: #d4183d;
   --destructive-foreground: #ffffff;
@@ -24,9 +24,9 @@
   --switch-background: #162016;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --ring: #6EE76D;
+  --ring: #F587B9;
   --chart-1: #6EE76D;
-  --chart-2: #4dd84d;
+  --chart-2: #F587B9;
   --chart-3: #3ab83a;
   --chart-4: #88f088;
   --chart-5: #55cc55;

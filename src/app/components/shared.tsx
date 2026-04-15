@@ -6,6 +6,7 @@ import {
 import logoSvg from "../../imports/hc-haje-nove-2.svg";
 
 export const G = "#6EE76D";
+export const P = "#F587B9";
 export const BG = "#080C08";
 export const bebas = "'Bebas Neue', sans-serif";
 export const inter = "Inter, sans-serif";
@@ -43,7 +44,7 @@ export function Btn({ children, variant = "primary", className = "", as, to, ...
   const base =
     variant === "primary"
       ? "bg-[#6EE76D] text-[#080C08] hover:brightness-110 hover:shadow-[0_0_20px_rgba(110,231,109,0.5)] active:brightness-95"
-      : "border border-[#6EE76D]/30 text-[#6EE76D] hover:bg-[#6EE76D]/10 hover:border-[#6EE76D]/60 active:brightness-95";
+      : "border border-[#F587B9]/35 bg-[#F587B9]/[0.04] text-[#FFD7E8] hover:bg-[#F587B9]/12 hover:border-[#F587B9]/70 hover:shadow-[0_0_18px_rgba(245,135,185,0.22)] active:brightness-95";
   const cls = `rounded-full px-7 py-3 tracking-wider uppercase transition-all duration-300 ease-out cursor-pointer inline-flex items-center gap-2 text-[1.05rem] ${base} ${className} active:-translate-y-[1px]`;
   const style = { fontFamily: bebas, letterSpacing: "0.08em" };
 
@@ -98,6 +99,8 @@ export function NewsCard({
   backTo?: string;
   className?: string;
 }) {
+  const isClubTag = tag?.trim().toLowerCase() === "klub";
+
   return (
     <Link
       to={to || `/aktuality/${newsSlug(article.title)}`}
@@ -110,7 +113,10 @@ export function NewsCard({
           {article.date}
         </span>
         {tag && (
-          <span className="px-3.5 py-1 rounded-full bg-[#6EE76D]/10 text-[#6EE76D] text-[12px] tracking-[0.12em]" style={{ fontFamily: bebas }}>
+          <span
+            className={`px-3.5 py-1 rounded-full text-[12px] tracking-[0.12em] ${isClubTag ? "bg-[#F587B9]/12 text-[#FFC2DD]" : "bg-[#6EE76D]/10 text-[#6EE76D]"}`}
+            style={{ fontFamily: bebas }}
+          >
             {nbspShortWords(tag)}
           </span>
         )}
@@ -136,8 +142,8 @@ export function NewsCard({
       )}
 
       <div className="mt-4 inline-flex items-center gap-1.5 text-sm" style={{ fontFamily: inter }}>
-        <ArrowRight className="w-4 h-4 text-[#8F988F] group-hover:text-[#6EE76D] group-hover:translate-x-0.5 transition-all" />
-        <span className="text-[#8F988F] underline-offset-4 group-hover:text-[#6EE76D] group-hover:underline">Zobrazit detail</span>
+        <ArrowRight className={`w-4 h-4 text-[#8F988F] ${isClubTag ? "group-hover:text-[#F587B9]" : "group-hover:text-[#6EE76D]"} group-hover:translate-x-0.5 transition-all`} />
+        <span className={`text-[#8F988F] underline-offset-4 ${isClubTag ? "group-hover:text-[#F587B9]" : "group-hover:text-[#6EE76D]"} group-hover:underline`}>Zobrazit detail</span>
       </div>
     </Link>
   );
