@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, Navigate, useLocation, useParams } from "react-router";
 import { ArrowLeft, ChevronLeft, ChevronRight, Play, X } from "lucide-react";
 import { bebas, inter, nbspShortWords } from "../components/shared";
+import { getAllTeamNews } from "../data/teams";
 
 type MediaGallerySection = {
   type: "gallery";
@@ -39,6 +40,14 @@ const DEMO_GALLERY_IMAGES = [
   "https://images.unsplash.com/photo-1552127966-d24b805b9be7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1200",
   "https://images.unsplash.com/photo-1606519740551-1fa9e7c68a02?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1200",
 ];
+
+const SHARED_ARTICLES = getAllTeamNews().map((item) => ({
+  slug: toSlug(item.title),
+  title: item.title,
+  date: item.date,
+  excerpt: item.excerpt,
+  content: item.content,
+}));
 
 const FALLBACK_ARTICLES: Array<Article & { slug: string }> = [
   {
@@ -228,7 +237,7 @@ export default function AktualitaDetail() {
   const state = location.state as { article?: Article; backTo?: string } | undefined;
   const [lightbox, setLightbox] = useState<{ images: string[]; index: number } | null>(null);
 
-  const fallbackArticle = FALLBACK_ARTICLES.find(
+  const fallbackArticle = [...SHARED_ARTICLES, ...FALLBACK_ARTICLES].find(
     (item) => item.slug === articleSlug || (state?.article?.title && item.slug === toSlug(state.article.title))
   );
 

@@ -49,6 +49,23 @@ export interface Team {
 import miniPhoto from "../../imports/mini2025.jpg";
 import pripravkaPhoto from "../../imports/pripravka.png";
 
+const CLUB_NEWS: TeamNews[] = [
+  {
+    date: "12. 4. 2026",
+    title: "Klubové focení a společné odpoledne v areálu Háje",
+    excerpt: "Celý klub se sejde na společném focení, krátkém programu pro rodiče a neformálním posezení po trénincích.",
+    content:
+      "V neděli odpoledne nás čeká společné klubové focení všech kategorií, krátké setkání s rodiči a společný program v areálu Háje. Prosíme všechny hráčky, aby dorazily v klubovém oblečení a s dobrou náladou.",
+  },
+  {
+    date: "28. 3. 2026",
+    title: "HC Háje děkuje rodičům a partnerům za podporu jarní části sezóny",
+    excerpt: "Děkujeme všem, kdo pomáhají vytvářet děvčatům skvělé prostředí pro sport, růst a radost ze hry.",
+    content:
+      "Jarní část sezóny je v plném proudu a my si velmi vážíme podpory rodičů, dobrovolníků i partnerů klubu. Právě díky nim můžeme dál rozvíjet všechna družstva a posouvat klub kupředu.",
+  },
+];
+
 export const TEAMS: Team[] = [
   {
     slug: "zeny",
@@ -199,8 +216,22 @@ export const TEAMS: Team[] = [
       { name: "Žďánská Tereza", position: "2015", number: "089840" },
     ],
     news: [
-      { date: "9. 4. 2026", title: "Nábor mini žákyň — přijďte si to zkusit!", excerpt: "Do minižákyň hledáme nové holčičky, které chtějí objevovat házenou zábavnou formou." },
-      { date: "3. 4. 2026", title: "Účast na jarním festivalu v Modřanech", excerpt: "Minižákyně si odvezly z festivalu spoustu zážitků, radosti a nových herních zkušeností." },
+      {
+        date: "9. 4. 2026",
+        title: "Nábor mini žákyň — přijďte si to zkusit!",
+        excerpt: "Do minižákyň hledáme nové holčičky, které chtějí objevovat házenou zábavnou formou.",
+      },
+      {
+        date: "3. 4. 2026",
+        title: "Účast na jarním festivalu v Modřanech",
+        excerpt: "Minižákyně si odvezly z festivalu spoustu zážitků, radosti a nových herních zkušeností.",
+      },
+      {
+        date: "03.03.2025",
+        title: "5+1 v Heroldových sadech",
+        excerpt:
+          "Druhá polovina sezóny je tu a naše MINI se dnes zúčastnily svazového turnaje 5+1 v hale Sokol Vršovice. Za skvělé podpory našich fanoušků se hájecké bojovnice utkaly s týmy Kobylek, Slávie, Vršovic, Chodova a Dukly.",
+      },
     ],
   },
   {
@@ -267,7 +298,14 @@ export function getTeamBySlug(slug: string): Team | undefined {
 }
 
 export function getAllTeamNews() {
-  return TEAMS.flatMap((team) =>
+  const clubItems = CLUB_NEWS.map((item, index) => ({
+    ...item,
+    id: `klub-${index}`,
+    teamName: "Klub",
+    teamSlug: "klub",
+  }));
+
+  const teamItems = TEAMS.flatMap((team) =>
     team.news.map((item, index) => ({
       ...item,
       id: `${team.slug}-${index}`,
@@ -275,4 +313,6 @@ export function getAllTeamNews() {
       teamSlug: team.slug,
     })),
   );
+
+  return [...clubItems, ...teamItems];
 }
