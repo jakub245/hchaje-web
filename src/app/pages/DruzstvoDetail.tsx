@@ -350,7 +350,7 @@ export default function DruzstvoDetail() {
 
               <div>
                 {displayedEvents.map((event, i) => (
-                  <div key={i} className={`grid gap-4 md:grid-cols-[1fr_1.4fr_1fr] py-5 ${i !== 0 ? "border-t border-[#6EE76D]/15" : ""}`}>
+                  <div key={i} className={`grid gap-3 md:grid-cols-[1fr_1.4fr_1fr] py-5 ${i !== 0 ? "border-t border-[#6EE76D]/15" : ""}`}>
                     <div className="flex items-center gap-3">
                       <div className="mobile-solid-chip w-10 h-10 rounded-2xl bg-[#6EE76D]/14 flex items-center justify-center flex-shrink-0">
                         <Calendar className="w-4 h-4 text-[#6EE76D]" />
@@ -361,17 +361,15 @@ export default function DruzstvoDetail() {
                       </div>
                     </div>
 
-                    <div className="flex items-center">
+                    <div className="pl-[3.25rem] md:pl-0 flex items-center">
                       <div>
                         <div className="text-white/45 text-sm md:hidden mb-1" style={{ fontFamily: inter }}>Akce</div>
                         <div className="text-white text-base whitespace-pre-line" style={{ fontFamily: inter }}>{nbspShortWords(event.title)}</div>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-3">
-                      <div className="mobile-solid-chip w-10 h-10 rounded-2xl bg-[#6EE76D]/14 flex items-center justify-center flex-shrink-0">
-                        <MapPin className="w-4 h-4 text-[#6EE76D]" />
-                      </div>
+                    <div className="pl-[3.25rem] md:pl-0 flex items-start gap-2">
+                      <MapPin className="hidden md:block w-4 h-4 text-[#6EE76D] mt-1 flex-shrink-0" />
                       <div>
                         <div className="text-white/45 text-sm md:hidden" style={{ fontFamily: inter }}>Místo</div>
                         <div className="text-white/75 whitespace-pre-line" style={{ fontFamily: inter }}>{nbspShortWords(event.location)}</div>
