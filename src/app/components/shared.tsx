@@ -3,7 +3,7 @@ import { Link, useLocation } from "react-router";
 import {
   Menu, X, Phone, Mail, MapPin, Instagram, Activity, ArrowRight, Facebook, Calendar,
 } from "lucide-react";
-import logoSvg from "../../imports/hc-haje-nove.svg";
+import logoSvg from "../../imports/hc-haje-nove-2.svg";
 
 export const G = "#6EE76D";
 export const BG = "#080C08";
