@@ -103,11 +103,11 @@ export default function OKlubuPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionLabel>Naše hodnoty</SectionLabel>
           <h2 className="text-3xl lg:text-4xl text-white uppercase mb-12" style={{ fontFamily: bebas }}>Co nás definuje</h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
             {VALUES.map((v) => {
               const Icon = v.icon;
               return (
-                <div key={v.title} className="p-6 rounded-2xl bg-[#0e160e] border border-[#6EE76D]/8 hover:border-[#6EE76D]/20 transition-all">
+                <div key={v.title} className="py-2">
                   <div className="w-12 h-12 rounded-full bg-[#6EE76D]/10 flex items-center justify-center mb-4">
                     <Icon className="w-6 h-6 text-[#6EE76D]" />
                   </div>
