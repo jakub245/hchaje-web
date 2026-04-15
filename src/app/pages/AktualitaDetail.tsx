@@ -237,9 +237,15 @@ export default function AktualitaDetail() {
   const state = location.state as { article?: Article; backTo?: string } | undefined;
   const [lightbox, setLightbox] = useState<{ images: string[]; index: number } | null>(null);
 
-  const fallbackArticle = [...SHARED_ARTICLES, ...FALLBACK_ARTICLES].find(
+  const detailedFallbackArticle = FALLBACK_ARTICLES.find(
     (item) => item.slug === articleSlug || (state?.article?.title && item.slug === toSlug(state.article.title))
   );
+
+  const sharedFallbackArticle = SHARED_ARTICLES.find(
+    (item) => item.slug === articleSlug || (state?.article?.title && item.slug === toSlug(state.article.title))
+  );
+
+  const fallbackArticle = detailedFallbackArticle ?? sharedFallbackArticle;
 
   const article = state?.article
     ? {
