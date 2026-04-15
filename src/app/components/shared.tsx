@@ -73,7 +73,7 @@ export function Btn({ children, variant = "primary", className = "", as, to, ...
 /* ── Section heading ── */
 export function SectionLabel({ children }: { children: ReactNode }) {
   return (
-    <span className="text-[#6EE76D] text-sm tracking-[0.2em] uppercase mb-3 block" style={{ fontFamily: bebas }}>
+    <span className="text-[#F587B9] text-sm tracking-[0.2em] uppercase mb-3 block" style={{ fontFamily: bebas }}>
       {formatCzechTextNode(children)}
     </span>
   );
@@ -99,8 +99,6 @@ export function NewsCard({
   backTo?: string;
   className?: string;
 }) {
-  const isClubTag = tag?.trim().toLowerCase() === "klub";
-
   return (
     <Link
       to={to || `/aktuality/${newsSlug(article.title)}`}
@@ -114,7 +112,7 @@ export function NewsCard({
         </span>
         {tag && (
           <span
-            className={`px-3.5 py-1 rounded-full text-[12px] tracking-[0.12em] ${isClubTag ? "bg-[#F587B9]/12 text-[#FFC2DD]" : "bg-[#6EE76D]/10 text-[#6EE76D]"}`}
+            className="px-3.5 py-1 rounded-full text-[12px] tracking-[0.12em] bg-[#F587B9]/12 text-[#FFC2DD]"
             style={{ fontFamily: bebas }}
           >
             {nbspShortWords(tag)}
@@ -142,8 +140,8 @@ export function NewsCard({
       )}
 
       <div className="mt-4 inline-flex items-center gap-1.5 text-sm" style={{ fontFamily: inter }}>
-        <ArrowRight className={`w-4 h-4 text-[#8F988F] ${isClubTag ? "group-hover:text-[#F587B9]" : "group-hover:text-[#6EE76D]"} group-hover:translate-x-0.5 transition-all`} />
-        <span className={`text-[#8F988F] underline-offset-4 ${isClubTag ? "group-hover:text-[#F587B9]" : "group-hover:text-[#6EE76D]"} group-hover:underline`}>Zobrazit detail</span>
+        <ArrowRight className="w-4 h-4 text-[#8F988F] group-hover:text-[#F587B9] group-hover:translate-x-0.5 transition-all" />
+        <span className="text-[#8F988F] underline-offset-4 group-hover:text-[#F587B9] group-hover:underline">Zobrazit detail</span>
       </div>
     </Link>
   );

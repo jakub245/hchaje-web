@@ -79,13 +79,13 @@ export default function TreninkyPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-10">
             <div className="flex items-center gap-2 text-white/80 mb-4" style={{ fontFamily: bebas }}>
-              <MapPin className="w-4 h-4 text-[#6EE76D]" />
+              <MapPin className="w-4 h-4 text-[#F587B9]" />
               Filtrovat podle místa
             </div>
             <div className="flex flex-wrap gap-3">
               <button
                 onClick={() => setSelectedPlace("all")}
-                className={`rounded-full border px-4 py-2 text-sm transition-all ${selectedPlace === "all" ? "border-[#6EE76D] bg-[#6EE76D]/12 text-white" : "border-white/10 text-white/70 hover:border-[#6EE76D]/30 hover:text-white"}`}
+                className={`rounded-full border px-4 py-2 text-sm transition-all ${selectedPlace === "all" ? "border-[#F587B9] bg-[#F587B9]/12 text-white shadow-[0_0_18px_rgba(245,135,185,0.12)]" : "border-white/10 text-white/70 hover:border-[#F587B9]/40 hover:text-white"}`}
                 style={{ fontFamily: inter }}
               >
                 Všechna místa
@@ -97,7 +97,7 @@ export default function TreninkyPage() {
                   <button
                     key={place}
                     onClick={() => setSelectedPlace(normalizePlace(place))}
-                    className={`rounded-full border px-4 py-2 text-sm transition-all ${isActive ? "border-[#6EE76D] bg-[#6EE76D]/12 text-white" : "border-white/10 text-white/70 hover:border-[#6EE76D]/30 hover:text-white"}`}
+                    className={`rounded-full border px-4 py-2 text-sm transition-all ${isActive ? "border-[#F587B9] bg-[#F587B9]/12 text-white shadow-[0_0_18px_rgba(245,135,185,0.12)]" : "border-white/10 text-white/70 hover:border-[#F587B9]/40 hover:text-white"}`}
                     style={{ fontFamily: inter }}
                   >
                     {place}
@@ -111,7 +111,7 @@ export default function TreninkyPage() {
             {filteredScheduleByDay.map((day) => (
               <div key={day.day}>
                 <h3 className="text-2xl text-white uppercase mb-4 flex items-center gap-3" style={{ fontFamily: bebas }}>
-                  <div className="w-3 h-3 rounded-full bg-[#6EE76D]" />
+                  <div className="w-3 h-3 rounded-full bg-[#F587B9]" />
                   {day.day}
                 </h3>
                 <div className="space-y-3">

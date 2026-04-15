@@ -101,9 +101,9 @@ function Hero() {
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32 w-full">
         <div className="max-w-2xl">
-          <div className="inline-flex items-center gap-2 bg-[#6EE76D]/10 border border-[#6EE76D]/20 rounded-full px-4 py-1.5 mb-6">
-            <div className="w-2 h-2 rounded-full bg-[#6EE76D] animate-pulse" />
-            <span className="text-[#6EE76D] text-sm" style={{ fontFamily: bebas, letterSpacing: "0.1em" }}>
+          <div className="inline-flex items-center gap-2 bg-[#F587B9]/10 border border-[#F587B9]/20 rounded-full px-4 py-1.5 mb-6">
+            <div className="w-2 h-2 rounded-full bg-[#F587B9] animate-pulse" />
+            <span className="text-[#F587B9] text-sm" style={{ fontFamily: bebas, letterSpacing: "0.1em" }}>
               Sezóna 2025 / 2026
             </span>
           </div>
@@ -343,8 +343,8 @@ function NewsAndTrainings() {
                         {item.title}
                       </h3>
                       <div className="flex flex-wrap items-center gap-3 text-sm text-white/35 mt-1.5">
-                        <span className="inline-flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5 text-[#6EE76D]" /> {item.date}</span>
-                        <span className="px-3.5 py-1 rounded-full bg-[#6EE76D]/10 text-[#6EE76D] text-[12px] tracking-[0.12em]" style={{ fontFamily: bebas }}>{item.teamName}</span>
+                        <span className="inline-flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5 text-[#F587B9]" /> {item.date}</span>
+                        <span className="px-3.5 py-1 rounded-full bg-[#F587B9]/12 text-[#FFC2DD] text-[12px] tracking-[0.12em]" style={{ fontFamily: bebas }}>{item.teamName}</span>
                       </div>
                     </div>
 

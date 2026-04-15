@@ -220,7 +220,7 @@ export default function KontaktyPage() {
           </div>
 
           {/* Contact form */}
-          <div className="mt-16 p-8 lg:p-12 rounded-2xl bg-gradient-to-r from-[#6EE76D]/8 via-[#6EE76D]/4 to-[#6EE76D]/8 border border-[#6EE76D]/15">
+          <div className="mt-16 p-8 lg:p-12 rounded-2xl bg-gradient-to-r from-[#F587B9]/10 via-[#F587B9]/5 to-[#F587B9]/10 border border-[#F587B9]/15">
             <div className="max-w-3xl mx-auto">
               <SectionLabel>Napište nám</SectionLabel>
               <h2 className="text-3xl lg:text-4xl text-white uppercase mb-4" style={{ fontFamily: bebas }}>
@@ -232,7 +232,7 @@ export default function KontaktyPage() {
 
               {submitState.type !== "idle" && (
                 <div
-                  className={`mb-6 rounded-2xl px-4 py-3 text-sm ${submitState.type === "success" ? "bg-[#6EE76D]/12 text-[#9CF59B] border border-[#6EE76D]/25" : "bg-red-500/10 text-red-200 border border-red-400/20"}`}
+                  className={`mb-6 rounded-2xl px-4 py-3 text-sm ${submitState.type === "success" ? "bg-[#F587B9]/12 text-[#FFD7E8] border border-[#F587B9]/25" : "bg-red-500/10 text-red-200 border border-red-400/20"}`}
                   style={{ fontFamily: inter }}
                 >
                   {submitState.message}
@@ -250,7 +250,7 @@ export default function KontaktyPage() {
                   autoComplete="off"
                 />
 
-                <div className="rounded-2xl border border-[#6EE76D]/12 bg-[#0d160d]/80 p-5">
+                <div className="rounded-2xl border border-[#F587B9]/12 bg-[#0d160d]/80 p-5">
                   <h3 className="text-white uppercase mb-4 tracking-[0.08em]" style={{ fontFamily: bebas }}>
                     Údaje rodiče
                   </h3>
@@ -320,7 +320,7 @@ export default function KontaktyPage() {
                   </div>
                 </div>
 
-                <div className="rounded-2xl border border-[#6EE76D]/12 bg-[#0d160d]/80 p-5">
+                <div className="rounded-2xl border border-[#F587B9]/12 bg-[#0d160d]/80 p-5">
                   <h3 className="text-white uppercase mb-3 tracking-[0.08em]" style={{ fontFamily: bebas }}>
                     Údaje dítěte
                   </h3>
@@ -365,7 +365,7 @@ export default function KontaktyPage() {
                         return (
                           <label
                             key={option.value}
-                            className={`rounded-full border px-4 py-2 text-sm transition-all cursor-pointer ${isActive ? "border-[#6EE76D] bg-[#6EE76D]/12 text-white" : "border-white/10 text-white/70 hover:border-[#6EE76D]/30 hover:text-white"}`}
+                            className={`rounded-full border px-4 py-2 text-sm transition-all cursor-pointer ${isActive ? "border-[#F587B9] bg-[#F587B9]/12 text-white shadow-[0_0_18px_rgba(245,135,185,0.12)]" : "border-white/10 text-white/70 hover:border-[#F587B9]/40 hover:text-white"}`}
                             style={{ fontFamily: inter }}
                           >
                             <input
@@ -392,7 +392,7 @@ export default function KontaktyPage() {
                       onChange={handleChange}
                       className="sr-only"
                     />
-                    <span className={`w-5 h-5 rounded border flex items-center justify-center transition-all ${formData.hasMoreChildren ? "bg-[#6EE76D] border-[#6EE76D]" : "border-[#6EE76D]/30 bg-[#0d160d]"}`}>
+                    <span className={`w-5 h-5 rounded border flex items-center justify-center transition-all ${formData.hasMoreChildren ? "bg-[#F587B9] border-[#F587B9]" : "border-[#F587B9]/30 bg-[#0d160d]"}`}>
                       {formData.hasMoreChildren && <span className="w-2 h-2 rounded-sm bg-[#080C08]" />}
                     </span>
                     <span className="text-white/80 text-sm" style={{ fontFamily: inter }}>Chci přijít s více dětmi</span>
@@ -434,7 +434,7 @@ export default function KontaktyPage() {
                             return (
                               <label
                                 key={`second-${option.value}`}
-                                className={`rounded-full border px-4 py-2 text-sm transition-all cursor-pointer ${isActive ? "border-[#6EE76D] bg-[#6EE76D]/12 text-white" : "border-white/10 text-white/70 hover:border-[#6EE76D]/30 hover:text-white"}`}
+                                className={`rounded-full border px-4 py-2 text-sm transition-all cursor-pointer ${isActive ? "border-[#F587B9] bg-[#F587B9]/12 text-white shadow-[0_0_18px_rgba(245,135,185,0.12)]" : "border-white/10 text-white/70 hover:border-[#F587B9]/40 hover:text-white"}`}
                                 style={{ fontFamily: inter }}
                               >
                                 <input
@@ -477,7 +477,7 @@ export default function KontaktyPage() {
                   <button
                     type="submit"
                     disabled={isSending}
-                    className="rounded-full px-8 py-3 bg-[#6EE76D] text-[#080C08] hover:brightness-110 disabled:opacity-70 disabled:cursor-not-allowed uppercase transition-all duration-300 inline-flex items-center justify-center gap-2"
+                    className="rounded-full px-8 py-3 bg-[#F587B9] text-[#080C08] hover:brightness-110 hover:shadow-[0_0_20px_rgba(245,135,185,0.28)] disabled:opacity-70 disabled:cursor-not-allowed uppercase transition-all duration-300 inline-flex items-center justify-center gap-2"
                     style={{ fontFamily: bebas, letterSpacing: "0.08em" }}
                   >
                     {isSending ? "Odesílám..." : "Odeslat zprávu"}
