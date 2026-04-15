@@ -363,23 +363,28 @@ export default function DruzstvoDetail() {
                       </div>
                     </div>
 
-                    <div className="pl-[3.25rem] md:pl-0 md:contents">
-                      <div className="grid gap-4 sm:grid-cols-2 md:block w-full">
-                        <div className="flex items-start">
-                          <div>
-                            <div className="text-white/45 text-sm md:hidden mb-1" style={{ fontFamily: inter }}>Akce</div>
-                            <div className="text-white text-base whitespace-pre-line" style={{ fontFamily: inter }}>{nbspShortWords(event.title)}</div>
-                          </div>
-                        </div>
+                    <div className="pl-[3.25rem] grid grid-cols-[1.2fr_1fr] gap-4 md:hidden">
+                      <div>
+                        <div className="text-white/45 text-sm mb-1" style={{ fontFamily: inter }}>Akce</div>
+                        <div className="text-white text-base whitespace-pre-line" style={{ fontFamily: inter }}>{nbspShortWords(event.title)}</div>
+                      </div>
 
-                        <div className="flex items-start gap-2">
-                          <MapPin className="w-4 h-4 text-[#6EE76D] mt-1 flex-shrink-0" />
-                          <div>
-                            <div className="text-white/45 text-sm md:hidden" style={{ fontFamily: inter }}>Místo</div>
-                            <div className="text-white whitespace-pre-line" style={{ fontFamily: inter }}>{nbspShortWords(event.location)}</div>
-                          </div>
+                      <div className="flex items-start gap-2">
+                        <MapPin className="w-4 h-4 text-[#6EE76D] mt-1 flex-shrink-0" />
+                        <div>
+                          <div className="text-white/45 text-sm mb-1" style={{ fontFamily: inter }}>Místo</div>
+                          <div className="text-white whitespace-pre-line" style={{ fontFamily: inter }}>{nbspShortWords(event.location)}</div>
                         </div>
                       </div>
+                    </div>
+
+                    <div className="hidden md:flex items-center">
+                      <div className="text-white text-base whitespace-pre-line" style={{ fontFamily: inter }}>{nbspShortWords(event.title)}</div>
+                    </div>
+
+                    <div className="hidden md:flex items-start gap-2">
+                      <MapPin className="w-4 h-4 text-[#6EE76D] mt-1 flex-shrink-0" />
+                      <div className="text-white whitespace-pre-line" style={{ fontFamily: inter }}>{nbspShortWords(event.location)}</div>
                     </div>
                   </div>
                 ))}
@@ -499,7 +504,17 @@ export default function DruzstvoDetail() {
                       {member.email ? <Mail className="w-4 h-4 text-[#6EE76D] shrink-0" /> : <span className="hidden md:block w-4" />}
                       <div>
                         <div className="text-white/45 text-sm md:hidden mb-1" style={{ fontFamily: inter }}>E-mail</div>
-                        <div className="text-white break-all" style={{ fontFamily: inter }}>{member.email || "—"}</div>
+                        {member.email ? (
+                          <a
+                            href={`mailto:${member.email}`}
+                            className="text-[#6EE76D] underline underline-offset-4 hover:text-[#89ef88] transition-colors break-all"
+                            style={{ fontFamily: inter }}
+                          >
+                            {member.email}
+                          </a>
+                        ) : (
+                          <div className="text-white break-all" style={{ fontFamily: inter }}>—</div>
+                        )}
                     </div>
                   </div>
                 </div>
