@@ -43,8 +43,8 @@ const formatCzechTextNode = (node: ReactNode): ReactNode => {
 export function Btn({ children, variant = "primary", className = "", as, to, ...props }: any) {
   const base =
     variant === "primary"
-      ? "bg-[#6EE76D] text-[#080C08] hover:brightness-110 hover:shadow-[0_0_20px_rgba(110,231,109,0.5)] active:brightness-95"
-      : "border border-[#F587B9]/35 bg-[#F587B9]/[0.04] text-[#FFD7E8] hover:bg-[#F587B9]/12 hover:border-[#F587B9]/70 hover:shadow-[0_0_18px_rgba(245,135,185,0.22)] active:brightness-95";
+      ? "bg-[#F587B9] text-[#080C08] hover:brightness-110 hover:shadow-[0_0_20px_rgba(245,135,185,0.38)] active:brightness-95"
+      : "border border-[#6EE76D]/30 text-[#6EE76D] hover:bg-[#6EE76D]/10 hover:border-[#6EE76D]/60 active:brightness-95";
   const cls = `rounded-full px-7 py-3 tracking-wider uppercase transition-all duration-300 ease-out cursor-pointer inline-flex items-center gap-2 text-[1.05rem] ${base} ${className} active:-translate-y-[1px]`;
   const style = { fontFamily: bebas, letterSpacing: "0.08em" };
 
@@ -187,7 +187,7 @@ export function Navbar() {
             ))}
             <Link
               to="/kontakty"
-              className="rounded-full px-6 py-2 bg-[#6EE76D] text-[#080C08] hover:brightness-110 uppercase transition-all duration-300 inline-flex items-center gap-2"
+              className="rounded-full px-6 py-2 bg-[#F587B9] text-[#080C08] hover:brightness-110 hover:shadow-[0_0_20px_rgba(245,135,185,0.28)] uppercase transition-all duration-300 inline-flex items-center gap-2"
               style={navTextStyle}
             >
               Chci se přidat
