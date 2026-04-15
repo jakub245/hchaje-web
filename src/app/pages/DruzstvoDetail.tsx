@@ -240,11 +240,7 @@ export default function DruzstvoDetail() {
             <div className="space-y-10">
               {trainingBlocks.map((block) => (
                 <div key={block.title}>
-                  <div className="mb-4">
-                    <span className="inline-flex rounded-full bg-[#F587B9]/12 px-3 py-1 text-[12px] uppercase tracking-[0.12em] text-[#FFC2DD]" style={{ fontFamily: bebas }}>
-                      {block.title}
-                    </span>
-                  </div>
+                  <h3 className="text-xl text-white/45 mb-4 normal-case" style={{ fontFamily: inter }}>{block.title}</h3>
                   <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                     {block.items.map((item) => (
                       <div key={item.day + item.time + item.hall} className="mobile-solid-card rounded-3xl border border-[#6EE76D]/12 bg-[#101a10] p-6">
@@ -254,14 +250,14 @@ export default function DruzstvoDetail() {
                           </div>
                           <div className="text-white text-xl" style={{ fontFamily: bebas }}>{item.day}</div>
                         </div>
-                        <div className="grid grid-cols-2 gap-4 text-sm" style={{ fontFamily: inter }}>
+                        <div className="grid grid-cols-2 gap-4" style={{ fontFamily: inter }}>
                           <div>
-                            <div className="text-white/40 mb-1">Čas</div>
-                            <div className="text-white/80">{item.time}</div>
+                            <div className="mb-1 text-sm" style={{ color: "rgb(255 255 255 / 0.46)" }}>Čas</div>
+                            <div className="text-base leading-snug" style={{ color: "#FFFFFF", fontWeight: 600 }}>{item.time}</div>
                           </div>
                           <div>
-                            <div className="text-white/40 mb-1">Místo</div>
-                            <div className="text-white/80">{item.hall}</div>
+                            <div className="mb-1 text-sm" style={{ color: "rgb(255 255 255 / 0.46)" }}>Místo</div>
+                            <div className="text-base leading-snug" style={{ color: "#FFFFFF", fontWeight: 600 }}>{item.hall}</div>
                           </div>
                         </div>
                       </div>
@@ -279,12 +275,12 @@ export default function DruzstvoDetail() {
                       <Calendar className="w-5 h-5 text-[#6EE76D]" />
                     </div>
                     <div>
-                      <div className="text-sm uppercase tracking-[0.2em] text-white/40" style={{ fontFamily: bebas }}>Trénink</div>
-                      <div className="text-white/70 text-sm mt-1">{t.hall}</div>
+                      <div className="text-sm uppercase tracking-[0.2em]" style={{ fontFamily: bebas, color: "rgb(255 255 255 / 0.46)" }}>Trénink</div>
+                      <div className="mt-1 text-base leading-snug" style={{ fontFamily: inter, color: "#FFFFFF", fontWeight: 600 }}>{t.hall}</div>
                     </div>
                   </div>
                   <div className="text-2xl text-white" style={{ fontFamily: bebas }}>{t.day}</div>
-                  <div className="text-white/40 mt-1">{t.time}</div>
+                  <div className="mt-1 text-base" style={{ fontFamily: inter, color: "#FFFFFF", fontWeight: 600 }}>{t.time}</div>
                 </div>
               ))}
             </div>
@@ -313,22 +309,22 @@ export default function DruzstvoDetail() {
                         <Calendar className="w-4 h-4 text-[#6EE76D]" />
                       </div>
                       <div>
-                        <div className="text-white/45 text-sm md:hidden" style={{ fontFamily: inter }}>Datum</div>
+                        <div className="text-sm md:hidden" style={{ fontFamily: inter, color: "rgb(255 255 255 / 0.46)" }}>Datum</div>
                         <div className="text-white text-[1.2rem] whitespace-pre-line" style={{ fontFamily: bebas }}>{event.date}</div>
                       </div>
                     </div>
 
                     <div className="pl-[3.25rem] grid grid-cols-[1.2fr_1fr] gap-4 md:hidden">
                       <div>
-                        <div className="text-white/45 text-sm mb-1" style={{ fontFamily: inter }}>Akce</div>
-                        <div className="text-white text-base whitespace-pre-line" style={{ fontFamily: inter }}>{nbspShortWords(event.title)}</div>
+                        <div className="mb-1 text-sm" style={{ fontFamily: inter, color: "rgb(255 255 255 / 0.46)" }}>Akce</div>
+                        <div className="text-base whitespace-pre-line" style={{ fontFamily: inter, color: "#FFFFFF", fontWeight: 600 }}>{nbspShortWords(event.title)}</div>
                       </div>
 
                       <div className="flex items-start gap-2">
                         <MapPin className="w-4 h-4 text-[#6EE76D] mt-1 flex-shrink-0" />
                         <div>
-                          <div className="text-white/45 text-sm mb-1" style={{ fontFamily: inter }}>Místo</div>
-                          <div className="text-white whitespace-pre-line" style={{ fontFamily: inter }}>{nbspShortWords(event.location)}</div>
+                          <div className="mb-1 text-sm" style={{ fontFamily: inter, color: "rgb(255 255 255 / 0.46)" }}>Místo</div>
+                          <div className="text-base whitespace-pre-line" style={{ fontFamily: inter, color: "#FFFFFF", fontWeight: 600 }}>{nbspShortWords(event.location)}</div>
                         </div>
                       </div>
                     </div>

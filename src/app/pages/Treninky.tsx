@@ -139,12 +139,12 @@ export default function TreninkyPage() {
 
                         <div className="flex items-center gap-2 text-sm min-w-0" style={{ fontFamily: inter }}>
                           <Clock className="w-4 h-4 text-[#6EE76D] flex-shrink-0" />
-                          <span className="text-white">{slot.time}</span>
+                          <span className="text-white font-semibold">{slot.time}</span>
                         </div>
 
                         <div className="flex items-center gap-2 text-sm min-w-0" style={{ fontFamily: inter }}>
                           <MapPin className="w-4 h-4 text-[#6EE76D] flex-shrink-0" />
-                          <span className="text-white truncate">{formatPlace(slot.hall)}</span>
+                          <span className="text-white font-semibold truncate">{formatPlace(slot.hall)}</span>
                         </div>
 
                         <div className="flex items-center justify-end text-[#8F988F] group-hover:text-[#6EE76D] group-hover:translate-x-1 transition-all">
