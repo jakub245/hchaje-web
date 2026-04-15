@@ -10,6 +10,8 @@ import {
   User,
   ChevronLeft,
   ChevronRight,
+  Phone,
+  Mail,
 } from "lucide-react";
 import { bebas, inter, CtaStrip, NewsCard, nbspShortWords } from "../components/shared";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
