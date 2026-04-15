@@ -101,9 +101,9 @@ function Hero() {
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32 w-full">
         <div className="max-w-2xl">
-          <div className="inline-flex items-center gap-2 bg-[#F587B9]/10 border border-[#F587B9]/20 rounded-full px-4 py-1.5 mb-6">
-            <div className="w-2 h-2 rounded-full bg-[#F587B9] animate-pulse" />
-            <span className="text-[#F587B9] text-sm" style={{ fontFamily: bebas, letterSpacing: "0.1em" }}>
+          <div className="inline-flex items-center gap-2 bg-[#6EE76D]/10 border border-[#6EE76D]/20 rounded-full px-4 py-1.5 mb-6">
+            <div className="w-2 h-2 rounded-full bg-[#6EE76D] animate-pulse" />
+            <span className="text-[#6EE76D] text-sm" style={{ fontFamily: bebas, letterSpacing: "0.1em" }}>
               Sezóna 2025 / 2026
             </span>
           </div>

@@ -79,7 +79,7 @@ export default function TreninkyPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-10">
             <div className="flex items-center gap-2 text-white/80 mb-4" style={{ fontFamily: bebas }}>
-              <MapPin className="w-4 h-4 text-[#F587B9]" />
+              <MapPin className="w-4 h-4 text-[#6EE76D]" />
               Filtrovat podle místa
             </div>
             <div className="flex flex-wrap gap-3">
@@ -130,7 +130,7 @@ export default function TreninkyPage() {
                           <div className="text-white text-[16px] leading-tight" style={{ fontFamily: inter }}>{slot.team}</div>
                           {slot.season && (
                             <div className="mt-2">
-                              <span className="inline-flex rounded-full border border-[#6EE76D]/20 bg-[#6EE76D]/8 px-2.5 py-1 text-[11px] text-white/75" style={{ fontFamily: inter }}>
+                              <span className="inline-flex rounded-full bg-[#F587B9]/12 px-3 py-1 text-[12px] uppercase tracking-[0.12em] text-[#FFC2DD]" style={{ fontFamily: bebas }}>
                                 {slot.season}
                               </span>
                             </div>
