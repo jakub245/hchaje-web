@@ -251,11 +251,18 @@ export function Footer() {
 
               <div>
                 <h4 className="text-white mb-4 uppercase tracking-wider" style={{ fontFamily: bebas }}>Kontakt</h4>
-                <div className="space-y-2 text-sm text-white/35">
-                  <a href={`tel:${CONTACT_PHONE.replace(/\s/g, "")}`} className="block hover:text-[#6EE76D] transition-colors">{CONTACT_PHONE}</a>
-                  <a href={`mailto:${CONTACT_EMAIL}`} className="block hover:text-[#6EE76D] transition-colors">{CONTACT_EMAIL}</a>
-                  <a href={MAP_URL} target="_blank" rel="noreferrer" className="block hover:text-[#6EE76D] transition-colors">
-                    {CONTACT_ADDRESS_TITLE}, {CONTACT_ADDRESS}
+                <div className="space-y-3 text-sm text-white/35" style={{ fontFamily: inter }}>
+                  <a href={`tel:${CONTACT_PHONE.replace(/\s/g, "")}`} className="flex items-start gap-2 hover:text-[#6EE76D] transition-colors">
+                    <Phone className="w-4 h-4 text-[#6EE76D] mt-0.5 shrink-0" />
+                    <span>{CONTACT_PHONE}</span>
+                  </a>
+                  <a href={`mailto:${CONTACT_EMAIL}`} className="flex items-start gap-2 text-[#6EE76D] underline underline-offset-4 hover:text-[#89ef88] transition-colors">
+                    <Mail className="w-4 h-4 text-[#6EE76D] mt-0.5 shrink-0" />
+                    <span>{CONTACT_EMAIL}</span>
+                  </a>
+                  <a href={MAP_URL} target="_blank" rel="noreferrer" className="flex items-start gap-2 hover:text-[#6EE76D] transition-colors">
+                    <MapPin className="w-4 h-4 text-[#6EE76D] mt-0.5 shrink-0" />
+                    <span>{CONTACT_ADDRESS_TITLE}, {CONTACT_ADDRESS}</span>
                   </a>
                 </div>
               </div>
