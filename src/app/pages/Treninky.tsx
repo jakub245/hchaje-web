@@ -121,45 +121,41 @@ export default function TreninkyPage() {
                       to={`/druzstva/${slot.slug}`}
                       className="group block w-full rounded-2xl border border-[#6EE76D]/10 bg-[#0f180f] px-4 py-4 transition-all hover:border-[#6EE76D]/25 hover:bg-[#111c11]"
                     >
-                      <div className="flex items-stretch gap-3">
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-3">
-                            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#6EE76D]/10 flex-shrink-0">
-                              {slot.slug === "zeny" ? <Trophy className="w-5 h-5 text-[#6EE76D]" /> : <Users className="w-5 h-5 text-[#6EE76D]" />}
-                            </div>
+                      <div className="grid gap-3 md:gap-4 lg:grid-cols-[48px_minmax(220px,1.2fr)_minmax(160px,0.8fr)_minmax(220px,1fr)_28px] lg:items-center">
+                        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#6EE76D]/10 flex-shrink-0">
+                          {slot.slug === "zeny" ? <Trophy className="w-5 h-5 text-[#6EE76D]" /> : <Users className="w-5 h-5 text-[#6EE76D]" />}
+                        </div>
 
-                            <div className="min-w-0 flex-1">
-                              <div className="text-white text-[1.2rem] leading-none uppercase whitespace-pre-line" style={{ fontFamily: bebas }}>{slot.team}</div>
-                              {slot.season && (
-                                <div className="mt-2">
-                                  <span className="inline-flex rounded-full bg-[#F587B9]/12 px-3 py-1 text-[12px] uppercase tracking-[0.12em] text-[#FFC2DD]" style={{ fontFamily: bebas }}>
-                                    {slot.season}
-                                  </span>
-                                </div>
-                              )}
+                        <div className="min-w-0">
+                          <div className="text-white text-[1.2rem] leading-none uppercase whitespace-pre-line" style={{ fontFamily: bebas }}>{slot.team}</div>
+                          {slot.season && (
+                            <div className="mt-2">
+                              <span className="inline-flex rounded-full bg-[#F587B9]/12 px-3 py-1 text-[12px] uppercase tracking-[0.12em] text-[#FFC2DD]" style={{ fontFamily: bebas }}>
+                                {slot.season}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4 lg:contents">
+                          <div>
+                            <div className="mb-1 text-sm text-white/45" style={{ fontFamily: inter }}>Čas</div>
+                            <div className="flex items-center gap-2 min-w-0" style={{ fontFamily: inter }}>
+                              <Clock className="w-4 h-4 text-[#6EE76D] flex-shrink-0" />
+                              <span className="text-white font-semibold text-[15px]">{slot.time}</span>
                             </div>
                           </div>
 
-                          <div className="mt-4 grid grid-cols-2 gap-4">
-                            <div>
-                              <div className="mb-1 text-sm text-white/45" style={{ fontFamily: inter }}>Čas</div>
-                              <div className="flex items-center gap-2 min-w-0" style={{ fontFamily: inter }}>
-                                <Clock className="w-4 h-4 text-[#6EE76D] flex-shrink-0" />
-                                <span className="text-white font-semibold text-[15px]">{slot.time}</span>
-                              </div>
-                            </div>
-
-                            <div>
-                              <div className="mb-1 text-sm text-white/45" style={{ fontFamily: inter }}>Místo</div>
-                              <div className="flex items-center gap-2 min-w-0" style={{ fontFamily: inter }}>
-                                <MapPin className="w-4 h-4 text-[#6EE76D] flex-shrink-0" />
-                                <span className="text-white font-semibold text-[15px] leading-snug">{formatPlace(slot.hall)}</span>
-                              </div>
+                          <div>
+                            <div className="mb-1 text-sm text-white/45" style={{ fontFamily: inter }}>Místo</div>
+                            <div className="flex items-center gap-2 min-w-0" style={{ fontFamily: inter }}>
+                              <MapPin className="w-4 h-4 text-[#6EE76D] flex-shrink-0" />
+                              <span className="text-white font-semibold text-[15px] leading-snug">{formatPlace(slot.hall)}</span>
                             </div>
                           </div>
                         </div>
 
-                        <div className="flex items-center justify-center text-[#8F988F] group-hover:text-[#6EE76D] group-hover:translate-x-1 transition-all">
+                        <div className="flex items-center justify-end lg:justify-center text-[#8F988F] group-hover:text-[#6EE76D] group-hover:translate-x-1 transition-all">
                           <ArrowRight className="w-5 h-5" />
                         </div>
                       </div>
