@@ -95,7 +95,7 @@ export function NewsCard({
           {article.date}
         </span>
         {tag && (
-          <span className="px-3 py-0.5 rounded-full bg-[#6EE76D]/10 text-[#6EE76D] text-[11px] tracking-wider" style={{ fontFamily: bebas }}>
+          <span className="px-3.5 py-1 rounded-full bg-[#6EE76D]/10 text-[#6EE76D] text-[12px] tracking-[0.12em]" style={{ fontFamily: bebas }}>
             {tag}
           </span>
         )}

@@ -347,7 +347,7 @@ function NewsAndTrainings() {
                       </h3>
                       <div className="flex flex-wrap items-center gap-3 text-sm text-white/35 mt-1.5">
                         <span className="inline-flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5 text-[#6EE76D]" /> {item.date}</span>
-                        <span className="px-3 py-0.5 rounded-full bg-[#6EE76D]/10 text-[#6EE76D] text-[11px] tracking-wider" style={{ fontFamily: bebas }}>{item.teamName}</span>
+                        <span className="px-3.5 py-1 rounded-full bg-[#6EE76D]/10 text-[#6EE76D] text-[12px] tracking-[0.12em]" style={{ fontFamily: bebas }}>{item.teamName}</span>
                       </div>
                     </div>
 
