@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Phone, Mail, MapPin, Clock, Instagram, Facebook, ArrowUpRight } from "lucide-react";
 import {
   PageHero,
@@ -16,7 +17,61 @@ import {
   nbspShortWords,
 } from "../components/shared";
 
+const INITIAL_FORM = {
+  name: "",
+  email: "",
+  phone: "",
+  category: "",
+  message: "",
+  website: "",
+};
+
 export default function KontaktyPage() {
+  const [formData, setFormData] = useState(INITIAL_FORM);
+  const [isSending, setIsSending] = useState(false);
+  const [submitState, setSubmitState] = useState<{ type: "idle" | "success" | "error"; message: string }>({
+    type: "idle",
+    message: "",
+  });
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = event.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setIsSending(true);
+    setSubmitState({ type: "idle", message: "" });
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || "Odeslání se nepodařilo.");
+      }
+
+      setFormData(INITIAL_FORM);
+      setSubmitState({
+        type: "success",
+        message: "Zpráva byla úspěšně odeslána. Ozveme se vám co nejdříve.",
+      });
+    } catch (error: any) {
+      setSubmitState({
+        type: "error",
+        message: error.message || "Zprávu se nepodařilo odeslat. Zkuste to prosím znovu.",
+      });
+    } finally {
+      setIsSending(false);
+    }
+  };
+
   return (
     <>
       <PageHero title="Kontakty" subtitle="Chcete se přidat, máte dotaz nebo nás chcete navštívit? Ozvěte se!" />
@@ -98,17 +153,121 @@ export default function KontaktyPage() {
             </div>
           </div>
 
-          {/* Join form CTA */}
-          <div className="mt-16 p-8 lg:p-12 rounded-2xl bg-gradient-to-r from-[#6EE76D]/8 via-[#6EE76D]/4 to-[#6EE76D]/8 border border-[#6EE76D]/15 text-center">
-            <h2 className="text-3xl lg:text-4xl text-white uppercase mb-4" style={{ fontFamily: bebas }}>
-              Chci se přijít podívat
-            </h2>
-            <p className="text-white/45 max-w-xl mx-auto mb-6" style={{ fontFamily: inter }}>
-              {nbspShortWords("První trénink je u nás zdarma a nezávazně. Stačí si vzít sportovní oblečení, sálové boty a dobrou náladu. Těšíme se na tebe!")}
-            </p>
-            <Btn variant="primary" to={`mailto:${CONTACT_EMAIL}`} className="px-10 py-4">
-              Napište nám <Mail className="w-4 h-4" />
-            </Btn>
+          {/* Contact form */}
+          <div className="mt-16 p-8 lg:p-12 rounded-2xl bg-gradient-to-r from-[#6EE76D]/8 via-[#6EE76D]/4 to-[#6EE76D]/8 border border-[#6EE76D]/15">
+            <div className="max-w-3xl mx-auto">
+              <SectionLabel>Napište nám</SectionLabel>
+              <h2 className="text-3xl lg:text-4xl text-white uppercase mb-4" style={{ fontFamily: bebas }}>
+                Kontaktní formulář
+              </h2>
+              <p className="text-white/45 mb-8" style={{ fontFamily: inter }}>
+                {nbspShortWords("První trénink je u nás zdarma a nezávazně. Napište nám pár informací a ozveme se vám co nejdříve.")}
+              </p>
+
+              {submitState.type !== "idle" && (
+                <div
+                  className={`mb-6 rounded-2xl px-4 py-3 text-sm ${submitState.type === "success" ? "bg-[#6EE76D]/12 text-[#9CF59B] border border-[#6EE76D]/25" : "bg-red-500/10 text-red-200 border border-red-400/20"}`}
+                  style={{ fontFamily: inter }}
+                >
+                  {submitState.message}
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <input
+                  type="text"
+                  name="website"
+                  value={formData.website}
+                  onChange={handleChange}
+                  className="hidden"
+                  tabIndex={-1}
+                  autoComplete="off"
+                />
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <label className="block">
+                    <span className="mb-2 block text-white/75 text-sm" style={{ fontFamily: inter }}>Jméno a příjmení</span>
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      required
+                      className="w-full rounded-2xl border border-[#6EE76D]/15 bg-[#0d160d] px-4 py-3 text-white placeholder:text-white/35 outline-none focus:border-[#6EE76D]/45"
+                      placeholder="Např. Jana Nováková"
+                    />
+                  </label>
+
+                  <label className="block">
+                    <span className="mb-2 block text-white/75 text-sm" style={{ fontFamily: inter }}>E-mail</span>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      required
+                      className="w-full rounded-2xl border border-[#6EE76D]/15 bg-[#0d160d] px-4 py-3 text-white placeholder:text-white/35 outline-none focus:border-[#6EE76D]/45"
+                      placeholder="vas@email.cz"
+                    />
+                  </label>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <label className="block">
+                    <span className="mb-2 block text-white/75 text-sm" style={{ fontFamily: inter }}>Telefon</span>
+                    <input
+                      type="text"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      className="w-full rounded-2xl border border-[#6EE76D]/15 bg-[#0d160d] px-4 py-3 text-white placeholder:text-white/35 outline-none focus:border-[#6EE76D]/45"
+                      placeholder="+420 ..."
+                    />
+                  </label>
+
+                  <label className="block">
+                    <span className="mb-2 block text-white/75 text-sm" style={{ fontFamily: inter }}>Kategorie / ročník</span>
+                    <input
+                      type="text"
+                      name="category"
+                      value={formData.category}
+                      onChange={handleChange}
+                      className="w-full rounded-2xl border border-[#6EE76D]/15 bg-[#0d160d] px-4 py-3 text-white placeholder:text-white/35 outline-none focus:border-[#6EE76D]/45"
+                      placeholder="Např. přípravka, 2014"
+                    />
+                  </label>
+                </div>
+
+                <label className="block">
+                  <span className="mb-2 block text-white/75 text-sm" style={{ fontFamily: inter }}>Zpráva</span>
+                  <textarea
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    required
+                    rows={6}
+                    className="w-full rounded-2xl border border-[#6EE76D]/15 bg-[#0d160d] px-4 py-3 text-white placeholder:text-white/35 outline-none focus:border-[#6EE76D]/45 resize-y"
+                    placeholder="Napište nám, o co máte zájem…"
+                  />
+                </label>
+
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-2">
+                  <p className="text-white/45 text-sm" style={{ fontFamily: inter }}>
+                    Odpovíme vám na e-mail nebo telefon co nejdříve.
+                  </p>
+
+                  <button
+                    type="submit"
+                    disabled={isSending}
+                    className="rounded-full px-8 py-3 bg-[#6EE76D] text-[#080C08] hover:brightness-110 disabled:opacity-70 disabled:cursor-not-allowed uppercase transition-all duration-300 inline-flex items-center justify-center gap-2"
+                    style={{ fontFamily: bebas, letterSpacing: "0.08em" }}
+                  >
+                    {isSending ? "Odesílám..." : "Odeslat zprávu"}
+                    <Mail className="w-4 h-4" />
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       </section>
