@@ -15,14 +15,30 @@ export default async function handler(req: any, res: any) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { name, email, phone, category, message, website } = req.body ?? {};
+  const {
+    name,
+    email,
+    phone,
+    childName,
+    birthYear,
+    hasMoreChildren,
+    secondChildName,
+    secondBirthYear,
+    experience,
+    message,
+    website,
+  } = req.body ?? {};
 
   if (website) {
     return res.status(200).json({ ok: true });
   }
 
-  if (!name || !email || !message) {
-    return res.status(400).json({ error: "Vyplňte prosím jméno, e-mail a zprávu." });
+  if (!name || !email || !childName || !birthYear || !experience || !message) {
+    return res.status(400).json({ error: "Vyplňte prosím údaje rodiče, dítěte a zprávu." });
+  }
+
+  if (hasMoreChildren && (!secondChildName || !secondBirthYear)) {
+    return res.status(400).json({ error: "Doplňte prosím i údaje o dalším dítěti." });
   }
 
   if (!process.env.RESEND_API_KEY || !process.env.RESEND_FROM) {
@@ -35,7 +51,16 @@ export default async function handler(req: any, res: any) {
     const safeName = escapeHtml(String(name));
     const safeEmail = escapeHtml(String(email));
     const safePhone = escapeHtml(String(phone || "—"));
-    const safeCategory = escapeHtml(String(category || "—"));
+    const safeChildName = escapeHtml(String(childName));
+    const safeBirthYear = escapeHtml(String(birthYear));
+    const safeSecondChildName = escapeHtml(String(secondChildName || "—"));
+    const safeSecondBirthYear = escapeHtml(String(secondBirthYear || "—"));
+    const experienceMap: Record<string, string> = {
+      none: "0 - žádné",
+      some: "1 - už někdy hrála",
+      advanced: "2 - hraje dobře - přechod z jiného družstva",
+    };
+    const safeExperience = escapeHtml(experienceMap[String(experience)] || String(experience));
     const safeMessage = escapeHtml(String(message)).replace(/\n/g, "<br />");
 
     await resend.emails.send({
@@ -49,7 +74,11 @@ export default async function handler(req: any, res: any) {
           <p><strong>Jméno:</strong> ${safeName}</p>
           <p><strong>E-mail:</strong> ${safeEmail}</p>
           <p><strong>Telefon:</strong> ${safePhone}</p>
-          <p><strong>Kategorie / ročník:</strong> ${safeCategory}</p>
+          <hr style="margin: 16px 0; border: none; border-top: 1px solid #ddd;" />
+          <p><strong>Dítě:</strong> ${safeChildName}</p>
+          <p><strong>Rok narození:</strong> ${safeBirthYear}</p>
+          <p><strong>Zkušenosti s házenou:</strong> ${safeExperience}</p>
+          ${hasMoreChildren ? `<p><strong>Další dítě:</strong> ${safeSecondChildName} (${safeSecondBirthYear})</p>` : ""}
           <p><strong>Zpráva:</strong><br />${safeMessage}</p>
         </div>
       `,

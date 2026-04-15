@@ -21,10 +21,21 @@ const INITIAL_FORM = {
   name: "",
   email: "",
   phone: "",
-  category: "",
+  childName: "",
+  birthYear: "",
+  hasMoreChildren: false,
+  secondChildName: "",
+  secondBirthYear: "",
+  experience: "",
   message: "",
   website: "",
 };
+
+const EXPERIENCE_OPTIONS = [
+  { value: "none", label: "0 - žádné" },
+  { value: "some", label: "1 - už někdy hrála" },
+  { value: "advanced", label: "2 - hraje dobře - přechod z jiného družstva" },
+];
 
 export default function KontaktyPage() {
   const [formData, setFormData] = useState(INITIAL_FORM);
@@ -35,8 +46,16 @@ export default function KontaktyPage() {
   });
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const { name, value } = event.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, value, type } = event.target;
+    const checked = type === "checkbox" ? (event.target as HTMLInputElement).checked : undefined;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+      ...(name === "hasMoreChildren" && !checked
+        ? { secondChildName: "", secondBirthYear: "" }
+        : {}),
+    }));
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -173,7 +192,7 @@ export default function KontaktyPage() {
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-5">
                 <input
                   type="text"
                   name="website"
@@ -184,58 +203,157 @@ export default function KontaktyPage() {
                   autoComplete="off"
                 />
 
-                <div className="grid md:grid-cols-2 gap-4">
-                  <label className="block">
-                    <span className="mb-2 block text-white/75 text-sm" style={{ fontFamily: inter }}>Jméno a příjmení</span>
-                    <input
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      required
-                      className="w-full rounded-2xl border border-[#6EE76D]/15 bg-[#0d160d] px-4 py-3 text-white placeholder:text-white/35 outline-none focus:border-[#6EE76D]/45"
-                      placeholder="Např. Jana Nováková"
-                    />
-                  </label>
+                <div className="rounded-2xl border border-[#6EE76D]/12 bg-[#0d160d]/80 p-5">
+                  <h3 className="text-white uppercase mb-4 tracking-[0.08em]" style={{ fontFamily: bebas }}>
+                    Údaje rodiče
+                  </h3>
 
-                  <label className="block">
-                    <span className="mb-2 block text-white/75 text-sm" style={{ fontFamily: inter }}>E-mail</span>
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      required
-                      className="w-full rounded-2xl border border-[#6EE76D]/15 bg-[#0d160d] px-4 py-3 text-white placeholder:text-white/35 outline-none focus:border-[#6EE76D]/45"
-                      placeholder="vas@email.cz"
-                    />
-                  </label>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <label className="block md:col-span-2">
+                      <span className="mb-2 block text-white/75 text-sm" style={{ fontFamily: inter }}>Jméno a příjmení</span>
+                      <input
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        required
+                        className="w-full rounded-2xl border border-[#6EE76D]/15 bg-[#0d160d] px-4 py-3 text-white placeholder:text-white/35 outline-none focus:border-[#6EE76D]/45"
+                        placeholder="Např. Jana Nováková"
+                      />
+                    </label>
+
+                    <label className="block">
+                      <span className="mb-2 block text-white/75 text-sm" style={{ fontFamily: inter }}>E-mail</span>
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                        className="w-full rounded-2xl border border-[#6EE76D]/15 bg-[#0d160d] px-4 py-3 text-white placeholder:text-white/35 outline-none focus:border-[#6EE76D]/45"
+                        placeholder="vas@email.cz"
+                      />
+                    </label>
+
+                    <label className="block">
+                      <span className="mb-2 block text-white/75 text-sm" style={{ fontFamily: inter }}>Telefon</span>
+                      <input
+                        type="text"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        className="w-full rounded-2xl border border-[#6EE76D]/15 bg-[#0d160d] px-4 py-3 text-white placeholder:text-white/35 outline-none focus:border-[#6EE76D]/45"
+                        placeholder="+420 ..."
+                      />
+                    </label>
+                  </div>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-4">
-                  <label className="block">
-                    <span className="mb-2 block text-white/75 text-sm" style={{ fontFamily: inter }}>Telefon</span>
+                <div className="rounded-2xl border border-[#6EE76D]/12 bg-[#0d160d]/80 p-5">
+                  <h3 className="text-white uppercase mb-4 tracking-[0.08em]" style={{ fontFamily: bebas }}>
+                    Údaje přihlašovaného dítěte
+                  </h3>
+
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <label className="block">
+                      <span className="mb-2 block text-white/75 text-sm" style={{ fontFamily: inter }}>Jméno a příjmení dítěte</span>
+                      <input
+                        type="text"
+                        name="childName"
+                        value={formData.childName}
+                        onChange={handleChange}
+                        required
+                        className="w-full rounded-2xl border border-[#6EE76D]/15 bg-[#0d160d] px-4 py-3 text-white placeholder:text-white/35 outline-none focus:border-[#6EE76D]/45"
+                        placeholder="Např. Eliška Nováková"
+                      />
+                    </label>
+
+                    <label className="block">
+                      <span className="mb-2 block text-white/75 text-sm" style={{ fontFamily: inter }}>Rok narození</span>
+                      <input
+                        type="text"
+                        name="birthYear"
+                        value={formData.birthYear}
+                        onChange={handleChange}
+                        required
+                        inputMode="numeric"
+                        className="w-full rounded-2xl border border-[#6EE76D]/15 bg-[#0d160d] px-4 py-3 text-white placeholder:text-white/35 outline-none focus:border-[#6EE76D]/45"
+                        placeholder="Např. 2014"
+                      />
+                    </label>
+                  </div>
+
+                  <label className="mt-4 inline-flex items-center gap-3 cursor-pointer select-none">
                     <input
-                      type="text"
-                      name="phone"
-                      value={formData.phone}
+                      type="checkbox"
+                      name="hasMoreChildren"
+                      checked={formData.hasMoreChildren}
                       onChange={handleChange}
-                      className="w-full rounded-2xl border border-[#6EE76D]/15 bg-[#0d160d] px-4 py-3 text-white placeholder:text-white/35 outline-none focus:border-[#6EE76D]/45"
-                      placeholder="+420 ..."
+                      className="sr-only"
                     />
+                    <span className={`w-5 h-5 rounded border flex items-center justify-center transition-all ${formData.hasMoreChildren ? "bg-[#6EE76D] border-[#6EE76D]" : "border-[#6EE76D]/30 bg-[#0d160d]"}`}>
+                      {formData.hasMoreChildren && <span className="w-2 h-2 rounded-sm bg-[#080C08]" />}
+                    </span>
+                    <span className="text-white/80 text-sm" style={{ fontFamily: inter }}>Chci přijít s více dětmi</span>
                   </label>
 
-                  <label className="block">
-                    <span className="mb-2 block text-white/75 text-sm" style={{ fontFamily: inter }}>Kategorie / ročník</span>
-                    <input
-                      type="text"
-                      name="category"
-                      value={formData.category}
-                      onChange={handleChange}
-                      className="w-full rounded-2xl border border-[#6EE76D]/15 bg-[#0d160d] px-4 py-3 text-white placeholder:text-white/35 outline-none focus:border-[#6EE76D]/45"
-                      placeholder="Např. přípravka, 2014"
-                    />
-                  </label>
+                  {formData.hasMoreChildren && (
+                    <div className="grid md:grid-cols-2 gap-4 mt-4">
+                      <label className="block">
+                        <span className="mb-2 block text-white/75 text-sm" style={{ fontFamily: inter }}>Jméno a příjmení dalšího dítěte</span>
+                        <input
+                          type="text"
+                          name="secondChildName"
+                          value={formData.secondChildName}
+                          onChange={handleChange}
+                          required={formData.hasMoreChildren}
+                          className="w-full rounded-2xl border border-[#6EE76D]/15 bg-[#0d160d] px-4 py-3 text-white placeholder:text-white/35 outline-none focus:border-[#6EE76D]/45"
+                          placeholder="Např. Anna Nováková"
+                        />
+                      </label>
+
+                      <label className="block">
+                        <span className="mb-2 block text-white/75 text-sm" style={{ fontFamily: inter }}>Rok narození dalšího dítěte</span>
+                        <input
+                          type="text"
+                          name="secondBirthYear"
+                          value={formData.secondBirthYear}
+                          onChange={handleChange}
+                          required={formData.hasMoreChildren}
+                          inputMode="numeric"
+                          className="w-full rounded-2xl border border-[#6EE76D]/15 bg-[#0d160d] px-4 py-3 text-white placeholder:text-white/35 outline-none focus:border-[#6EE76D]/45"
+                          placeholder="Např. 2016"
+                        />
+                      </label>
+                    </div>
+                  )}
+
+                  <div className="mt-5">
+                    <span className="mb-2 block text-white/75 text-sm" style={{ fontFamily: inter }}>Zkušenosti s házenou</span>
+                    <div className="flex flex-wrap gap-3">
+                      {EXPERIENCE_OPTIONS.map((option) => {
+                        const isActive = formData.experience === option.value;
+                        return (
+                          <label
+                            key={option.value}
+                            className={`rounded-full border px-4 py-2 text-sm transition-all cursor-pointer ${isActive ? "border-[#6EE76D] bg-[#6EE76D]/12 text-white" : "border-white/10 text-white/70 hover:border-[#6EE76D]/30 hover:text-white"}`}
+                            style={{ fontFamily: inter }}
+                          >
+                            <input
+                              type="radio"
+                              name="experience"
+                              value={option.value}
+                              checked={isActive}
+                              onChange={handleChange}
+                              className="sr-only"
+                              required
+                            />
+                            {option.label}
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </div>
                 </div>
 
                 <label className="block">
