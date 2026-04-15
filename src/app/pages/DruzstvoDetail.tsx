@@ -479,37 +479,38 @@ export default function DruzstvoDetail() {
               {displayedStaff.map((member, i) => (
                 <div key={member.name} className={`grid gap-4 md:grid-cols-[1.2fr_1fr_1.1fr] py-5 ${i !== 0 ? "border-t border-[#6EE76D]/15" : ""}`}>
                   <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full overflow-hidden bg-[#101a10] border border-[#6EE76D]/20 flex items-center justify-center flex-shrink-0">
-                        <User className="w-4 h-4 text-[#6EE76D]" />
+                    <div className="w-10 h-10 rounded-full overflow-hidden bg-[#101a10] border border-[#6EE76D]/20 flex items-center justify-center flex-shrink-0">
+                      <User className="w-4 h-4 text-[#6EE76D]" />
+                    </div>
                     <div>
                       <div className="text-white/45 text-sm md:hidden" style={{ fontFamily: inter }}>Jméno</div>
                       <div className="text-white text-[16px]" style={{ fontFamily: inter }}>{member.name}</div>
                     </div>
                   </div>
 
-                    <div className="pl-[3.25rem] md:pl-0 flex items-center gap-2">
-                      {member.phone ? <Phone className="w-4 h-4 text-[#6EE76D] shrink-0" /> : <span className="hidden md:block w-4" />}
-                      <div>
-                        <div className="text-white/45 text-sm md:hidden mb-1" style={{ fontFamily: inter }}>Telefon</div>
-                        <div className="text-white break-all" style={{ fontFamily: inter }}>{member.phone || "—"}</div>
-                      </div>
+                  <div className="pl-[3.25rem] md:pl-0 flex items-center gap-2">
+                    {member.phone ? <Phone className="w-4 h-4 text-[#6EE76D] shrink-0" /> : <span className="hidden md:block w-4" />}
+                    <div>
+                      <div className="text-white/45 text-sm md:hidden mb-1" style={{ fontFamily: inter }}>Telefon</div>
+                      <div className="text-white break-all" style={{ fontFamily: inter }}>{member.phone || "—"}</div>
                     </div>
+                  </div>
 
-                    <div className="pl-[3.25rem] md:pl-0 flex items-center gap-2">
-                      {member.email ? <Mail className="w-4 h-4 text-[#6EE76D] shrink-0" /> : <span className="hidden md:block w-4" />}
-                      <div>
-                        <div className="text-white/45 text-sm md:hidden mb-1" style={{ fontFamily: inter }}>E-mail</div>
-                        {member.email ? (
-                          <a
-                            href={`mailto:${member.email}`}
-                            className="mail-link transition-colors break-all"
-                            style={{ fontFamily: inter }}
-                          >
-                            {member.email}
-                          </a>
-                        ) : (
-                          <div className="text-white break-all" style={{ fontFamily: inter }}>—</div>
-                        )}
+                  <div className="pl-[3.25rem] md:pl-0 flex items-center gap-2">
+                    {member.email ? <Mail className="w-4 h-4 text-[#6EE76D] shrink-0" /> : <span className="hidden md:block w-4" />}
+                    <div>
+                      <div className="text-white/45 text-sm md:hidden mb-1" style={{ fontFamily: inter }}>E-mail</div>
+                      {member.email ? (
+                        <a
+                          href={`mailto:${member.email}`}
+                          className="mail-link transition-colors break-all"
+                          style={{ fontFamily: inter }}
+                        >
+                          {member.email}
+                        </a>
+                      ) : (
+                        <div className="text-white break-all" style={{ fontFamily: inter }}>—</div>
+                      )}
                     </div>
                   </div>
                 </div>
