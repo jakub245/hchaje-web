@@ -173,7 +173,12 @@ export function Navbar() {
             </Link>
           </div>
 
-          <button className="lg:hidden text-white p-1" onClick={() => setOpen(!open)} aria-label={open ? "Zavřít menu" : "Otevřít menu"}>
+          <button
+            className="lg:hidden flex items-center gap-2 text-white p-1"
+            onClick={() => setOpen(!open)}
+            aria-label={open ? "Zavřít menu" : "Otevřít menu"}
+          >
+            <span className="uppercase text-white/80 tracking-wider" style={navTextStyle}>Menu</span>
             {open ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
           </button>
         </div>
@@ -183,11 +188,11 @@ export function Navbar() {
         <div className="lg:hidden border-t border-[#6EE76D]/10 bg-[#080C08]/98 backdrop-blur-lg">
           <div className="px-6 pt-4 pb-8 min-h-[calc(100dvh-4.5rem)] flex flex-col">
             <div className="flex flex-col items-center gap-2">
-              {NAV.map((item) => (
+              {NAV.map((item, index) => (
                 <Link
                   key={item.to}
                   to={item.to}
-                  className="block w-full rounded-2xl py-4 px-4 text-center text-white/80 hover:text-[#6EE76D] hover:bg-[#6EE76D]/8 active:-translate-y-[1px] border-b border-white/5 uppercase tracking-wider transition-all duration-200 ease-out"
+                  className={`block w-full rounded-2xl py-4 px-4 text-center text-white/80 hover:text-[#6EE76D] hover:bg-[#6EE76D]/8 active:-translate-y-[1px] uppercase tracking-wider transition-all duration-200 ease-out ${index !== NAV.length - 1 ? "border-b border-white/5" : ""}`}
                   style={navTextStyle}
                 >
                   {item.label}
