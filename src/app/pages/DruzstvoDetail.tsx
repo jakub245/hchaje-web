@@ -134,23 +134,12 @@ export default function DruzstvoDetail() {
           title: event.title,
           location: event.location,
         }));
-  const displayedStaff = isMiniTeam
-    ? [
-        { name: "Petr Zálešák", phone: "777 721 282", email: "minihchaje@gmail.com" },
-        { name: "Kateřina Bláhová", phone: "608 981 667", email: "minihchaje@gmail.com" },
-        { name: "Veronika Zálešáková", phone: "", email: "" },
-        { name: "Barbora Bláhová", phone: "", email: "" },
-      ]
-    : isPripravkaTeam
-      ? [
-          { name: "Kateřina Bláhová", phone: "608 981 667", email: "pripravkahchaje@gmail.com" },
-          { name: "Petr Paulín", phone: "", email: "" },
-          { name: "Nela Černá", phone: "", email: "" },
-        ]
-      : [
-          { name: team.coach, phone: "", email: "" },
-          ...(team.assistantCoach ? [{ name: team.assistantCoach, phone: "", email: "" }] : []),
-        ];
+  const displayedStaff = team.staff
+    ? team.staff.map((m) => ({ name: m.name, phone: m.phone ?? "", email: m.email ?? "" }))
+    : [
+        { name: team.coach, phone: "", email: "" },
+        ...(team.assistantCoach ? [{ name: team.assistantCoach, phone: "", email: "" }] : []),
+      ];
   const displayedNews = newsSorted;
 
   return (

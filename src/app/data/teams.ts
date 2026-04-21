@@ -35,6 +35,12 @@ export interface TeamEvent {
   location: string;
 }
 
+export interface StaffMember {
+  name: string;
+  phone?: string;
+  email?: string;
+}
+
 export interface Team {
   slug: string;
   name: string;
@@ -44,6 +50,7 @@ export interface Team {
   img: string;
   coach: string;
   assistantCoach?: string;
+  staff?: StaffMember[];
   playerCount: number;
   ageRange: string;
   trainings: Training[];
@@ -188,6 +195,12 @@ export const TEAMS: Team[] = [
     img: miniPhoto,
     coach: "Petr Zálešák",
     assistantCoach: "Kateřina Bláhová",
+    staff: [
+      { name: "Petr Zálešák", phone: "777 721 282", email: "minihchaje@gmail.com" },
+      { name: "Kateřina Bláhová", phone: "608 981 667", email: "minihchaje@gmail.com" },
+      { name: "Veronika Zálešáková" },
+      { name: "Barbora Bláhová" },
+    ],
     playerCount: 19,
     ageRange: "8–10 let",
     trainings: [
@@ -253,6 +266,11 @@ export const TEAMS: Team[] = [
     coach: "Petr Paulín",
     // ✅ ZMĚNA klient
     assistantCoach: "Nela Černá",
+    staff: [
+      { name: "Kateřina Bláhová", phone: "608 981 667", email: "pripravkahchaje@gmail.com" },
+      { name: "Petr Paulín" },
+      { name: "Nela Černá" },
+    ],
     playerCount: 18,
     ageRange: "6–8 let",
     trainings: [
