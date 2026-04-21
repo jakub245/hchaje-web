@@ -1,3 +1,10 @@
+// ⚠️ UPRAVENO podle klienta 21. 4. 2026
+// Změny: Ženy, Starší žákyně, Mladší žákyně, Mini žákyně, Přípravka
+// TODO: Doplnit data pro Mladší dorostenky + Starší dorostenky (trenér, tréninky)
+
+import miniPhoto from "../../imports/mini2025.jpg";
+import pripravkaPhoto from "../../imports/pripravka.png";
+
 export interface Player {
   name: string;
   position: string;
@@ -46,9 +53,6 @@ export interface Team {
   events?: TeamEvent[];
 }
 
-import miniPhoto from "../../imports/mini2025.jpg";
-import pripravkaPhoto from "../../imports/pripravka.png";
-
 const CLUB_NEWS: TeamNews[] = [
   {
     date: "12. 4. 2026",
@@ -71,11 +75,15 @@ export const TEAMS: Team[] = [
     slug: "zeny",
     name: "Ženy",
     shortName: "Ženy",
-    desc: "Hlavní tým klubu hrající krajský přebor žen.",
-    longDesc: "A-tým žen HC Háje je vlajkovou lodí klubu. Hrajeme krajský přebor a pravidelně se účastníme pohárových soutěží. Tým tvoří zkušené hráčky i mladé talenty z vlastní líhně.",
+    // ✅ ZMĚNA klient
+    desc: "A-tým hrající 2. ligu - Čechy.",
+    // ✅ ZMĚNA klient
+    longDesc: "Ženský tým představuje vrchol klubové cesty, kde se propojují zkušenosti, výkonnost a týmová soudržnost. Hráčky rozvíjejí technickou i taktickou vyspělost, schopnost zvládat náročné zápasové situace a společně usilují o co nejlepší sportovní výsledky. Důležitou součástí je také týmový charakter, vzájemná podpora a radost ze společné hry i reprezentace klubu.",
     img: "https://images.unsplash.com/photo-1552127966-d24b805b9be7?w=800",
-    coach: "Mgr. Jana Dvořáková",
-    assistantCoach: "Petr Novák",
+    // ✅ ZMĚNA klient
+    coach: "Miroslav Cabalka",
+    // ✅ ZMĚNA klient
+    assistantCoach: "Magdaléna Cabalková",
     playerCount: 18,
     ageRange: "18+",
     trainings: [
@@ -111,12 +119,18 @@ export const TEAMS: Team[] = [
     slug: "starsi-zakyne",
     name: "Starší žákyně",
     shortName: "St. žákyně",
-    desc: "Soutěžní tým dívek 13–15 let.",
-    longDesc: "Starší žákyně tvoří výkonnostní základ klubu. Dívky se připravují na přechod do dorostenecké a ženské kategorie. Důraz klademe na rozvoj herních dovedností, taktiku a soutěžní zkušenosti.",
+    // ✅ ZMĚNA klient
+    desc: "Soutěžní tým 12-14 let.",
+    // ✅ ZMĚNA klient
+    longDesc: "Kategorie starších žákyň navazuje na získané základy a rozvíjí herní dovednosti do větší variability a jistoty i pod tlakem soupeře. Hráčky si osvojují základy pozičního útoku, spolupráci v menších skupinách i specifické role na hřišti, přičemž se učí lépe využívat prostor a rozhodovat se v reálných herních situacích. Důraz je kladen také na samostatnost, zodpovědnost za vlastní výkon a pochopení širších souvislostí hry i regenerace.",
     img: "https://images.unsplash.com/photo-1769614075229-bfc51a41aa78?w=800",
-    coach: "Petr Novák",
+    // ✅ ZMĚNA klient
+    coach: "Milan Ernest",
+    // ✅ ZMĚNA klient
+    assistantCoach: "Pavla Martin",
     playerCount: 16,
-    ageRange: "13–15 let",
+    // ✅ ZMĚNA klient
+    ageRange: "12-14 let",
     trainings: [
       { day: "Úterý", time: "16:00 – 17:30", hall: "Sportovní hala Háje" },
       { day: "Čtvrtek", time: "17:00 – 18:30", hall: "Sportovní hala Háje" },
@@ -139,9 +153,13 @@ export const TEAMS: Team[] = [
     name: "Mladší žákyně",
     shortName: "Ml. žákyně",
     desc: "Dívky 10–12 let rozvíjející herní dovednosti.",
-    longDesc: "U mladších žákyň stavíme na radosti z pohybu a postupném rozvoji házenkářských dovedností. Dívky se učí týmovou hru, střelbu, přihrávky i základy obrany. Pravidelně se účastníme turnajů a soutěží.",
+    // ✅ ZMĚNA klient
+    longDesc: "Stavíme především na budování pozitivního vztahu k házené jako pravidelné a radostné součásti života. Hráčky si rozvíjejí útočné dovednosti, základní herní návyky a postupně objevují různé role na hřišti, přičemž důraz je kladen na vlastní pokrok a odvahu zkoušet nové věci. Důležitou součástí je také porozumění hře jako celku – střídání jednotlivých fází a spolupráce v týmu, kde má přednost radost ze hry před samotným výsledkem.",
     img: "https://images.unsplash.com/photo-1575367728985-8cb72541609a?w=800",
-    coach: "Kateřina Malá",
+    // ✅ ZMĚNA klient
+    coach: "Jůlia Dvořáková",
+    // ✅ ZMĚNA klient
+    assistantCoach: "Petr Novák",
     playerCount: 20,
     ageRange: "10–12 let",
     trainings: [
@@ -165,7 +183,8 @@ export const TEAMS: Team[] = [
     name: "Mini žákyně",
     shortName: "Mini",
     desc: "Nejmladší házenkářky 8–10 let.",
-    longDesc: "Mini žákyně jsou budoucností našeho klubu. Trénujeme formou her a zábavných cvičení, která děti baví a zároveň rozvíjejí koordinaci, rychlost a základní házenkářské dovednosti. Každá holčička je u nás vítaná!",
+    // ✅ ZMĚNA klient
+    longDesc: "Mini žákyně jsou budoucností našeho klubu. Trénujeme formou her a zábavných cvičení, která děti baví a zároveň rozvíjejí koordinaci, rychlost a základní házenkářské dovednosti. Holky se zde poprvé seznámí s velkou házenou 6+1.",
     img: miniPhoto,
     coach: "Petr Zálešák",
     assistantCoach: "Kateřina Bláhová",
@@ -216,33 +235,24 @@ export const TEAMS: Team[] = [
       { name: "Žďánská Tereza", position: "2015", number: "089840" },
     ],
     news: [
-      {
-        date: "9. 4. 2026",
-        title: "Nábor mini žákyň — přijďte si to zkusit!",
-        excerpt: "Do minižákyň hledáme nové holčičky, které chtějí objevovat házenou zábavnou formou.",
-      },
-      {
-        date: "3. 4. 2026",
-        title: "Účast na jarním festivalu v Modřanech",
-        excerpt: "Minižákyně si odvezly z festivalu spoustu zážitků, radosti a nových herních zkušeností.",
-      },
-      {
-        date: "03.03.2025",
-        title: "5+1 v Heroldových sadech",
-        excerpt:
-          "Druhá polovina sezóny je tu a naše MINI se dnes zúčastnily svazového turnaje 5+1 v hale Sokol Vršovice. Za skvělé podpory našich fanoušků se hájecké bojovnice utkaly s týmy Kobylek, Slávie, Vršovic, Chodova a Dukly.",
-      },
+      { date: "9. 4. 2026", title: "Nábor mini žákyň — přijďte si to zkusit!", excerpt: "Do minižákyň hledáme nové holčičky, které chtějí objevovat házenou zábavnou formou." },
+      { date: "3. 4. 2026", title: "Účast na jarním festivalu v Modřanech", excerpt: "Minižákyně si odvezly z festivalu spoustu zážitků, radosti a nových herních zkušeností." },
+      { date: "03.03.2025", title: "5+1 v Heroldových sadech", excerpt: "Druhá polovina sezóny je tu a naše MINI se dnes zúčastnily svazového turnaje 5+1 v hale Sokol Vršovice." },
     ],
   },
   {
     slug: "pripravka",
     name: "Přípravka",
     shortName: "Přípravka",
-    desc: "Sportovní kroužek pro děvčata 6–8 let.",
-    longDesc: "Přípravka je určená pro úplné začátečnice. Formou hry a pohybových aktivit se děvčata učí základům házené i obecné sportovní přípravě. Cílem je hlavně radost z pohybu a kamarádství.",
+    // ✅ ZMĚNA klient
+    desc: "Sportovní kroužek pro holky 6-8 let",
+    // ✅ ZMĚNA klient
+    longDesc: "Přípravka je určená pro úplné začátečnice. Formou hry a pohybových aktivit se holky učí základům házené i obecné sportovní přípravě. Cílem je hlavně radost z pohybu a kamarádství. Utkání se hrají formou miniházené 4+1 s měkkým míčem a na menším hřišti.",
     img: pripravkaPhoto,
-    coach: "Kateřina Bláhová",
-    assistantCoach: "Petr Paulín",
+    // ✅ ZMĚNA klient
+    coach: "Petr Paulín",
+    // ✅ ZMĚNA klient
+    assistantCoach: "Nela Černá",
     playerCount: 18,
     ageRange: "6–8 let",
     trainings: [
@@ -291,6 +301,37 @@ export const TEAMS: Team[] = [
       { date: "30. 3. 2026", title: "Závěrečný turnaj přípravek v Háji", excerpt: "Domácí turnaj přinesl radost ze hry, první góly i spoustu sportovních zážitků." },
     ],
   },
+
+  // ⚠️ TODO: Mladší dorostenky — klient žádá přidání
+  // Potřebuješ doplnit: coach, assistantCoach, trainings, players, news
+  // {
+  //   slug: "mladsi-dorostenky",
+  //   name: "Mladší dorostenky",
+  //   shortName: "Ml. dorostenky",
+  //   desc: "Doplnit od klienta.",
+  //   longDesc: "Doplnit od klienta.",
+  //   img: "...",
+  //   coach: "Doplnit",
+  //   ageRange: "14-16 let",
+  //   trainings: [],
+  //   players: [],
+  //   news: [],
+  // },
+
+  // ⚠️ TODO: Starší dorostenky — klient žádá přidání
+  // {
+  //   slug: "starsi-dorostenky",
+  //   name: "Starší dorostenky",
+  //   shortName: "St. dorostenky",
+  //   desc: "Doplnit od klienta.",
+  //   longDesc: "Doplnit od klienta.",
+  //   img: "...",
+  //   coach: "Doplnit",
+  //   ageRange: "16-18 let",
+  //   trainings: [],
+  //   players: [],
+  //   news: [],
+  // },
 ];
 
 export function getTeamBySlug(slug: string): Team | undefined {
