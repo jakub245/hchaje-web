@@ -8,7 +8,6 @@ import DruzstvoDetail from "./pages/DruzstvoDetail";
 import TreninkyPage from "./pages/Treninky";
 import OKlubuPage from "./pages/OKlubu";
 import KontaktyPage from "./pages/Kontakty";
-import NaborPage from "./pages/Nabor";
 
 export const router = createBrowserRouter([
   {
@@ -23,7 +22,6 @@ export const router = createBrowserRouter([
       { path: "treninky", Component: TreninkyPage },
       { path: "o-klubu", Component: OKlubuPage },
       { path: "kontakty", Component: KontaktyPage },
-      { path: "nabor", Component: NaborPage },
     ],
   },
 ]);

@@ -4,6 +4,7 @@ import {
   Menu, X, Phone, Mail, MapPin, Instagram, Activity, ArrowRight, Facebook, Calendar,
 } from "lucide-react";
 import logoSvg from "../../imports/hc-haje-nove-2.svg";
+import { NaborDrawer } from "./NaborDrawer";
 
 export const G = "#6EE76D";
 export const P = "#F587B9";
@@ -25,7 +26,6 @@ const NAV = [
   { label: "Aktuality", to: "/aktuality" },
   { label: "O klubu", to: "/o-klubu" },
   { label: "Kontakty", to: "/kontakty" },
-  { label: "Nábor", to: "/nabor" },
 ];
 
 export const nbspShortWords = (value: string) =>
@@ -152,6 +152,7 @@ export function NewsCard({
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [naborOpen, setNaborOpen] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -184,13 +185,13 @@ export function Navbar() {
                 {item.label}
               </Link>
             ))}
-            <Link
-              to="/nabor"
-              className="rounded-full px-6 py-2 bg-[#6EE76D] text-[#080C08] hover:brightness-110 hover:shadow-[0_0_20px_rgba(110,231,109,0.28)] uppercase transition-all duration-300 inline-flex items-center gap-2"
+            <button
+              onClick={() => setNaborOpen(true)}
+              className="rounded-full px-6 py-2 bg-[#F587B9] text-[#080C08] hover:brightness-110 hover:shadow-[0_0_20px_rgba(245,135,185,0.28)] uppercase transition-all duration-300 inline-flex items-center gap-2"
               style={navTextStyle}
             >
               Chci se přidat
-            </Link>
+            </button>
           </div>
 
           <button
@@ -203,6 +204,8 @@ export function Navbar() {
           </button>
         </div>
       </div>
+
+      <NaborDrawer open={naborOpen} onClose={() => setNaborOpen(false)} />
 
       {open && (
         <div className="lg:hidden border-t border-[#6EE76D]/10 bg-[#080C08]/98 backdrop-blur-lg">
@@ -219,7 +222,7 @@ export function Navbar() {
                 </Link>
               ))}
             </div>
-            <Btn variant="secondary" to="/nabor" className="mt-6 w-full justify-center py-4">
+            <Btn variant="primary" onClick={() => { setNaborOpen(true); setOpen(false); }} className="mt-6 w-full justify-center py-4">
               Chci se přidat
             </Btn>
           </div>
