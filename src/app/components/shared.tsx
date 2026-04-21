@@ -25,6 +25,7 @@ const NAV = [
   { label: "Aktuality", to: "/aktuality" },
   { label: "O klubu", to: "/o-klubu" },
   { label: "Kontakty", to: "/kontakty" },
+  { label: "Nábor", to: "/nabor" },
 ];
 
 export const nbspShortWords = (value: string) =>
@@ -184,8 +185,8 @@ export function Navbar() {
               </Link>
             ))}
             <Link
-              to="/kontakty"
-              className="rounded-full px-6 py-2 bg-[#F587B9] text-[#080C08] hover:brightness-110 hover:shadow-[0_0_20px_rgba(245,135,185,0.28)] uppercase transition-all duration-300 inline-flex items-center gap-2"
+              to="/nabor"
+              className="rounded-full px-6 py-2 bg-[#6EE76D] text-[#080C08] hover:brightness-110 hover:shadow-[0_0_20px_rgba(110,231,109,0.28)] uppercase transition-all duration-300 inline-flex items-center gap-2"
               style={navTextStyle}
             >
               Chci se přidat
@@ -218,7 +219,7 @@ export function Navbar() {
                 </Link>
               ))}
             </div>
-            <Btn variant="primary" to="/kontakty" className="mt-6 w-full justify-center py-4">
+            <Btn variant="secondary" to="/nabor" className="mt-6 w-full justify-center py-4">
               Chci se přidat
             </Btn>
           </div>
