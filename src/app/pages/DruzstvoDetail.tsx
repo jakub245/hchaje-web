@@ -207,7 +207,7 @@ export default function DruzstvoDetail() {
                 <div className="flex items-center gap-3">
                   <User className="w-5 h-5 text-[#6EE76D]" />
                   <span className="text-white/60" style={{ fontFamily: inter }}>
-                    Trenéři: <span className="text-white">{displayedStaff.slice(0, 2).map((member) => member.name).join(" • ")}</span>
+                    Trenéři: <span className="text-white">{[team.coach, team.assistantCoach].filter(Boolean).join(" • ")}</span>
                   </span>
                 </div>
               </div>
