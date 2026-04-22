@@ -3,7 +3,6 @@ import { Mail } from "lucide-react";
 import {
   PageHero,
   SectionLabel,
-  CtaStrip,
   bebas,
   inter,
   nbspShortWords,
@@ -267,7 +266,6 @@ export default function ChciSePridatPage() {
         </div>
       </section>
 
-      <CtaStrip />
     </>
   );
 }
