@@ -147,11 +147,11 @@ export default function ChciSePridatPage() {
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="space-y-5">
+              <form onSubmit={handleSubmit} className="space-y-0">
                 <input type="text" name="website" value={formData.website} onChange={handleChange} className="hidden" tabIndex={-1} autoComplete="off" />
 
-                <div className="rounded-2xl border border-[#6EE76D]/12 bg-[#0d160d]/80 p-5">
-                  <h3 className="text-white uppercase mb-4 tracking-[0.08em]" style={{ fontFamily: bebas }}>Údaje rodiče</h3>
+                <div className="pb-8">
+                  <h3 className="text-white uppercase mb-5 tracking-[0.08em]" style={{ fontFamily: bebas }}>Údaje rodiče</h3>
                   <div className="grid md:grid-cols-2 gap-4">
                     <label className="block md:col-span-2">
                       <span className="mb-2 block text-white/75 text-sm" style={{ fontFamily: inter }}>Jméno a příjmení</span>
@@ -183,7 +183,7 @@ export default function ChciSePridatPage() {
                   </div>
                 </div>
 
-                <div className="rounded-2xl border border-[#6EE76D]/12 bg-[#0d160d]/80 p-5">
+                <div className="border-t border-white/8 pt-8 pb-8">
                   <h3 className="text-white uppercase mb-3 tracking-[0.08em]" style={{ fontFamily: bebas }}>Údaje dítěte</h3>
                   <p className="text-white/55 text-sm mb-4" style={{ fontFamily: inter }}>
                     {nbspShortWords("HC Háje je dívčí klub a tréninky jsou určené pro holky, které si chtějí házenou nezávazně vyzkoušet.")}
@@ -247,12 +247,14 @@ export default function ChciSePridatPage() {
                   )}
                 </div>
 
-                <label className="block">
-                  <span className="mb-2 block text-white/75 text-sm" style={{ fontFamily: inter }}>Zpráva</span>
-                  <textarea name="message" value={formData.message} onChange={handleChange} required rows={6} className="w-full rounded-2xl border border-[#6EE76D]/15 bg-[#0d160d] px-4 py-3 text-white placeholder:text-white/35 outline-none focus:border-[#6EE76D]/45 resize-y" placeholder="Napište nám, o co máte zájem…" />
-                </label>
+                <div className="border-t border-white/8 pt-8">
+                  <label className="block">
+                    <span className="mb-2 block text-white/75 text-sm" style={{ fontFamily: inter }}>Zpráva</span>
+                    <textarea name="message" value={formData.message} onChange={handleChange} required rows={6} className="w-full rounded-2xl border border-[#6EE76D]/15 bg-[#0d160d] px-4 py-3 text-white placeholder:text-white/35 outline-none focus:border-[#6EE76D]/45 resize-y" placeholder="Napište nám, o co máte zájem…" />
+                  </label>
+                </div>
 
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-2">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pt-6">
                   <p className="text-white/45 text-sm" style={{ fontFamily: inter }}>Odpovíme vám na e-mail nebo telefon co nejdříve.</p>
                   <button type="submit" disabled={isSending} className="rounded-full px-8 py-3 bg-[#F587B9] text-[#080C08] hover:brightness-110 hover:shadow-[0_0_20px_rgba(245,135,185,0.28)] disabled:opacity-70 disabled:cursor-not-allowed uppercase transition-all duration-300 inline-flex items-center justify-center gap-2" style={{ fontFamily: bebas, letterSpacing: "0.08em" }}>
                     {isSending ? "Odesílám..." : "Odeslat zprávu"}
