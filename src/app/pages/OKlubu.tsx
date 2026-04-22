@@ -85,7 +85,7 @@ export default function OKlubuPage() {
                   </div>
                 </div>
               </div>
-              <Btn variant="primary" to="/chci-se-pridat">Přijdu na trénink</Btn>
+              <Btn variant="primary" to="/kontakty">Přijdu na trénink</Btn>
             </div>
             <div className="relative rounded-2xl overflow-hidden aspect-[4/3]">
               <ImageWithFallback
