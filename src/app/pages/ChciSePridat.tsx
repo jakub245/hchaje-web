@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Mail } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ChevronLeft, ChevronRight, Mail, Play } from "lucide-react";
 import {
   PageHero,
   SectionLabel,
@@ -8,6 +8,45 @@ import {
   nbspShortWords,
 } from "../components/shared";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
+import naborMikulas from "../../imports/foto/nabor/Nabor_Mikulas.jpg";
+import naborMedaile from "../../imports/foto/nabor/Nabor_medaile.jpg";
+import naborMini from "../../imports/foto/nabor/Nabor_mini.jpg";
+import naborRepre from "../../imports/foto/nabor/Nabor_repre.jpg";
+import naborSulcak from "../../imports/foto/nabor/Nabor_sulcak.jpg";
+import naborTurnaj from "../../imports/foto/nabor/Nabor_turnaj.jpg";
+import naborPaulin from "../../imports/foto/nabor/Petr Paulín - nábor.png";
+import naborVideo1 from "../../imports/foto/nabor/YouCut_20251214_080433262.mp4";
+import naborVideo2 from "../../imports/foto/nabor/YouCut_20260303_211517911.mp4";
+import naborVideo3 from "../../imports/foto/nabor/YouCut_20260303_215233810.mp4";
+import naborVideo4 from "../../imports/foto/nabor/YouCut_20260309_203359345.mp4";
+import naborVideo5 from "../../imports/foto/nabor/lv_7354866305649888517_20250503211636.mp4";
+import naborVideo6 from "../../imports/foto/nabor/lv_7459449080993959174_20250323084537.mp4";
+
+const NABOR_GALLERY = [
+  { src: naborMini, alt: "Nábor HC Háje - mini žákyně" },
+  { src: naborMedaile, alt: "Nábor HC Háje - medaile" },
+  { src: naborRepre, alt: "Nábor HC Háje - tým" },
+  { src: naborMikulas, alt: "Nábor HC Háje - klubová akce" },
+  { src: naborTurnaj, alt: "Nábor HC Háje - turnaj" },
+  { src: naborSulcak, alt: "Nábor HC Háje - zápas" },
+];
+
+const NABOR_VIDEOS = [
+  { src: naborVideo1, title: "Trénink mini žákyň" },
+  { src: naborVideo2, title: "Herní cvičení" },
+  { src: naborVideo3, title: "Akce družstva" },
+  { src: naborVideo4, title: "Trénink v hale" },
+  { src: naborVideo5, title: "Turnajový den" },
+  { src: naborVideo6, title: "Zápasové momenty" },
+];
+
+const RECRUITMENT_BENEFITS = [
+  "pohybové dovednosti a koordinaci",
+  "rychlost, sílu a obratnost",
+  "týmovou spolupráci",
+  "zdravé sebevědomí",
+  "odvahu, rozhodnost a fair play",
+];
 
 const INITIAL_FORM = {
   name: "",
@@ -42,12 +81,21 @@ const isValidPhone = (prefix: string, value: string) => {
 };
 
 export default function ChciSePridatPage() {
+  const [galleryIndex, setGalleryIndex] = useState(0);
   const [formData, setFormData] = useState(INITIAL_FORM);
   const [isSending, setIsSending] = useState(false);
   const [submitState, setSubmitState] = useState<{ type: "idle" | "success" | "error"; message: string }>({
     type: "idle",
     message: "",
   });
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setGalleryIndex((previous) => (previous + 1) % NABOR_GALLERY.length);
+    }, 4500);
+
+    return () => window.clearInterval(timer);
+  }, []);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = event.target;
@@ -91,34 +139,179 @@ export default function ChciSePridatPage() {
 
   return (
     <>
-      <PageHero title="Nábor" subtitle="Přijďte si házenou nezávazně vyzkoušet. První trénink je zdarma." />
+      <PageHero title="Nábor" subtitle="Přijď si vyzkoušet házenou v HC Háje." />
 
       {/* Intro */}
       <section className="reveal-on-scroll pb-16 lg:pb-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <SectionLabel>Proč HC Háje</SectionLabel>
+              <SectionLabel>Nábor hráček</SectionLabel>
               <h2 className="text-3xl lg:text-4xl text-white uppercase mb-6" style={{ fontFamily: bebas }}>
-                Místo, kde holky milují sport
+                Hledáš pro svou dceru sport, který ji bude bavit?
               </h2>
               <p className="text-white text-lg mb-4" style={{ fontFamily: inter }}>
-                {nbspShortWords("HC Háje je dívčí a ženský házenkářský klub z Prahy 4. Přijímáme holky od 6 let bez ohledu na předchozí zkušenosti se sportem.")}
+                {nbspShortWords("Přidej se k nám do dívčího házenkářského klubu HC Háje na Jižním Městě. Nabíráme nové hráčky všech úrovní od úplných začátečnic až po sportovně založené dívky, které chtějí zkusit něco nového.")}
               </p>
               <p className="text-white/55 mb-4" style={{ fontFamily: inter }}>
-                {nbspShortWords("V nejmladších kategoriích stavíme na pohybových hrách a všeobecné sportovní průpravě. Cílem je hlavně radost z pohybu, kamarádství a postupný rozvoj házenkářských dovedností.")}
+                {nbspShortWords("U nejmenších dětí stavíme hlavně na radosti z pohybu, hrách a pozitivním vztahu ke sportu. Děti vedeme krok za krokem tak, aby měly ze sportu dlouhodobě dobrý pocit.")}
               </p>
               <p className="text-white/55" style={{ fontFamily: inter }}>
-                {nbspShortWords("První trénink je u nás vždy zdarma a nezávazně. Stačí vyplnit formulář níže a my se vám ozveme s bližšími informacemi.")}
+                {nbspShortWords("První trénink je u nás vždy zdarma a nezávazně. Přijďte mezi nás objevit radost z pohybu a týmového sportu.")}
               </p>
             </div>
-            <div className="relative rounded-2xl overflow-hidden aspect-[4/3]">
-              <ImageWithFallback
-                src="https://images.unsplash.com/photo-1575367728985-8cb72541609a?w=800"
-                alt="Nábor HC Háje"
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 border border-[#6EE76D]/10 rounded-2xl" />
+            <div className="relative rounded-2xl overflow-hidden aspect-[4/3] group">
+              {NABOR_GALLERY.map((item, index) => (
+                <ImageWithFallback
+                  key={item.alt}
+                  src={item.src}
+                  alt={item.alt}
+                  className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${index === galleryIndex ? "opacity-100" : "opacity-0"}`}
+                />
+              ))}
+              <div className="absolute inset-0 border border-[#6EE76D]/10 rounded-2xl pointer-events-none" />
+              <button
+                type="button"
+                onClick={() => setGalleryIndex((previous) => (previous - 1 + NABOR_GALLERY.length) % NABOR_GALLERY.length)}
+                className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/45 backdrop-blur-sm flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                aria-label="Předchozí fotka"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => setGalleryIndex((previous) => (previous + 1) % NABOR_GALLERY.length)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-black/45 backdrop-blur-sm flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                aria-label="Další fotka"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                {NABOR_GALLERY.map((item, index) => (
+                  <button
+                    key={item.alt + "-dot"}
+                    type="button"
+                    onClick={() => setGalleryIndex(index)}
+                    className={`h-2 rounded-full transition-all ${index === galleryIndex ? "bg-[#6EE76D] w-6" : "bg-white/30 w-2"}`}
+                    aria-label={`Přejít na fotku ${index + 1}`}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="reveal-on-scroll pb-16 lg:pb-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
+            <article className="rounded-2xl border border-[#6EE76D]/14 bg-[#101a10] p-6 lg:p-8">
+              <SectionLabel>Koho hledáme?</SectionLabel>
+              <h3 className="text-2xl lg:text-3xl text-white uppercase mb-5" style={{ fontFamily: bebas }}>Kategorie náboru</h3>
+              <ul className="space-y-3 text-white/85" style={{ fontFamily: inter }}>
+                <li>Přípravka: 5-8 let</li>
+                <li>Minižákyně: 8-10 let</li>
+                <li>Starší družstva: 10 let a starší</li>
+              </ul>
+            </article>
+
+            <article className="rounded-2xl border border-[#6EE76D]/14 bg-[#101a10] p-6 lg:p-8">
+              <SectionLabel>Proč právě házená?</SectionLabel>
+              <h3 className="text-2xl lg:text-3xl text-white uppercase mb-5" style={{ fontFamily: bebas }}>Co dětem dá</h3>
+              <ul className="space-y-3 text-white/85" style={{ fontFamily: inter }}>
+                {RECRUITMENT_BENEFITS.map((benefit) => (
+                  <li key={benefit} className="flex items-start gap-2">
+                    <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[#6EE76D] flex-shrink-0" />
+                    <span>{benefit}</span>
+                  </li>
+                ))}
+              </ul>
+            </article>
+          </div>
+
+          <div className="mt-8 rounded-2xl border border-[#6EE76D]/14 bg-[#101a10] p-6 lg:p-8">
+            <SectionLabel>Jak trénujeme?</SectionLabel>
+            <h3 className="text-2xl lg:text-3xl text-white uppercase mb-5" style={{ fontFamily: bebas }}>Miniházená pro nejmladší</h3>
+            <p className="text-white/80 mb-4" style={{ fontFamily: inter }}>
+              {nbspShortWords("U nejmladších začínáme miniházenou, zábavnou a bezpečnou verzí házené pro děti. Hraje se s měkkým míčem, na menším hřišti a s menšími bránami. Díky tomu si děti rychle osvojí základy a hra je opravdu baví.")}
+            </p>
+            <p className="text-white/80" style={{ fontFamily: inter }}>
+              {nbspShortWords("V létě trénujeme na venkovním hřišti, v zimě v tělocvičnách na Jižním Městě. První měsíc tréninků je zpravidla zdarma bez členských poplatků, dál se domluvíme individuálně.")}
+            </p>
+          </div>
+
+          <div className="mt-8 rounded-2xl border border-[#F587B9]/20 bg-[#F587B9]/7 p-6 lg:p-8">
+            <SectionLabel>Zkušební trénink</SectionLabel>
+            <h3 className="text-2xl lg:text-3xl text-white uppercase mb-5" style={{ fontFamily: bebas }}>Přijďte si to vyzkoušet zdarma</h3>
+            <div className="grid md:grid-cols-2 gap-4 text-white/85" style={{ fontFamily: inter }}>
+              <p>{nbspShortWords("Přípravka trénuje v úterý a ve čtvrtek. Minižačky trénují v pondělí, úterý a ve čtvrtek.")}</p>
+              <p>{nbspShortWords("Stačí sportovní oblečení, sportovní obuv (v zimě sálová) a láhev s pitím.")}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="reveal-on-scroll pb-16 lg:pb-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <SectionLabel>Jak to u nás vypadá</SectionLabel>
+          <h2 className="text-3xl lg:text-4xl text-white uppercase mb-8" style={{ fontFamily: bebas }}>
+            Videa z tréninků a turnajů
+          </h2>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {NABOR_VIDEOS.slice(0, 6).map((video) => (
+              <article key={video.src} className="rounded-2xl overflow-hidden border border-[#6EE76D]/12 bg-[#101a10]">
+                <div className="aspect-[9/16] bg-black">
+                  <video className="w-full h-full object-cover" src={video.src} controls playsInline preload="metadata" />
+                </div>
+                <div className="p-4 flex items-center gap-2 text-white/75">
+                  <Play className="w-4 h-4 text-[#6EE76D]" />
+                  <p className="text-sm" style={{ fontFamily: inter }}>{video.title}</p>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="reveal-on-scroll pb-16 lg:pb-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <SectionLabel>Trenéři přípravky a minižaček</SectionLabel>
+          <div className="rounded-2xl border border-[#6EE76D]/18 bg-gradient-to-r from-[#6EE76D]/10 via-[#F587B9]/7 to-[#6EE76D]/10 p-6 lg:p-8">
+            <div className="grid lg:grid-cols-[220px_1fr] gap-6 lg:gap-8 items-center">
+              <div className="mx-auto w-44 h-44 lg:w-52 lg:h-52 rounded-2xl overflow-hidden border border-[#6EE76D]/25 shadow-[0_0_35px_rgba(110,231,109,0.12)]">
+                <ImageWithFallback src={naborPaulin} alt="Petr Paulín" className="w-full h-full object-cover" />
+              </div>
+              <div>
+                <p className="text-[#6EE76D] uppercase tracking-[0.15em] mb-2" style={{ fontFamily: bebas }}>Trenérská licence C</p>
+                <h3 className="text-3xl lg:text-4xl text-white uppercase mb-3" style={{ fontFamily: bebas }}>Petr Paulín (41 let)</h3>
+                <p className="text-white/70 mb-3" style={{ fontFamily: inter }}>
+                  {nbspShortWords("Házené se věnuji od dětství a většinu hráčské kariéry jsem prožil v klubu Sokol Praha Vršovice. Vedle házené jsem se aktivně věnoval také fotbalu, běhu, triatlonu a raketovým sportům. Díky dlouholetým zkušenostem přináším dětem pevné základy pohybu, disciplínu i radost ze hry.")}
+                </p>
+                <p className="text-white/70 mb-3" style={{ fontFamily: inter }}>
+                  {nbspShortWords("Mám dvě dcery, a právě proto mám blízký vztah k práci s dětmi i porozumění tomu, co rodiče od kvalitního trenéra očekávají. Od roku 2024 působím v HC Háje, kde se věnuji především našim nejmenším hráčkám.")}
+                </p>
+                <p className="text-white/55" style={{ fontFamily: inter }}>
+                  {nbspShortWords("Mým cílem je vytvářet bezpečné, přátelské a motivující prostředí, ve kterém si děti budují lásku k házené, pohybu a sportu jako přirozené součásti života.")}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="reveal-on-scroll pb-16 lg:pb-24">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="rounded-2xl border border-[#6EE76D]/14 bg-[#101a10] p-6 lg:p-8">
+            <SectionLabel>Kontakty</SectionLabel>
+            <h3 className="text-2xl lg:text-3xl text-white uppercase mb-5" style={{ fontFamily: bebas }}>Ozvěte se nám přímo</h3>
+            <p className="text-white/80 mb-6" style={{ fontFamily: inter }}>
+              {nbspShortWords("Domluvte si návštěvu na prvním ukázkovém tréninku přes kontakty níže. Nebo vyplňte kontaktní formulář a ozveme se vám zpět.")}
+            </p>
+            <div className="grid md:grid-cols-2 gap-4 text-white/85" style={{ fontFamily: inter }}>
+              <p>Petr Paulín: 792 336 535</p>
+              <p>Petr Zálešák: 777 721 282</p>
+              <p>Kateřina Bláhová: 608 981 667</p>
+              <p>E-mail: pripravkahchaje@gmail.com</p>
             </div>
           </div>
         </div>
@@ -131,7 +324,7 @@ export default function ChciSePridatPage() {
             <div className="max-w-3xl mx-auto">
               <SectionLabel>Napište nám</SectionLabel>
               <h2 className="text-3xl lg:text-4xl text-white uppercase mb-4" style={{ fontFamily: bebas }}>
-                Přihlášení na trénink
+                Kontaktní formulář
               </h2>
               <p className="text-white/45 mb-8" style={{ fontFamily: inter }}>
                 {nbspShortWords("První trénink je u nás zdarma a nezávazně. Napište nám pár informací a ozveme se vám co nejdříve.")}
