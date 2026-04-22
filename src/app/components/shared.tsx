@@ -4,7 +4,6 @@ import {
   Menu, X, Phone, Mail, MapPin, Instagram, Activity, ArrowRight, Facebook, Calendar,
 } from "lucide-react";
 import logoSvg from "../../imports/hc-haje-nove-2.svg";
-import { NaborDrawer } from "./NaborDrawer";
 
 export const G = "#6EE76D";
 export const P = "#F587B9";
@@ -152,7 +151,6 @@ export function NewsCard({
 export function Navbar() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [naborOpen, setNaborOpen] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -185,13 +183,13 @@ export function Navbar() {
                 {item.label}
               </Link>
             ))}
-            <button
-              onClick={() => setNaborOpen(true)}
+            <Link
+              to="/chci-se-pridat"
               className="rounded-full px-6 py-2 bg-[#F587B9] text-[#080C08] hover:brightness-110 hover:shadow-[0_0_20px_rgba(245,135,185,0.28)] uppercase transition-all duration-300 inline-flex items-center gap-2"
               style={navTextStyle}
             >
               Chci se přidat
-            </button>
+            </Link>
           </div>
 
           <button
@@ -204,8 +202,6 @@ export function Navbar() {
           </button>
         </div>
       </div>
-
-      <NaborDrawer open={naborOpen} onClose={() => setNaborOpen(false)} />
 
       {open && (
         <div className="lg:hidden border-t border-[#6EE76D]/10 bg-[#080C08]/98 backdrop-blur-lg">
@@ -222,7 +218,7 @@ export function Navbar() {
                 </Link>
               ))}
             </div>
-            <Btn variant="primary" onClick={() => { setNaborOpen(true); setOpen(false); }} className="mt-6 w-full justify-center py-4">
+            <Btn variant="primary" to="/chci-se-pridat" className="mt-6 w-full justify-center py-4">
               Chci se přidat
             </Btn>
           </div>
@@ -315,7 +311,7 @@ export function CtaStrip() {
           Ať už jsi zkušená hráčka nebo teprve začínáš — u nás si najdeš svoje místo.
           Přijď se podívat na trénink a poznej náš tým!
         </p>
-        <Btn variant="primary" to="/kontakty" className="px-10 py-4">
+        <Btn variant="primary" to="/chci-se-pridat" className="px-10 py-4">
           Chci se přijít podívat <ArrowRight className="w-5 h-5" />
         </Btn>
       </div>
