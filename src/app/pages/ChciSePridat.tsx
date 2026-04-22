@@ -14,13 +14,7 @@ import naborMini from "../../imports/foto/nabor/Nabor_mini.jpg";
 import naborRepre from "../../imports/foto/nabor/Nabor_repre.jpg";
 import naborSulcak from "../../imports/foto/nabor/Nabor_sulcak.jpg";
 import naborTurnaj from "../../imports/foto/nabor/Nabor_turnaj.jpg";
-import naborPaulin from "../../imports/foto/nabor/Petr Paulín - nábor.png";
-import naborVideo1 from "../../imports/foto/nabor/YouCut_20251214_080433262.mp4";
-import naborVideo2 from "../../imports/foto/nabor/YouCut_20260303_211517911.mp4";
-import naborVideo3 from "../../imports/foto/nabor/YouCut_20260303_215233810.mp4";
-import naborVideo4 from "../../imports/foto/nabor/YouCut_20260309_203359345.mp4";
-import naborVideo5 from "../../imports/foto/nabor/lv_7354866305649888517_20250503211636.mp4";
-import naborVideo6 from "../../imports/foto/nabor/lv_7459449080993959174_20250323084537.mp4";
+import naborPaulin from "../../imports/foto/nabor/petr-paulin-nabor.png";
 
 const NABOR_GALLERY = [
   { src: naborMini, alt: "Nábor HC Háje - mini žákyně" },
@@ -32,12 +26,12 @@ const NABOR_GALLERY = [
 ];
 
 const NABOR_VIDEOS = [
-  { src: naborVideo1, title: "Trénink mini žákyň" },
-  { src: naborVideo2, title: "Herní cvičení" },
-  { src: naborVideo3, title: "Akce družstva" },
-  { src: naborVideo4, title: "Trénink v hale" },
-  { src: naborVideo5, title: "Turnajový den" },
-  { src: naborVideo6, title: "Zápasové momenty" },
+  { poster: naborMini, title: "Trénink mini žákyň" },
+  { poster: naborTurnaj, title: "Turnajový den" },
+  { poster: naborRepre, title: "Zápasové momenty" },
+  { poster: naborMikulas, title: "Klubové akce" },
+  { poster: naborSulcak, title: "Herní cvičení" },
+  { poster: naborMedaile, title: "Radost ze hry" },
 ];
 
 const RECRUITMENT_BENEFITS = [
@@ -258,10 +252,10 @@ export default function ChciSePridatPage() {
             Videa z tréninků a turnajů
           </h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {NABOR_VIDEOS.slice(0, 6).map((video) => (
-              <article key={video.src} className="rounded-2xl overflow-hidden border border-[#6EE76D]/12 bg-[#101a10]">
+            {NABOR_VIDEOS.slice(0, 6).map((video, index) => (
+              <article key={`${video.title}-${index}`} className="rounded-2xl overflow-hidden border border-[#6EE76D]/12 bg-[#101a10]">
                 <div className="aspect-[9/16] bg-black">
-                  <video className="w-full h-full object-cover" src={video.src} controls playsInline preload="metadata" />
+                  <ImageWithFallback src={video.poster} alt={video.title} className="w-full h-full object-cover" />
                 </div>
                 <div className="p-4 flex items-center gap-2 text-white/75">
                   <Play className="w-4 h-4 text-[#6EE76D]" />
