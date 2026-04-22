@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ChevronLeft, ChevronRight, Mail, Phone, Play } from "lucide-react";
+import { ArrowRight, Building2, ChevronDown, ChevronLeft, ChevronRight, Mail, Phone, Play, UserRound, Users } from "lucide-react";
 import { Link } from "react-router";
 import {
   PageHero,
@@ -161,10 +161,11 @@ export default function ChciSePridatPage() {
               </p>
               <a
                 href="#kontaktni-formular"
-                className="inline-flex items-center gap-2 rounded-full px-8 py-3 bg-[#6EE76D] text-[#080C08] hover:brightness-110 hover:shadow-[0_0_20px_rgba(110,231,109,0.28)] uppercase transition-all duration-300"
+                className="inline-flex items-center gap-2 rounded-full px-8 py-3 bg-[#F587B9] text-[#080C08] hover:brightness-110 hover:shadow-[0_0_20px_rgba(245,135,185,0.28)] uppercase transition-all duration-300"
                 style={{ fontFamily: bebas, letterSpacing: "0.08em" }}
               >
                 Chci zkušební trénink
+               <ArrowRight className="w-5 h-5" />
               </a>
             </div>
             <div className="relative rounded-2xl overflow-hidden aspect-[4/3] group">
@@ -209,51 +210,53 @@ export default function ChciSePridatPage() {
         </div>
       </section>
 
-      <section className="reveal-on-scroll pb-16 lg:pb-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-16">
-            <div>
-              <SectionLabel>Koho hledáme?</SectionLabel>
-              <h3 className="text-2xl lg:text-3xl text-white uppercase mb-5" style={{ fontFamily: bebas }}>Kategorie náboru</h3>
-              <ul className="space-y-3 text-white/85" style={{ fontFamily: inter }}>
-                <li className="flex items-start gap-2">
-                  <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[#6EE76D] flex-shrink-0" />
-                  <span>Přípravka: 5–8 let</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[#6EE76D] flex-shrink-0" />
-                  <span>Minižákyně: 8–10 let</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[#6EE76D] flex-shrink-0" />
-                  <span>Starší družstva: 10 let a starší</span>
-                </li>
-              </ul>
-            </div>
-
-            <div>
-              <SectionLabel>Proč právě házená?</SectionLabel>
-              <h3 className="text-2xl lg:text-3xl text-white uppercase mb-5" style={{ fontFamily: bebas }}>Co dětem dá</h3>
-              <ul className="space-y-3 text-white/85" style={{ fontFamily: inter }}>
-                {RECRUITMENT_BENEFITS.map((benefit) => (
-                  <li key={benefit} className="flex items-start gap-2">
+      <section className="reveal-on-scroll pb-0 bg-[#6EE76D]/5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-start">
+            <div className="space-y-10">
+              <div>
+                <SectionLabel>Koho hledáme?</SectionLabel>
+                <h3 className="text-2xl lg:text-3xl text-white uppercase mb-5" style={{ fontFamily: bebas }}>Kategorie náboru</h3>
+                <ul className="space-y-3 text-white/85" style={{ fontFamily: inter }}>
+                  <li className="flex items-start gap-2">
                     <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[#6EE76D] flex-shrink-0" />
-                    <span>{benefit}</span>
+                    <span>Přípravka: 5–8 let</span>
                   </li>
-                ))}
-              </ul>
-            </div>
-          </div>
+                  <li className="flex items-start gap-2">
+                    <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[#6EE76D] flex-shrink-0" />
+                    <span>Minižákyně: 8–10 let</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[#6EE76D] flex-shrink-0" />
+                    <span>Starší družstva: 10 let a starší</span>
+                  </li>
+                </ul>
+              </div>
 
-          <div className="mt-12 rounded-2xl border border-[#6EE76D]/14 bg-[#101a10] p-6 lg:p-8">
-            <SectionLabel>Jak trénujeme?</SectionLabel>
-            <h3 className="text-2xl lg:text-3xl text-white uppercase mb-5" style={{ fontFamily: bebas }}>Miniházená pro nejmladší</h3>
-            <p className="text-white/80 mb-4" style={{ fontFamily: inter }}>
-              {nbspShortWords("U nejmladších začínáme miniházenou, zábavnou a bezpečnou verzí házené pro děti. Hraje se s měkkým míčem, na menším hřišti a s menšími bránami. Díky tomu si děti rychle osvojí základy a hra je opravdu baví.")}
-            </p>
-            <p className="text-white/80" style={{ fontFamily: inter }}>
-              {nbspShortWords("V létě trénujeme na venkovním hřišti, v zimě v tělocvičnách na Jižním Městě. První měsíc tréninků je zpravidla zdarma bez členských poplatků, dál se domluvíme individuálně.")}
-            </p>
+              <div>
+                <SectionLabel>Proč právě házená?</SectionLabel>
+                <h3 className="text-2xl lg:text-3xl text-white uppercase mb-5" style={{ fontFamily: bebas }}>Co dětem dá</h3>
+                <ul className="space-y-3 text-white/85" style={{ fontFamily: inter }}>
+                  {RECRUITMENT_BENEFITS.map((benefit) => (
+                    <li key={benefit} className="flex items-start gap-2">
+                      <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[#6EE76D] flex-shrink-0" />
+                      <span>{benefit}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-[#6EE76D]/20 bg-[#101a10] p-6 lg:p-8">
+              <SectionLabel>Jak trénujeme?</SectionLabel>
+              <h3 className="text-2xl lg:text-3xl text-white uppercase mb-5" style={{ fontFamily: bebas }}>Miniházená pro nejmladší</h3>
+              <p className="text-white/80 mb-4" style={{ fontFamily: inter }}>
+                {nbspShortWords("U nejmladších začínáme miniházenou, zábavnou a bezpečnou verzí házené pro děti. Hraje se s měkkým míčem, na menším hřišti a s menšími bránami. Díky tomu si děti rychle osvojí základy a hra je opravdu baví.")}
+              </p>
+              <p className="text-white/80" style={{ fontFamily: inter }}>
+                {nbspShortWords("V létě trénujeme na venkovním hřišti, v zimě v tělocvičnách na Jižním Městě. První měsíc tréninků je zpravidla zdarma bez členských poplatků, dál se domluvíme individuálně.")}
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -312,25 +315,34 @@ export default function ChciSePridatPage() {
           <h2 className="text-3xl lg:text-4xl text-white uppercase mb-10" style={{ fontFamily: bebas }}>Mohlo by vás zajímat</h2>
           <div className="grid sm:grid-cols-3 gap-4 text-left">
             <Link
-              to="/o-klubu"
+              to="/o-klubu#treneri"
               className="p-5 rounded-2xl bg-[#101a10] border border-[#6EE76D]/12 hover:border-[#6EE76D]/25 transition-all group"
             >
-              <h3 className="text-white uppercase group-hover:text-[#6EE76D] transition-colors text-xl" style={{ fontFamily: bebas }}>Naši trenéři</h3>
-              <p className="text-white/35 text-sm mt-1" style={{ fontFamily: inter }}>Kdo vede vaše dítě</p>
+              <div className="flex items-center gap-2 mb-1">
+                <UserRound className="w-5 h-5 text-[#6EE76D] flex-shrink-0" />
+                <h3 className="text-white uppercase group-hover:text-[#6EE76D] transition-colors text-xl" style={{ fontFamily: bebas }}>Naši trenéři</h3>
+              </div>
+              <p className="text-white/35 text-sm" style={{ fontFamily: inter }}>Kdo vede vaše dítě</p>
             </Link>
             <Link
               to="/druzstva"
               className="p-5 rounded-2xl bg-[#101a10] border border-[#6EE76D]/12 hover:border-[#6EE76D]/25 transition-all group"
             >
-              <h3 className="text-white uppercase group-hover:text-[#6EE76D] transition-colors text-xl" style={{ fontFamily: bebas }}>Naše družstva</h3>
-              <p className="text-white/35 text-sm mt-1" style={{ fontFamily: inter }}>Všechny věkové kategorie</p>
+              <div className="flex items-center gap-2 mb-1">
+                <Users className="w-5 h-5 text-[#6EE76D] flex-shrink-0" />
+                <h3 className="text-white uppercase group-hover:text-[#6EE76D] transition-colors text-xl" style={{ fontFamily: bebas }}>Naše družstva</h3>
+              </div>
+              <p className="text-white/35 text-sm" style={{ fontFamily: inter }}>Všechny věkové kategorie</p>
             </Link>
             <Link
               to="/o-klubu"
               className="p-5 rounded-2xl bg-[#101a10] border border-[#6EE76D]/12 hover:border-[#6EE76D]/25 transition-all group"
             >
-              <h3 className="text-white uppercase group-hover:text-[#6EE76D] transition-colors text-xl" style={{ fontFamily: bebas }}>Jak to u nás vypadá</h3>
-              <p className="text-white/35 text-sm mt-1" style={{ fontFamily: inter }}>O klubu a prostředí</p>
+              <div className="flex items-center gap-2 mb-1">
+                <Building2 className="w-5 h-5 text-[#6EE76D] flex-shrink-0" />
+                <h3 className="text-white uppercase group-hover:text-[#6EE76D] transition-colors text-xl" style={{ fontFamily: bebas }}>Jak to u nás vypadá</h3>
+              </div>
+              <p className="text-white/35 text-sm" style={{ fontFamily: inter }}>O klubu a prostředí</p>
             </Link>
           </div>
         </div>
@@ -351,7 +363,7 @@ export default function ChciSePridatPage() {
 
           <div className="grid lg:grid-cols-[1fr_1.6fr] gap-10 lg:gap-16 items-start">
             {/* Left: contact info */}
-            <div>
+            <div className="rounded-2xl border border-[#6EE76D]/20 bg-[#101a10] p-6 lg:p-8">
               <h3 className="text-2xl lg:text-3xl text-white uppercase mb-6" style={{ fontFamily: bebas }}>Ozvěte se na přímo</h3>
               <div className="space-y-5">
                 {[
@@ -375,13 +387,10 @@ export default function ChciSePridatPage() {
 
             {/* Right: form */}
             <div className="p-8 lg:p-10 rounded-2xl bg-gradient-to-r from-[#6EE76D]/8 via-[#6EE76D]/4 to-[#6EE76D]/8 border border-[#6EE76D]/15">
-              <SectionLabel>Napište nám</SectionLabel>
-              <h2 className="text-3xl lg:text-4xl text-white uppercase mb-2" style={{ fontFamily: bebas }}>
+              <SectionLabel>Těšíme se na vás</SectionLabel>
+              <h2 className="text-3xl lg:text-4xl text-white uppercase mb-6" style={{ fontFamily: bebas }}>
                 První trénink je zdarma
               </h2>
-              <p className="text-[#6EE76D] uppercase tracking-[0.12em] mb-6" style={{ fontFamily: bebas }}>
-                Těšíme se na vás
-              </p>
 
               {submitState.type !== "idle" && (
                 <div
@@ -414,9 +423,12 @@ export default function ChciSePridatPage() {
                     <label className="block">
                       <span className="mb-2 block text-white/75 text-sm" style={{ fontFamily: inter }}>Telefon</span>
                       <div className="grid grid-cols-[98px_1fr] gap-2">
-                        <select name="phonePrefix" value={formData.phonePrefix} onChange={handleChange} className="rounded-2xl border border-[#6EE76D]/15 bg-[#0d160d] px-3 py-3 text-white outline-none focus:border-[#6EE76D]/45">
-                          {PHONE_PREFIXES.map((prefix) => <option key={prefix} value={prefix}>{prefix}</option>)}
-                        </select>
+                        <div className="relative">
+                          <select name="phonePrefix" value={formData.phonePrefix} onChange={handleChange} className="w-full appearance-none rounded-2xl border border-[#6EE76D]/15 bg-[#0d160d] pl-3 pr-8 py-3 text-white outline-none focus:border-[#6EE76D]/45">
+                            {PHONE_PREFIXES.map((prefix) => <option key={prefix} value={prefix}>{prefix}</option>)}
+                          </select>
+                          <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40 pointer-events-none" />
+                        </div>
                         <input type="tel" name="phone" value={formData.phone} onChange={handleChange} required inputMode="numeric" className={`w-full rounded-2xl border bg-[#0d160d] px-4 py-3 text-white placeholder:text-white/35 outline-none ${formData.phone.length > 0 ? (phoneIsValid ? "border-[#6EE76D]/45" : "border-red-400/45") : "border-[#6EE76D]/15"}`} placeholder="777 721 282" />
                       </div>
                       {formData.phone.length > 0 && (

@@ -121,7 +121,7 @@ export default function OKlubuPage() {
       </section>
 
       {/* Coaches */}
-      <section className="py-16 lg:py-24">
+      <section id="treneri" className="py-16 lg:py-24 scroll-mt-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionLabel>Trenéři</SectionLabel>
           <h2 className="text-3xl lg:text-4xl text-white uppercase mb-12" style={{ fontFamily: bebas }}>Kdo vede naše družstva</h2>
