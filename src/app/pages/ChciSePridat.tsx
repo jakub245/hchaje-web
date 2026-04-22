@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
-import { ChevronLeft, ChevronRight, Mail, Play } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { ChevronLeft, ChevronRight, Mail, Phone, Play } from "lucide-react";
+import { Link } from "react-router";
 import {
   PageHero,
   SectionLabel,
@@ -14,7 +15,6 @@ import naborMini from "../../imports/foto/nabor/Nabor_mini.jpg";
 import naborRepre from "../../imports/foto/nabor/Nabor_repre.jpg";
 import naborSulcak from "../../imports/foto/nabor/Nabor_sulcak.jpg";
 import naborTurnaj from "../../imports/foto/nabor/Nabor_turnaj.jpg";
-import naborPaulin from "../../imports/foto/nabor/petr-paulin-nabor.png";
 
 const NABOR_GALLERY = [
   { src: naborMini, alt: "Nábor HC Háje - mini žákyně" },
@@ -76,6 +76,12 @@ const isValidPhone = (prefix: string, value: string) => {
 
 export default function ChciSePridatPage() {
   const [galleryIndex, setGalleryIndex] = useState(0);
+  const videoScrollRef = useRef<HTMLDivElement>(null);
+  const scrollVideos = (dir: 1 | -1) => {
+    const el = videoScrollRef.current;
+    if (!el) return;
+    el.scrollBy({ left: dir * el.offsetWidth, behavior: "smooth" });
+  };
   const [formData, setFormData] = useState(INITIAL_FORM);
   const [isSending, setIsSending] = useState(false);
   const [submitState, setSubmitState] = useState<{ type: "idle" | "success" | "error"; message: string }>({
@@ -150,9 +156,16 @@ export default function ChciSePridatPage() {
               <p className="text-white/55 mb-4" style={{ fontFamily: inter }}>
                 {nbspShortWords("U nejmenších dětí stavíme hlavně na radosti z pohybu, hrách a pozitivním vztahu ke sportu. Děti vedeme krok za krokem tak, aby měly ze sportu dlouhodobě dobrý pocit.")}
               </p>
-              <p className="text-white/55" style={{ fontFamily: inter }}>
+              <p className="text-white/55 mb-8" style={{ fontFamily: inter }}>
                 {nbspShortWords("První trénink je u nás vždy zdarma a nezávazně. Přijďte mezi nás objevit radost z pohybu a týmového sportu.")}
               </p>
+              <a
+                href="#kontaktni-formular"
+                className="inline-flex items-center gap-2 rounded-full px-8 py-3 bg-[#6EE76D] text-[#080C08] hover:brightness-110 hover:shadow-[0_0_20px_rgba(110,231,109,0.28)] uppercase transition-all duration-300"
+                style={{ fontFamily: bebas, letterSpacing: "0.08em" }}
+              >
+                Chci zkušební trénink
+              </a>
             </div>
             <div className="relative rounded-2xl overflow-hidden aspect-[4/3] group">
               {NABOR_GALLERY.map((item, index) => (
@@ -198,18 +211,27 @@ export default function ChciSePridatPage() {
 
       <section className="reveal-on-scroll pb-16 lg:pb-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
-            <article className="rounded-2xl border border-[#6EE76D]/14 bg-[#101a10] p-6 lg:p-8">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-16">
+            <div>
               <SectionLabel>Koho hledáme?</SectionLabel>
               <h3 className="text-2xl lg:text-3xl text-white uppercase mb-5" style={{ fontFamily: bebas }}>Kategorie náboru</h3>
               <ul className="space-y-3 text-white/85" style={{ fontFamily: inter }}>
-                <li>Přípravka: 5-8 let</li>
-                <li>Minižákyně: 8-10 let</li>
-                <li>Starší družstva: 10 let a starší</li>
+                <li className="flex items-start gap-2">
+                  <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[#6EE76D] flex-shrink-0" />
+                  <span>Přípravka: 5–8 let</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[#6EE76D] flex-shrink-0" />
+                  <span>Minižákyně: 8–10 let</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[#6EE76D] flex-shrink-0" />
+                  <span>Starší družstva: 10 let a starší</span>
+                </li>
               </ul>
-            </article>
+            </div>
 
-            <article className="rounded-2xl border border-[#6EE76D]/14 bg-[#101a10] p-6 lg:p-8">
+            <div>
               <SectionLabel>Proč právě házená?</SectionLabel>
               <h3 className="text-2xl lg:text-3xl text-white uppercase mb-5" style={{ fontFamily: bebas }}>Co dětem dá</h3>
               <ul className="space-y-3 text-white/85" style={{ fontFamily: inter }}>
@@ -220,10 +242,10 @@ export default function ChciSePridatPage() {
                   </li>
                 ))}
               </ul>
-            </article>
+            </div>
           </div>
 
-          <div className="mt-8 rounded-2xl border border-[#6EE76D]/14 bg-[#101a10] p-6 lg:p-8">
+          <div className="mt-12 rounded-2xl border border-[#6EE76D]/14 bg-[#101a10] p-6 lg:p-8">
             <SectionLabel>Jak trénujeme?</SectionLabel>
             <h3 className="text-2xl lg:text-3xl text-white uppercase mb-5" style={{ fontFamily: bebas }}>Miniházená pro nejmladší</h3>
             <p className="text-white/80 mb-4" style={{ fontFamily: inter }}>
@@ -233,27 +255,43 @@ export default function ChciSePridatPage() {
               {nbspShortWords("V létě trénujeme na venkovním hřišti, v zimě v tělocvičnách na Jižním Městě. První měsíc tréninků je zpravidla zdarma bez členských poplatků, dál se domluvíme individuálně.")}
             </p>
           </div>
-
-          <div className="mt-8 rounded-2xl border border-[#F587B9]/20 bg-[#F587B9]/7 p-6 lg:p-8">
-            <SectionLabel>Zkušební trénink</SectionLabel>
-            <h3 className="text-2xl lg:text-3xl text-white uppercase mb-5" style={{ fontFamily: bebas }}>Přijďte si to vyzkoušet zdarma</h3>
-            <div className="grid md:grid-cols-2 gap-4 text-white/85" style={{ fontFamily: inter }}>
-              <p>{nbspShortWords("Přípravka trénuje v úterý a ve čtvrtek. Minižačky trénují v pondělí, úterý a ve čtvrtek.")}</p>
-              <p>{nbspShortWords("Stačí sportovní oblečení, sportovní obuv (v zimě sálová) a láhev s pitím.")}</p>
-            </div>
-          </div>
         </div>
       </section>
 
       <section className="reveal-on-scroll pb-16 lg:pb-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionLabel>Jak to u nás vypadá</SectionLabel>
-          <h2 className="text-3xl lg:text-4xl text-white uppercase mb-8" style={{ fontFamily: bebas }}>
-            Videa z tréninků a turnajů
-          </h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {NABOR_VIDEOS.slice(0, 6).map((video, index) => (
-              <article key={`${video.title}-${index}`} className="rounded-2xl overflow-hidden border border-[#6EE76D]/12 bg-[#101a10]">
+          <div className="flex items-end justify-between gap-4 mb-8">
+            <div>
+              <SectionLabel>Jak to u nás vypadá</SectionLabel>
+              <h2 className="text-3xl lg:text-4xl text-white uppercase" style={{ fontFamily: bebas }}>
+                Videa z tréninků a turnajů
+              </h2>
+            </div>
+            <div className="flex gap-2 flex-shrink-0">
+              <button
+                type="button"
+                onClick={() => scrollVideos(-1)}
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#0e160e]/90 border border-[#6EE76D]/15 text-white/70 hover:text-white transition"
+                aria-label="Posunout doleva"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button
+                type="button"
+                onClick={() => scrollVideos(1)}
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#0e160e]/90 border border-[#6EE76D]/15 text-white/70 hover:text-white transition"
+                aria-label="Posunout doprava"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+          <div ref={videoScrollRef} className="flex gap-5 overflow-x-auto pb-2 scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {NABOR_VIDEOS.map((video, index) => (
+              <article
+                key={`${video.title}-${index}`}
+                className="rounded-2xl overflow-hidden border border-[#6EE76D]/12 bg-[#101a10] flex-shrink-0 w-[calc((100%-2.5rem)/3)] min-w-[200px]"
+              >
                 <div className="aspect-[9/16] bg-black">
                   <ImageWithFallback src={video.poster} alt={video.title} className="w-full h-full object-cover" />
                 </div>
@@ -267,61 +305,82 @@ export default function ChciSePridatPage() {
         </div>
       </section>
 
+      {/* Mohlo by vás zajímat */}
       <section className="reveal-on-scroll pb-16 lg:pb-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionLabel>Trenéři přípravky a minižaček</SectionLabel>
-          <div className="rounded-2xl border border-[#6EE76D]/18 bg-gradient-to-r from-[#6EE76D]/10 via-[#F587B9]/7 to-[#6EE76D]/10 p-6 lg:p-8">
-            <div className="grid lg:grid-cols-[220px_1fr] gap-6 lg:gap-8 items-center">
-              <div className="mx-auto w-44 h-44 lg:w-52 lg:h-52 rounded-2xl overflow-hidden border border-[#6EE76D]/25 shadow-[0_0_35px_rgba(110,231,109,0.12)]">
-                <ImageWithFallback src={naborPaulin} alt="Petr Paulín" className="w-full h-full object-cover" />
-              </div>
-              <div>
-                <p className="text-[#6EE76D] uppercase tracking-[0.15em] mb-2" style={{ fontFamily: bebas }}>Trenérská licence C</p>
-                <h3 className="text-3xl lg:text-4xl text-white uppercase mb-3" style={{ fontFamily: bebas }}>Petr Paulín (41 let)</h3>
-                <p className="text-white/70 mb-3" style={{ fontFamily: inter }}>
-                  {nbspShortWords("Házené se věnuji od dětství a většinu hráčské kariéry jsem prožil v klubu Sokol Praha Vršovice. Vedle házené jsem se aktivně věnoval také fotbalu, běhu, triatlonu a raketovým sportům. Díky dlouholetým zkušenostem přináším dětem pevné základy pohybu, disciplínu i radost ze hry.")}
-                </p>
-                <p className="text-white/70 mb-3" style={{ fontFamily: inter }}>
-                  {nbspShortWords("Mám dvě dcery, a právě proto mám blízký vztah k práci s dětmi i porozumění tomu, co rodiče od kvalitního trenéra očekávají. Od roku 2024 působím v HC Háje, kde se věnuji především našim nejmenším hráčkám.")}
-                </p>
-                <p className="text-white/55" style={{ fontFamily: inter }}>
-                  {nbspShortWords("Mým cílem je vytvářet bezpečné, přátelské a motivující prostředí, ve kterém si děti budují lásku k házené, pohybu a sportu jako přirozené součásti života.")}
-                </p>
-              </div>
-            </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <SectionLabel>Zjistěte více</SectionLabel>
+          <h2 className="text-3xl lg:text-4xl text-white uppercase mb-10" style={{ fontFamily: bebas }}>Mohlo by vás zajímat</h2>
+          <div className="grid sm:grid-cols-3 gap-4 text-left">
+            <Link
+              to="/o-klubu"
+              className="p-5 rounded-2xl bg-[#101a10] border border-[#6EE76D]/12 hover:border-[#6EE76D]/25 transition-all group"
+            >
+              <h3 className="text-white uppercase group-hover:text-[#6EE76D] transition-colors text-xl" style={{ fontFamily: bebas }}>Naši trenéři</h3>
+              <p className="text-white/35 text-sm mt-1" style={{ fontFamily: inter }}>Kdo vede vaše dítě</p>
+            </Link>
+            <Link
+              to="/druzstva"
+              className="p-5 rounded-2xl bg-[#101a10] border border-[#6EE76D]/12 hover:border-[#6EE76D]/25 transition-all group"
+            >
+              <h3 className="text-white uppercase group-hover:text-[#6EE76D] transition-colors text-xl" style={{ fontFamily: bebas }}>Naše družstva</h3>
+              <p className="text-white/35 text-sm mt-1" style={{ fontFamily: inter }}>Všechny věkové kategorie</p>
+            </Link>
+            <Link
+              to="/o-klubu"
+              className="p-5 rounded-2xl bg-[#101a10] border border-[#6EE76D]/12 hover:border-[#6EE76D]/25 transition-all group"
+            >
+              <h3 className="text-white uppercase group-hover:text-[#6EE76D] transition-colors text-xl" style={{ fontFamily: bebas }}>Jak to u nás vypadá</h3>
+              <p className="text-white/35 text-sm mt-1" style={{ fontFamily: inter }}>O klubu a prostředí</p>
+            </Link>
           </div>
         </div>
       </section>
 
-      <section className="reveal-on-scroll pb-16 lg:pb-24">
+      {/* Contact + Form */}
+      <section id="kontaktni-formular" className="reveal-on-scroll pb-20 lg:pb-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="rounded-2xl border border-[#6EE76D]/14 bg-[#101a10] p-6 lg:p-8">
-            <SectionLabel>Kontakty</SectionLabel>
-            <h3 className="text-2xl lg:text-3xl text-white uppercase mb-5" style={{ fontFamily: bebas }}>Ozvěte se nám přímo</h3>
-            <p className="text-white/80 mb-6" style={{ fontFamily: inter }}>
+          <div className="text-center mb-12">
+            <SectionLabel>Kontakt</SectionLabel>
+            <h2 className="text-4xl lg:text-5xl text-white uppercase mb-4" style={{ fontFamily: bebas }}>
+              Přijďte si to vyzkoušet
+            </h2>
+            <p className="text-white/55 max-w-2xl mx-auto" style={{ fontFamily: inter }}>
               {nbspShortWords("Domluvte si návštěvu na prvním ukázkovém tréninku přes kontakty níže. Nebo vyplňte kontaktní formulář a ozveme se vám zpět.")}
             </p>
-            <div className="grid md:grid-cols-2 gap-4 text-white/85" style={{ fontFamily: inter }}>
-              <p>Petr Paulín: 792 336 535</p>
-              <p>Petr Zálešák: 777 721 282</p>
-              <p>Kateřina Bláhová: 608 981 667</p>
-              <p>E-mail: pripravkahchaje@gmail.com</p>
-            </div>
           </div>
-        </div>
-      </section>
 
-      {/* Contact form */}
-      <section className="reveal-on-scroll pb-20 lg:pb-28">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="p-8 lg:p-12 rounded-2xl bg-gradient-to-r from-[#6EE76D]/8 via-[#6EE76D]/4 to-[#6EE76D]/8 border border-[#6EE76D]/15">
-            <div className="max-w-3xl mx-auto">
+          <div className="grid lg:grid-cols-[1fr_1.6fr] gap-10 lg:gap-16 items-start">
+            {/* Left: contact info */}
+            <div>
+              <h3 className="text-2xl lg:text-3xl text-white uppercase mb-6" style={{ fontFamily: bebas }}>Ozvěte se na přímo</h3>
+              <div className="space-y-5">
+                {[
+                  { icon: Phone, label: "Petr Paulín", value: "792 336 535", href: "tel:+420792336535" },
+                  { icon: Phone, label: "Petr Zálešák", value: "777 721 282", href: "tel:+420777721282" },
+                  { icon: Phone, label: "Kateřina Bláhová", value: "608 981 667", href: "tel:+420608981667" },
+                  { icon: Mail, label: "E-mail", value: "pripravkahchaje@gmail.com", href: "mailto:pripravkahchaje@gmail.com" },
+                ].map((c) => (
+                  <div key={c.label} className="flex items-start gap-4">
+                    <div className="w-12 h-12 rounded-full bg-[#6EE76D]/10 flex items-center justify-center flex-shrink-0">
+                      <c.icon className="w-5 h-5 text-[#6EE76D]" />
+                    </div>
+                    <div>
+                      <p className="text-white/35 text-sm mb-1" style={{ fontFamily: inter }}>{c.label}</p>
+                      <a href={c.href} className="text-white hover:text-[#6EE76D] transition-colors" style={{ fontFamily: inter }}>{c.value}</a>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Right: form */}
+            <div className="p-8 lg:p-10 rounded-2xl bg-gradient-to-r from-[#6EE76D]/8 via-[#6EE76D]/4 to-[#6EE76D]/8 border border-[#6EE76D]/15">
               <SectionLabel>Napište nám</SectionLabel>
-              <h2 className="text-3xl lg:text-4xl text-white uppercase mb-4" style={{ fontFamily: bebas }}>
-                Kontaktní formulář
+              <h2 className="text-3xl lg:text-4xl text-white uppercase mb-2" style={{ fontFamily: bebas }}>
+                První trénink je zdarma
               </h2>
-              <p className="text-white/45 mb-8" style={{ fontFamily: inter }}>
-                {nbspShortWords("První trénink je u nás zdarma a nezávazně. Napište nám pár informací a ozveme se vám co nejdříve.")}
+              <p className="text-[#6EE76D] uppercase tracking-[0.12em] mb-6" style={{ fontFamily: bebas }}>
+                Těšíme se na vás
               </p>
 
               {submitState.type !== "idle" && (
@@ -452,7 +511,6 @@ export default function ChciSePridatPage() {
           </div>
         </div>
       </section>
-
     </>
   );
 }
