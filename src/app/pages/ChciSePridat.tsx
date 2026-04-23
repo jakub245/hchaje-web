@@ -210,53 +210,55 @@ export default function ChciSePridatPage() {
         </div>
       </section>
 
-      <section className="reveal-on-scroll pb-0 bg-[#6EE76D]/5">
+      <section className="reveal-on-scroll pb-0">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-start">
-            <div className="space-y-10">
-              <div>
-                <SectionLabel>Koho hledáme?</SectionLabel>
-                <h3 className="text-2xl lg:text-3xl text-white uppercase mb-5" style={{ fontFamily: bebas }}>Kategorie náboru</h3>
-                <ul className="space-y-3 text-white/85" style={{ fontFamily: inter }}>
-                  <li className="flex items-start gap-2">
-                    <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[#6EE76D] flex-shrink-0" />
-                    <span>Přípravka: 5–8 let</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[#6EE76D] flex-shrink-0" />
-                    <span>Minižákyně: 8–10 let</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[#6EE76D] flex-shrink-0" />
-                    <span>Starší družstva: 10 let a starší</span>
-                  </li>
-                </ul>
-              </div>
-
-              <div>
-                <SectionLabel>Proč právě házená?</SectionLabel>
-                <h3 className="text-2xl lg:text-3xl text-white uppercase mb-5" style={{ fontFamily: bebas }}>Co dětem dá</h3>
-                <ul className="space-y-3 text-white/85" style={{ fontFamily: inter }}>
-                  {RECRUITMENT_BENEFITS.map((benefit) => (
-                    <li key={benefit} className="flex items-start gap-2">
-                      <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[#6EE76D] flex-shrink-0" />
-                      <span>{benefit}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-16">
+            <div>
+              <SectionLabel>Koho hledáme?</SectionLabel>
+              <h3 className="text-2xl lg:text-3xl text-white uppercase mb-5" style={{ fontFamily: bebas }}>Kategorie náboru</h3>
+              <ul className="space-y-3 text-white/85" style={{ fontFamily: inter }}>
+                <li className="flex items-start gap-2">
+                  <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[#6EE76D] flex-shrink-0" />
+                  <span>Přípravka: 5–8 let</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[#6EE76D] flex-shrink-0" />
+                  <span>Minižákyně: 8–10 let</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[#6EE76D] flex-shrink-0" />
+                  <span>Starší družstva: 10 let a starší</span>
+                </li>
+              </ul>
             </div>
 
-            <div className="rounded-2xl border border-[#6EE76D]/20 bg-[#101a10] p-6 lg:p-8">
-              <SectionLabel>Jak trénujeme?</SectionLabel>
-              <h3 className="text-2xl lg:text-3xl text-white uppercase mb-5" style={{ fontFamily: bebas }}>Miniházená pro nejmladší</h3>
-              <p className="text-white/80 mb-4" style={{ fontFamily: inter }}>
-                {nbspShortWords("U nejmladších začínáme miniházenou, zábavnou a bezpečnou verzí házené pro děti. Hraje se s měkkým míčem, na menším hřišti a s menšími bránami. Díky tomu si děti rychle osvojí základy a hra je opravdu baví.")}
-              </p>
-              <p className="text-white/80" style={{ fontFamily: inter }}>
-                {nbspShortWords("V létě trénujeme na venkovním hřišti, v zimě v tělocvičnách na Jižním Městě. První měsíc tréninků je zpravidla zdarma bez členských poplatků, dál se domluvíme individuálně.")}
-              </p>
+            <div>
+              <SectionLabel>Proč právě házená?</SectionLabel>
+              <h3 className="text-2xl lg:text-3xl text-white uppercase mb-5" style={{ fontFamily: bebas }}>Co dětem dá</h3>
+              <ul className="space-y-3 text-white/85" style={{ fontFamily: inter }}>
+                {RECRUITMENT_BENEFITS.map((benefit) => (
+                  <li key={benefit} className="flex items-start gap-2">
+                    <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[#6EE76D] flex-shrink-0" />
+                    <span>{benefit}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="reveal-on-scroll pb-16 lg:pb-24 bg-[#6EE76D]/5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+          <div className="rounded-2xl border border-[#6EE76D]/20 bg-[#101a10] p-6 lg:p-8">
+            <SectionLabel>Jak trénujeme?</SectionLabel>
+            <h3 className="text-2xl lg:text-3xl text-white uppercase mb-5" style={{ fontFamily: bebas }}>Miniházená pro nejmladší</h3>
+            <p className="text-white/80 mb-4" style={{ fontFamily: inter }}>
+              {nbspShortWords("U nejmladších začínáme miniházenou, zábavnou a bezpečnou verzí házené pro děti. Hraje se s měkkým míčem, na menším hřišti a s menšími bránami. Díky tomu si děti rychle osvojí základy a hra je opravdu baví.")}
+            </p>
+            <p className="text-white/80" style={{ fontFamily: inter }}>
+              {nbspShortWords("V létě trénujeme na venkovním hřišti, v zimě v tělocvičnách na Jižním Městě. První měsíc tréninků je zpravidla zdarma bez členských poplatků, dál se domluvíme individuálně.")}
+            </p>
           </div>
         </div>
       </section>
@@ -361,84 +363,85 @@ export default function ChciSePridatPage() {
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-[1fr_1.6fr] gap-10 lg:gap-16 items-start">
-            {/* Left: contact info */}
-            <div className="rounded-2xl border border-[#6EE76D]/20 bg-[#101a10] p-6 lg:p-8">
-              <h3 className="text-2xl lg:text-3xl text-white uppercase mb-6" style={{ fontFamily: bebas }}>Ozvěte se na přímo</h3>
-              <div className="space-y-5">
-                {[
-                  { icon: Phone, label: "Petr Paulín", value: "792 336 535", href: "tel:+420792336535" },
-                  { icon: Phone, label: "Petr Zálešák", value: "777 721 282", href: "tel:+420777721282" },
-                  { icon: Phone, label: "Kateřina Bláhová", value: "608 981 667", href: "tel:+420608981667" },
-                  { icon: Mail, label: "E-mail", value: "pripravkahchaje@gmail.com", href: "mailto:pripravkahchaje@gmail.com" },
-                ].map((c) => (
-                  <div key={c.label} className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-full bg-[#6EE76D]/10 flex items-center justify-center flex-shrink-0">
-                      <c.icon className="w-5 h-5 text-[#6EE76D]" />
-                    </div>
-                    <div>
-                      <p className="text-white/35 text-sm mb-1" style={{ fontFamily: inter }}>{c.label}</p>
-                      <a href={c.href} className="text-white hover:text-[#6EE76D] transition-colors" style={{ fontFamily: inter }}>{c.value}</a>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Right: form */}
-            <div className="p-8 lg:p-10 rounded-2xl bg-gradient-to-r from-[#6EE76D]/8 via-[#6EE76D]/4 to-[#6EE76D]/8 border border-[#6EE76D]/15">
-              <SectionLabel>Těšíme se na vás</SectionLabel>
-              <h2 className="text-3xl lg:text-4xl text-white uppercase mb-6" style={{ fontFamily: bebas }}>
-                První trénink je zdarma
-              </h2>
-
-              {submitState.type !== "idle" && (
-                <div
-                  className={`mb-6 rounded-2xl px-4 py-3 text-sm ${submitState.type === "success" ? "bg-[#6EE76D]/12 text-[#9CF59B] border border-[#6EE76D]/25" : "bg-red-500/10 text-red-200 border border-red-400/20"}`}
-                  style={{ fontFamily: inter }}
-                >
-                  {submitState.message}
-                </div>
-              )}
-
-              <form onSubmit={handleSubmit} className="space-y-0">
-                <input type="text" name="website" value={formData.website} onChange={handleChange} className="hidden" tabIndex={-1} autoComplete="off" />
-
-                <div className="pb-8">
-                  <h3 className="text-white uppercase mb-5 tracking-[0.08em]" style={{ fontFamily: bebas }}>Údaje rodiče</h3>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <label className="block md:col-span-2">
-                      <span className="mb-2 block text-white/75 text-sm" style={{ fontFamily: inter }}>Jméno a příjmení</span>
-                      <input type="text" name="name" value={formData.name} onChange={handleChange} required className="w-full rounded-2xl border border-[#6EE76D]/15 bg-[#0d160d] px-4 py-3 text-white placeholder:text-white/35 outline-none focus:border-[#6EE76D]/45" placeholder="Např. Jana Nováková" />
-                    </label>
-                    <label className="block">
-                      <span className="mb-2 block text-white/75 text-sm" style={{ fontFamily: inter }}>E-mail</span>
-                      <input type="email" name="email" value={formData.email} onChange={handleChange} required className={`w-full rounded-2xl border bg-[#0d160d] px-4 py-3 text-white placeholder:text-white/35 outline-none ${formData.email.length > 0 ? (emailIsValid ? "border-[#6EE76D]/45" : "border-red-400/45") : "border-[#6EE76D]/15"}`} placeholder="vas@email.cz" />
-                      {formData.email.length > 0 && (
-                        <p className={`mt-2 text-sm ${emailIsValid ? "text-[#9CF59B]" : "text-red-300"}`} style={{ fontFamily: inter }}>
-                          {emailIsValid ? "E-mail vypadá správně." : "Zadejte prosím platný e-mail."}
-                        </p>
-                      )}
-                    </label>
-                    <label className="block">
-                      <span className="mb-2 block text-white/75 text-sm" style={{ fontFamily: inter }}>Telefon</span>
-                      <div className="grid grid-cols-[98px_1fr] gap-2">
-                        <div className="relative">
-                          <select name="phonePrefix" value={formData.phonePrefix} onChange={handleChange} className="w-full appearance-none rounded-2xl border border-[#6EE76D]/15 bg-[#0d160d] pl-3 pr-8 py-3 text-white outline-none focus:border-[#6EE76D]/45">
-                            {PHONE_PREFIXES.map((prefix) => <option key={prefix} value={prefix}>{prefix}</option>)}
-                          </select>
-                          <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40 pointer-events-none" />
-                        </div>
-                        <input type="tel" name="phone" value={formData.phone} onChange={handleChange} required inputMode="numeric" className={`w-full rounded-2xl border bg-[#0d160d] px-4 py-3 text-white placeholder:text-white/35 outline-none ${formData.phone.length > 0 ? (phoneIsValid ? "border-[#6EE76D]/45" : "border-red-400/45") : "border-[#6EE76D]/15"}`} placeholder="777 721 282" />
+          <div className="rounded-2xl border border-[#6EE76D]/20 bg-gradient-to-r from-[#6EE76D]/8 via-[#6EE76D]/4 to-[#6EE76D]/8 p-8 lg:p-10">
+            <div className="grid lg:grid-cols-2 gap-10 lg:gap-16">
+              {/* Left: contact info */}
+              <div>
+                <h3 className="text-2xl lg:text-3xl text-white uppercase mb-6" style={{ fontFamily: bebas }}>Ozvěte se na přímo</h3>
+                <div className="space-y-5">
+                  {[
+                    { icon: Phone, label: "Petr Paulín", value: "792 336 535", href: "tel:+420792336535" },
+                    { icon: Phone, label: "Petr Zálešák", value: "777 721 282", href: "tel:+420777721282" },
+                    { icon: Phone, label: "Kateřina Bláhová", value: "608 981 667", href: "tel:+420608981667" },
+                    { icon: Mail, label: "E-mail", value: "pripravkahchaje@gmail.com", href: "mailto:pripravkahchaje@gmail.com" },
+                  ].map((c) => (
+                    <div key={c.label} className="flex items-start gap-4">
+                      <div className="w-12 h-12 rounded-full bg-[#6EE76D]/10 flex items-center justify-center flex-shrink-0">
+                        <c.icon className="w-5 h-5 text-[#6EE76D]" />
                       </div>
-                      {formData.phone.length > 0 && (
-                        <p className={`mt-2 text-sm ${phoneIsValid ? "text-[#9CF59B]" : "text-red-300"}`} style={{ fontFamily: inter }}>
-                          {phoneIsValid ? "Telefon vypadá dobře." : "Zadejte telefon bez předvolby ve správném formátu."}
-                        </p>
-                      )}
-                    </label>
-                  </div>
+                      <div>
+                        <p className="text-white/35 text-sm mb-1" style={{ fontFamily: inter }}>{c.label}</p>
+                        <a href={c.href} className="text-white hover:text-[#6EE76D] transition-colors" style={{ fontFamily: inter }}>{c.value}</a>
+                      </div>
+                    </div>
+                  ))}
                 </div>
+              </div>
+
+              {/* Right: form */}
+              <div>
+                <SectionLabel>Těšíme se na vás</SectionLabel>
+                <h2 className="text-3xl lg:text-4xl text-white uppercase mb-6" style={{ fontFamily: bebas }}>
+                  První trénink je zdarma
+                </h2>
+
+                {submitState.type !== "idle" && (
+                  <div
+                    className={`mb-6 rounded-2xl px-4 py-3 text-sm ${submitState.type === "success" ? "bg-[#6EE76D]/12 text-[#9CF59B] border border-[#6EE76D]/25" : "bg-red-500/10 text-red-200 border border-red-400/20"}`}
+                    style={{ fontFamily: inter }}
+                  >
+                    {submitState.message}
+                  </div>
+                )}
+
+                <form onSubmit={handleSubmit} className="space-y-0">
+                  <input type="text" name="website" value={formData.website} onChange={handleChange} className="hidden" tabIndex={-1} autoComplete="off" />
+
+                  <div className="pb-8">
+                    <h3 className="text-white uppercase mb-5 tracking-[0.08em]" style={{ fontFamily: bebas }}>Údaje rodiče</h3>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <label className="block md:col-span-2">
+                        <span className="mb-2 block text-white/75 text-sm" style={{ fontFamily: inter }}>Jméno a příjmení</span>
+                        <input type="text" name="name" value={formData.name} onChange={handleChange} required className="w-full rounded-2xl border border-[#6EE76D]/15 bg-[#0d160d] px-4 py-3 text-white placeholder:text-white/35 outline-none focus:border-[#6EE76D]/45" placeholder="Např. Jana Nováková" />
+                      </label>
+                      <label className="block">
+                        <span className="mb-2 block text-white/75 text-sm" style={{ fontFamily: inter }}>E-mail</span>
+                        <input type="email" name="email" value={formData.email} onChange={handleChange} required className={`w-full rounded-2xl border bg-[#0d160d] px-4 py-3 text-white placeholder:text-white/35 outline-none ${formData.email.length > 0 ? (emailIsValid ? "border-[#6EE76D]/45" : "border-red-400/45") : "border-[#6EE76D]/15"}`} placeholder="vas@email.cz" />
+                        {formData.email.length > 0 && (
+                          <p className={`mt-2 text-sm ${emailIsValid ? "text-[#9CF59B]" : "text-red-300"}`} style={{ fontFamily: inter }}>
+                            {emailIsValid ? "E-mail vypadá správně." : "Zadejte prosím platný e-mail."}
+                          </p>
+                        )}
+                      </label>
+                      <label className="block">
+                        <span className="mb-2 block text-white/75 text-sm" style={{ fontFamily: inter }}>Telefon</span>
+                        <div className="grid grid-cols-[98px_1fr] gap-2">
+                          <div className="relative">
+                            <select name="phonePrefix" value={formData.phonePrefix} onChange={handleChange} className="w-full appearance-none rounded-2xl border border-[#6EE76D]/15 bg-[#0d160d] pl-3 pr-8 py-3 text-white outline-none focus:border-[#6EE76D]/45">
+                              {PHONE_PREFIXES.map((prefix) => <option key={prefix} value={prefix}>{prefix}</option>)}
+                            </select>
+                            <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40 pointer-events-none" />
+                          </div>
+                          <input type="tel" name="phone" value={formData.phone} onChange={handleChange} required inputMode="numeric" className={`w-full rounded-2xl border bg-[#0d160d] px-4 py-3 text-white placeholder:text-white/35 outline-none ${formData.phone.length > 0 ? (phoneIsValid ? "border-[#6EE76D]/45" : "border-red-400/45") : "border-[#6EE76D]/15"}`} placeholder="777 721 282" />
+                        </div>
+                        {formData.phone.length > 0 && (
+                          <p className={`mt-2 text-sm ${phoneIsValid ? "text-[#9CF59B]" : "text-red-300"}`} style={{ fontFamily: inter }}>
+                            {phoneIsValid ? "Telefon vypadá dobře." : "Zadejte telefon bez předvolby ve správném formátu."}
+                          </p>
+                        )}
+                      </label>
+                    </div>
+                  </div>
 
                 <div className="border-t border-white/8 pt-8 pb-8">
                   <h3 className="text-white uppercase mb-3 tracking-[0.08em]" style={{ fontFamily: bebas }}>Údaje dítěte</h3>

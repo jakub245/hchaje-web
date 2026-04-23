@@ -8,6 +8,11 @@ import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { Btn, SectionLabel, CtaStrip, bebas, inter, nbspShortWords } from "../components/shared";
 import { TEAMS, getAllTeamNews } from "../data/teams";
 import heroBackground from "../../imports/hc-haje-pozadi.png";
+import greenLogo from "../../imports/loga/green-logo.svg";
+import kasiaPng from "../../imports/loga/kasia-png.png";
+import logoPraha from "../../imports/loga/logo-praha.svg";
+import macron from "../../imports/loga/macron.svg";
+import praha11Logo from "../../imports/loga/praha11-logo.svg";
 
 const totalPlayers = TEAMS.reduce((sum, team) => sum + team.playerCount, 0);
 const totalTeams = TEAMS.length;
@@ -17,6 +22,14 @@ const STATS = [
   { value: `${totalPlayers}`, label: "Aktivních hráček" },
   { value: `${totalTeams}`, label: "Družstev" },
   { value: `${totalTrainingsPerWeek}`, label: "Tréninků týdně" },
+];
+
+const PARTNERS = [
+  { src: greenLogo, alt: "HC Háje - Partneři" },
+  { src: kasiaPng, alt: "Kasia - Partneři" },
+  { src: logoPraha, alt: "Praha - Partneři" },
+  { src: macron, alt: "Macron - Partneři" },
+  { src: praha11Logo, alt: "Praha 11 - Partneři" },
 ];
 
 const CAROUSEL_IMAGES = [
@@ -388,6 +401,32 @@ function NewsAndTrainings() {
   );
 }
 
+/* ══════════════ PARTNERS ══════════════ */
+function PartnersSection() {
+  return (
+    <section className="reveal-on-scroll py-20 lg:py-28">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center">
+          <h2 className="text-3xl lg:text-4xl text-white uppercase mb-16" style={{ fontFamily: bebas }}>
+            Děkujeme našim partnerům
+          </h2>
+          <div className="flex flex-wrap items-center justify-center gap-8 lg:gap-12">
+            {PARTNERS.map((partner) => (
+              <div key={partner.alt} className="flex items-center justify-center h-20 lg:h-24">
+                <ImageWithFallback
+                  src={partner.src}
+                  alt={partner.alt}
+                  className="h-full w-auto max-w-[120px] lg:max-w-[150px] opacity-60 hover:opacity-100 transition-opacity duration-300 filter brightness-0 invert"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function Home() {
   return (
     <>
@@ -395,6 +434,7 @@ export default function Home() {
       <About />
       <ReelsSection />
       <NewsAndTrainings />
+      <PartnersSection />
       <CtaStrip />
     </>
   );
