@@ -407,7 +407,7 @@ function PartnersSection() {
     <section className="reveal-on-scroll py-16 lg:py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          <h2 className="text-2xl lg:text-3xl text-white/60 uppercase mb-12" style={{ fontFamily: bebas }}>
+          <h2 className="text-white/60 uppercase mb-12" style={{ fontFamily: bebas, fontSize: '20px' }}>
             Děkujeme našim partnerům
           </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 lg:gap-8 items-center justify-items-center">
@@ -416,7 +416,7 @@ function PartnersSection() {
                 <ImageWithFallback
                   src={partner.src}
                   alt={partner.alt}
-                  className="h-16 lg:h-20 w-auto object-contain opacity-40 hover:opacity-80 transition-opacity duration-300 filter brightness-0 invert"
+                  className="h-8 lg:h-10 w-auto object-contain opacity-40 hover:opacity-80 transition-opacity duration-300 filter brightness-0 invert"
                 />
               </div>
             ))}
