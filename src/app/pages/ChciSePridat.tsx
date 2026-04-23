@@ -525,7 +525,8 @@ export default function ChciSePridatPage() {
             </div>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
     </>
   );
 }
