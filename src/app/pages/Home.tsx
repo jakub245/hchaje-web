@@ -404,19 +404,19 @@ function NewsAndTrainings() {
 /* ══════════════ PARTNERS ══════════════ */
 function PartnersSection() {
   return (
-    <section className="reveal-on-scroll py-20 lg:py-28">
+    <section className="reveal-on-scroll py-16 lg:py-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          <h2 className="text-3xl lg:text-4xl text-white uppercase mb-16" style={{ fontFamily: bebas }}>
+          <h2 className="text-2xl lg:text-3xl text-white/60 uppercase mb-12" style={{ fontFamily: bebas }}>
             Děkujeme našim partnerům
           </h2>
-          <div className="flex flex-wrap items-center justify-center gap-8 lg:gap-12">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 lg:gap-8 items-center justify-items-center">
             {PARTNERS.map((partner) => (
-              <div key={partner.alt} className="flex items-center justify-center h-20 lg:h-24">
+              <div key={partner.alt} className="flex items-center justify-center">
                 <ImageWithFallback
                   src={partner.src}
                   alt={partner.alt}
-                  className="h-full w-auto max-w-[120px] lg:max-w-[150px] opacity-60 hover:opacity-100 transition-opacity duration-300 filter brightness-0 invert"
+                  className="h-16 lg:h-20 w-auto object-contain opacity-40 hover:opacity-80 transition-opacity duration-300 filter brightness-0 invert"
                 />
               </div>
             ))}
@@ -434,8 +434,8 @@ export default function Home() {
       <About />
       <ReelsSection />
       <NewsAndTrainings />
-      <PartnersSection />
       <CtaStrip />
+      <PartnersSection />
     </>
   );
 }

@@ -248,7 +248,7 @@ export default function ChciSePridatPage() {
         </div>
       </section>
 
-      <section className="reveal-on-scroll pb-16 lg:pb-24 bg-[#6EE76D]/5">
+      <section className="reveal-on-scroll pb-16 lg:pb-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
           <div className="rounded-2xl border border-[#6EE76D]/20 bg-[#101a10] p-6 lg:p-8">
             <SectionLabel>Jak trénujeme?</SectionLabel>
