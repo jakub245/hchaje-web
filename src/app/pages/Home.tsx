@@ -416,7 +416,7 @@ function PartnersSection() {
                 <ImageWithFallback
                   src={partner.src}
                   alt={partner.alt}
-                  className="h-8 lg:h-10 w-auto object-contain opacity-40 hover:opacity-80 transition-opacity duration-300 filter brightness-0 invert"
+                  className="h-[2.6rem] lg:h-[3.25rem] w-auto object-contain opacity-40 hover:opacity-80 transition-opacity duration-300 filter brightness-0 invert"
                 />
               </div>
             ))}
