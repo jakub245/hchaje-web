@@ -404,6 +404,7 @@ export default function ChciSePridatPage() {
                   <input type="text" name="website" value={formData.website} onChange={handleChange} className="hidden" tabIndex={-1} autoComplete="off" />
 
                   <div className="pb-8">
+                    <h3 className="text-white uppercase mb-4 tracking-[0.08em]" style={{ fontFamily: bebas }}>Údaje rodiče</h3>
                     <div className="grid md:grid-cols-2 gap-4">
                       <label className="block md:col-span-2">
                         <span className="mb-2 block text-white/75 text-sm" style={{ fontFamily: inter }}>Jméno a příjmení</span>
