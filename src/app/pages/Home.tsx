@@ -8,11 +8,11 @@ import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { Btn, SectionLabel, CtaStrip, bebas, inter, nbspShortWords } from "../components/shared";
 import { TEAMS, getAllTeamNews } from "../data/teams";
 import heroBackground from "../../imports/hc-haje-pozadi.png";
-import greenLogo from "../../imports/loga/green-logo.svg";
-import kasiaPng from "../../imports/loga/kasia-png.png";
-import logoPraha from "../../imports/loga/logo-praha.svg";
-import macron from "../../imports/loga/macron.svg";
-import praha11Logo from "../../imports/loga/praha11-logo.svg";
+import bistorGreenLogo from "../../imports/loga/logo-green.svg";
+import kasiaLogo from "../../imports/loga/logo-kasia.png";
+import macronLogo from "../../imports/loga/logo-macron.svg";
+import pragueLogo from "../../imports/loga/logo-prague.svg";
+import praha11Logo from "../../imports/loga/logo-praha11.svg";
 
 const totalPlayers = TEAMS.reduce((sum, team) => sum + team.playerCount, 0);
 const totalTeams = TEAMS.length;
@@ -25,11 +25,11 @@ const STATS = [
 ];
 
 const PARTNERS = [
-  { src: greenLogo, alt: "HC Háje - Partneři" },
-  { src: kasiaPng, alt: "Kasia - Partneři" },
-  { src: logoPraha, alt: "Praha - Partneři" },
-  { src: macron, alt: "Macron - Partneři" },
+  { src: kasiaLogo, alt: "Kasia - Partneři" },
+  { src: macronLogo, alt: "Macron - Partneři" },
+  { src: pragueLogo, alt: "Praha - Partneři" },
   { src: praha11Logo, alt: "Praha 11 - Partneři" },
+  { src: bistorGreenLogo, alt: "Bistor Green - Partneři" },
 ];
 
 const CAROUSEL_IMAGES = [
