@@ -390,7 +390,7 @@ export default function ChciSePridatPage() {
             </p>
           </div>
 
-          <div className="p-8 lg:p-10 rounded-2xl bg-gradient-to-r from-[#6EE76D]/8 via-[#6EE76D]/4 to-[#6EE76D]/8 border border-[#6EE76D]/15">
+          <div className="max-w-4xl mx-auto p-6 lg:p-8 rounded-2xl bg-gradient-to-r from-[#6EE76D]/8 via-[#6EE76D]/4 to-[#6EE76D]/8 border border-[#6EE76D]/15">
             <SectionLabel>Těšíme se na vás</SectionLabel>
             <h2 className="text-3xl lg:text-4xl text-white uppercase mb-6" style={{ fontFamily: bebas }}>
               První trénink je zdarma
@@ -525,28 +525,27 @@ export default function ChciSePridatPage() {
             </form>
           </div>
 
-          <div className="mt-8 lg:mt-10">
+          <div className="mt-8 lg:mt-10 text-center">
             <h3 className="text-2xl lg:text-3xl text-white uppercase mb-5" style={{ fontFamily: bebas }}>Ozvěte se na přímo</h3>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-4">
               {[
-                { icon: Phone, name: "Petr Paulín", value: "792 336 535", href: "tel:+420792336535" },
-                { icon: Phone, name: "Petr Zálešák", value: "777 721 282", href: "tel:+420777721282" },
-                { icon: Phone, name: "Kateřina Bláhová", value: "608 981 667", href: "tel:+420608981667" },
-                { icon: Mail, name: "E-mail", value: "pripravkahchaje@gmail.com", href: "mailto:pripravkahchaje@gmail.com" },
+                { icon: Phone, name: "Petr Paulín", value: "792 336 535" },
+                { icon: Phone, name: "Petr Zálešák", value: "777 721 282" },
+                { icon: Phone, name: "Kateřina Bláhová", value: "608 981 667" },
+                { icon: Mail, name: "E-mail", value: "pripravkahchaje@gmail.com" },
               ].map((contact) => (
-                <a
+                <div
                   key={contact.name}
-                  href={contact.href}
-                  className="rounded-2xl border border-[#6EE76D]/15 bg-[#101a10] px-4 py-4 hover:border-[#6EE76D]/35 transition-colors"
+                  className="px-1"
                 >
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="w-9 h-9 rounded-full bg-[#6EE76D]/10 flex items-center justify-center flex-shrink-0">
+                  <div className="flex items-center justify-center gap-2 mb-1">
+                    <div className="w-7 h-7 rounded-full bg-[#6EE76D]/10 flex items-center justify-center flex-shrink-0">
                       <contact.icon className="w-4 h-4 text-[#6EE76D]" />
                     </div>
                     <p className="text-white text-base leading-tight" style={{ fontFamily: inter }}>{contact.name}</p>
                   </div>
-                  <p className="text-white text-base leading-tight break-all" style={{ fontFamily: inter }}>{contact.value}</p>
-                </a>
+                  <p className="text-white text-base leading-tight" style={{ fontFamily: inter }}>{contact.value}</p>
+                </div>
               ))}
             </div>
           </div>
