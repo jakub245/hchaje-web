@@ -380,7 +380,7 @@ export default function ChciSePridatPage() {
       {/* Contact + Form */}
       <section id="kontaktni-formular" className="reveal-on-scroll pb-20 lg:pb-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8 lg:mb-10">
             <SectionLabel>Kontakt</SectionLabel>
             <h2 className="text-4xl lg:text-5xl text-white uppercase mb-4" style={{ fontFamily: bebas }}>
               Přijďte si to vyzkoušet, zcela zdarma
