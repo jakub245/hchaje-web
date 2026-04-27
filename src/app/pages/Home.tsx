@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router";
 import {
-  ChevronRight, ChevronLeft, ChevronDown, Play, Instagram, ArrowRight,
-  Clock, Users, Calendar, Trophy,
+  ChevronRight, ChevronLeft, ChevronDown, Play, ArrowRight,
+  Calendar, MapPin,
 } from "lucide-react";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { Btn, SectionLabel, CtaStrip, bebas, inter, nbspShortWords } from "../components/shared";
@@ -39,21 +39,15 @@ const CAROUSEL_IMAGES = [
   "https://images.unsplash.com/photo-1552127966-d24b805b9be7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3b21lbiUyMGhhbmRiYWxsJTIwcGxheWVycyUyMHRlYW18ZW58MXx8fHwxNzc2MDg1OTY3fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
 ];
 
-const REELS = [
-  {
-    id: 1,
-    permalink: "https://www.instagram.com/reel/DV_oFfejTpP/?utm_source=ig_embed&utm_campaign=loading",
-    thumbnail: "https://images.unsplash.com/photo-1606519740551-1fa9e7c68a02?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxoYW5kYmFsbCUyMGJhbGwlMjBjbG9zZSUyMHVwJTIwc3BvcnR8ZW58MXx8fHwxNzc2MDg1OTY3fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-    caption: "Trénink A-týmu",
-  },
-  { id: 2, thumbnail: "https://images.unsplash.com/photo-1769614075229-bfc51a41aa78?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxoYW5kYmFsbCUyMHRlYW0lMjB0cmFpbmluZyUyMGluZG9vcnxlbnwxfHx8fDE3NzYwODU5NjZ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral", caption: "Přípravka v akci" },
-  { id: 3, thumbnail: "https://images.unsplash.com/photo-1575367728985-8cb72541609a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxoYW5kYmFsbCUyMGdhbWUlMjBtYXRjaCUyMGFjdGlvbnxlbnwxfHx8fDE3NzYwODU5NjZ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral", caption: "Zápasový highlight" },
-  { id: 4, thumbnail: "https://images.unsplash.com/photo-1552127966-d24b805b9be7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3b21lbiUyMGhhbmRiYWxsJTIwcGxheWVycyUyMHRlYW18ZW58MXx8fHwxNzc2MDg1OTY3fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral", caption: "Teambuilding" },
-  { id: 5, thumbnail: "https://images.unsplash.com/photo-1669046239665-5dcfc2ecc468?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxoYW5kYmFsbCUyMGNvdXJ0JTIwaW5kb29yJTIwc3BvcnRzJTIwaGFsbHxlbnwxfHx8fDE3NzYwODU5NjZ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral", caption: "Atmosféra haly" },
-  { id: 6, thumbnail: "https://images.unsplash.com/photo-1606519740551-1fa9e7c68a02?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxoYW5kYmFsbCUyMGJhbGwlMjBjbG9zZSUyMHVwJTIwc3BvcnR8ZW58MXx8fHwxNzc2MDg1OTY3fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral", caption: "Naše vybavení" },
+const YOUTUBE_SHORTS = [
+  { id: 1, url: "https://youtube.com/shorts/qXrqO4WdFps?feature=share", caption: "HC Háje Shorts 1" },
+  { id: 2, url: "https://youtube.com/shorts/3Jwy9uqJu4M?feature=share", caption: "HC Háje Shorts 2" },
+  { id: 3, url: "https://youtube.com/shorts/0JEVSN4o9y0?feature=share", caption: "HC Háje Shorts 3" },
+  { id: 4, url: "https://youtube.com/shorts/AZHaXz5OG_E?feature=share", caption: "HC Háje Shorts 4" },
+  { id: 5, url: "https://youtube.com/shorts/OsATSi5F3yI?feature=share", caption: "HC Háje Shorts 5" },
+  { id: 6, url: "https://youtube.com/shorts/7eeWLsZDVZs?feature=share", caption: "HC Háje Shorts 6" },
+  { id: 7, url: "https://youtube.com/shorts/xmGBGfHFn7k?feature=share", caption: "HC Háje Shorts 7" },
 ];
-
-const DAY_ORDER = ["Pondělí", "Úterý", "Středa", "Čtvrtek", "Pátek", "Sobota", "Neděle"];
 
 const toSlug = (value: string) =>
   value
@@ -67,31 +61,48 @@ const parseCzDate = (value: string) => {
   return new Date(Number(year), Number(month) - 1, Number(day)).getTime();
 };
 
-const getUpcomingTrainings = () => {
-  const now = new Date();
-  const currentDayIndex = now.getDay() === 0 ? 6 : now.getDay() - 1;
+const getUpcomingEvents = () => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const todayTs = today.getTime();
 
   return TEAMS.flatMap((team) =>
-    team.trainings.map((training) => {
-      const dayIndex = DAY_ORDER.indexOf(training.day);
-      const distance = dayIndex >= currentDayIndex ? dayIndex - currentDayIndex : dayIndex + 7 - currentDayIndex;
-      const startTime = training.time.split(/[–-]/)[0].trim();
-      const [hours = 0, minutes = 0] = startTime.split(":").map(Number);
-      const nextDate = new Date(now);
-      nextDate.setHours(0, 0, 0, 0);
-      nextDate.setDate(now.getDate() + distance);
-
-      return {
-        ...training,
-        team: team.name,
-        slug: team.slug,
-        date: `${nextDate.getDate()}. ${nextDate.getMonth() + 1}.`,
-        sortValue: distance * 1440 + hours * 60 + minutes,
-      };
-    }),
+    (team.events ?? []).map((event) => ({
+      ...event,
+      team: team.name,
+      slug: team.slug,
+      sortValue: parseCzDate(event.date),
+    })),
   )
+    .filter((event) => event.sortValue >= todayTs)
     .sort((a, b) => a.sortValue - b.sortValue)
     .slice(0, 5);
+};
+
+const getYoutubeEmbedUrl = (url: string) => {
+  try {
+    const parsed = new URL(url);
+    const path = parsed.pathname;
+
+    if (path.includes("/shorts/")) {
+      const shortId = path.split("/shorts/")[1]?.split("/")[0];
+      if (shortId) return `https://www.youtube.com/embed/${shortId}?rel=0`;
+    }
+
+    if (path === "/watch") {
+      const videoId = parsed.searchParams.get("v");
+      if (videoId) return `https://www.youtube.com/embed/${videoId}?rel=0`;
+    }
+
+    if (parsed.hostname.includes("youtu.be")) {
+      const videoId = path.replace("/", "");
+      if (videoId) return `https://www.youtube.com/embed/${videoId}?rel=0`;
+    }
+
+    return url;
+  } catch {
+    return url;
+  }
 };
 
 const latestNews = getAllTeamNews()
@@ -228,61 +239,17 @@ function ReelsSection() {
   const ref = useRef<HTMLDivElement>(null);
   const scroll = (d: number) => ref.current?.scrollBy({ left: d * 300, behavior: "smooth" });
 
-  useEffect(() => {
-    const processEmbeds = () => {
-      const instgrm = (window as any).instgrm;
-      if (instgrm?.Embeds?.process) {
-        instgrm.Embeds.process();
-      }
-    };
-
-    const scriptQuery = 'script[src*="instagram.com/embed.js"]';
-    const existingScript = document.querySelector(scriptQuery);
-
-    if (existingScript) {
-      processEmbeds();
-      return;
-    }
-
-    const script = document.createElement('script');
-    script.src = '//www.instagram.com/embed.js';
-    script.async = true;
-    script.onload = processEmbeds;
-    document.body.appendChild(script);
-  }, []);
-
-  const instagramEmbed = (permalink: string) => `
-    <blockquote class="instagram-media" data-instgrm-permalink="${permalink}" data-instgrm-version="14" style="background:#FFFFFF; border:0; border-radius:24px; box-shadow:0 0 1px rgba(0,0,0,.5),0 1px 10px rgba(0,0,0,.15); margin:0; width:100% !important; max-width:100% !important; min-width:0 !important; padding:0;">
-    </blockquote>
-  `;
-
   return (
     <section className="reveal-on-scroll py-16 lg:py-24 relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-[#080C08] via-[#0e160e] to-[#080C08]" />
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <style>{`
-          .instagram-embed blockquote.instagram-media {
-            width: 100% !important;
-            max-width: 100% !important;
-            min-width: 0 !important;
-            margin: 0 !important;
-            border-radius: 0 !important;
-          }
-          .instagram-embed blockquote.instagram-media > div {
-            width: 100% !important;
-          }
-          .instagram-embed iframe {
-            width: 100% !important;
-            max-width: 100% !important;
-          }
-        `}</style>
         <div className="flex items-center justify-between mb-8">
           <div>
             <span className="text-[#6EE76D] text-sm tracking-[0.2em] uppercase mb-2 flex items-center gap-2" style={{ fontFamily: bebas }}>
-              <Instagram className="w-4 h-4" /> Sledujte nás
+              <Play className="w-4 h-4" /> Sledujte nás
             </span>
             <h2 className="text-3xl lg:text-4xl text-white uppercase" style={{ fontFamily: bebas }}>
-              Z našeho Instagramu
+              Z našeho YouTube
             </h2>
           </div>
           <div className="hidden sm:flex gap-2">
@@ -295,28 +262,20 @@ function ReelsSection() {
           </div>
         </div>
         <div ref={ref} className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory" style={{ scrollbarWidth: "none" }}>
-          {REELS.map((reel) => (
-            reel.permalink ? (
-              <div key={reel.id} className="flex-shrink-0 w-[220px] sm:w-[250px] snap-start">
-                <div className="relative aspect-[9/16] rounded-2xl overflow-hidden border border-[#6EE76D]/10 transition-all bg-black">
-                  <div className="instagram-embed absolute inset-0 h-full w-full" dangerouslySetInnerHTML={{ __html: instagramEmbed(reel.permalink) }} />
-                </div>
+          {YOUTUBE_SHORTS.map((video) => (
+            <div key={video.id} className="flex-shrink-0 w-[220px] sm:w-[250px] snap-start">
+              <div className="relative aspect-[9/16] rounded-2xl overflow-hidden border border-[#6EE76D]/10 bg-black">
+                <iframe
+                  src={getYoutubeEmbedUrl(video.url)}
+                  title={video.caption}
+                  className="absolute inset-0 w-full h-full"
+                  loading="lazy"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  allowFullScreen
+                />
               </div>
-            ) : (
-              <div key={reel.id} className="flex-shrink-0 w-[220px] sm:w-[250px] snap-start group cursor-pointer">
-                <div className="relative aspect-[9/16] rounded-2xl overflow-hidden border border-[#6EE76D]/10 group-hover:border-[#6EE76D]/30 transition-all">
-                  <ImageWithFallback src={reel.thumbnail} alt={reel.caption} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <div className="w-14 h-14 rounded-full bg-[#6EE76D]/20 backdrop-blur-sm flex items-center justify-center border border-[#6EE76D]/30">
-                      <Play className="w-6 h-6 text-[#6EE76D] fill-[#6EE76D]" />
-                    </div>
-                  </div>
-                  <p className="absolute bottom-3 left-3 right-3 text-white text-sm">{reel.caption}</p>
-                  <Instagram className="absolute top-3 right-3 w-4 h-4 text-white/50" />
-                </div>
-              </div>
-            )
+            </div>
           ))}
         </div>
       </div>
@@ -326,7 +285,7 @@ function ReelsSection() {
 
 /* ══════════════ NEWS + TRAININGS ══════════════ */
 function NewsAndTrainings() {
-  const upcomingTrainings = getUpcomingTrainings();
+  const upcomingEvents = getUpcomingEvents();
 
   return (
     <section className="reveal-on-scroll py-20 lg:py-28">
@@ -370,30 +329,31 @@ function NewsAndTrainings() {
           </div>
 
           <div>
-            <SectionLabel>Rozvrh</SectionLabel>
-            <h2 className="text-3xl lg:text-4xl text-white uppercase mb-8" style={{ fontFamily: bebas }}>Nejbližší trénink</h2>
+            <SectionLabel>Akce</SectionLabel>
+            <h2 className="text-3xl lg:text-4xl text-white uppercase mb-8" style={{ fontFamily: bebas }}>Nejbližší akce</h2>
             <div className="space-y-3">
-              {upcomingTrainings.map((t, i) => (
+              {upcomingEvents.map((event, i) => (
                 <Link
-                  key={t.slug + t.day + t.time + i}
-                  to={`/druzstva/${t.slug}`}
+                  key={event.slug + event.date + event.title + i}
+                  to={`/druzstva/${event.slug}`}
                   className="mobile-solid-card flex items-center gap-4 p-4 rounded-2xl bg-[#101a10] border border-[#6EE76D]/12 hover:border-[#6EE76D]/25 transition-all group"
                 >
                   <div className="mobile-solid-chip w-10 h-10 rounded-full bg-[#6EE76D]/14 flex items-center justify-center flex-shrink-0">
-                    {t.slug === "zeny" ? <Trophy className="w-5 h-5 text-[#6EE76D]" /> : <Users className="w-5 h-5 text-[#6EE76D]" />}
+                    <Calendar className="w-5 h-5 text-[#6EE76D]" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <span className="text-white" style={{ fontFamily: inter }}>{t.team}</span>
+                    <span className="text-white" style={{ fontFamily: inter }}>{event.title}</span>
                     <div className="flex flex-wrap items-center gap-3 text-sm text-white/35 mt-0.5">
-                      <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5 text-[#6EE76D]" /> {t.day} {t.date}</span>
-                      <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5 text-[#6EE76D]" /> {t.time}</span>
+                      <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5 text-[#6EE76D]" /> {event.date}</span>
+                      <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5 text-[#6EE76D]" /> {event.location}</span>
+                      <span className="px-2.5 py-0.5 rounded-full bg-[#F587B9]/12 text-[#FFC2DD] text-[11px] tracking-[0.1em]" style={{ fontFamily: bebas }}>{event.team}</span>
                     </div>
                   </div>
                   <ArrowRight className="w-5 h-5 text-[#8F988F] group-hover:text-[#6EE76D] group-hover:translate-x-0.5 transition-all flex-shrink-0" />
                 </Link>
               ))}
             </div>
-            <Btn variant="secondary" to="/treninky" className="mt-6">Kompletní rozvrh</Btn>
+            <Btn variant="secondary" to="/druzstva" className="mt-6">Všechny akce družstev</Btn>
           </div>
         </div>
       </div>
