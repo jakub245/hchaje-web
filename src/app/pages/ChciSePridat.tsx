@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, Building2, ChevronDown, ChevronLeft, ChevronRight, Mail, Phone, Play, UserRound, Users } from "lucide-react";
+import { ArrowRight, Building2, ChevronDown, ChevronLeft, ChevronRight, Mail, Phone, UserRound, Users } from "lucide-react";
 import { Link } from "react-router";
 import {
   PageHero,
@@ -26,12 +26,9 @@ const NABOR_GALLERY = [
 ];
 
 const NABOR_VIDEOS = [
-  { poster: naborMini, title: "Trénink mini žákyň" },
-  { poster: naborTurnaj, title: "Turnajový den" },
-  { poster: naborRepre, title: "Zápasové momenty" },
-  { poster: naborMikulas, title: "Klubové akce" },
-  { poster: naborSulcak, title: "Herní cvičení" },
-  { poster: naborMedaile, title: "Radost ze hry" },
+  { id: 1, url: "https://youtube.com/shorts/qXrqO4WdFps?feature=share", title: "HC Háje Shorts 1" },
+  { id: 2, url: "https://youtube.com/shorts/3Jwy9uqJu4M?feature=share", title: "HC Háje Shorts 2" },
+  { id: 3, url: "https://youtube.com/shorts/0JEVSN4o9y0?feature=share", title: "HC Háje Shorts 3" },
 ];
 
 const RECRUITMENT_BENEFITS = [
@@ -72,6 +69,32 @@ const isValidPhone = (prefix: string, value: string) => {
   const digits = value.replace(/\D/g, "");
   if (prefix === "+420" || prefix === "+421") return digits.length === 9;
   return digits.length >= 7 && digits.length <= 12;
+};
+
+const getYoutubeEmbedUrl = (url: string) => {
+  try {
+    const parsed = new URL(url);
+    const path = parsed.pathname;
+
+    if (path.includes("/shorts/")) {
+      const shortId = path.split("/shorts/")[1]?.split("/")[0];
+      if (shortId) return `https://www.youtube.com/embed/${shortId}?rel=0`;
+    }
+
+    if (path === "/watch") {
+      const videoId = parsed.searchParams.get("v");
+      if (videoId) return `https://www.youtube.com/embed/${videoId}?rel=0`;
+    }
+
+    if (parsed.hostname.includes("youtu.be")) {
+      const videoId = path.replace("/", "");
+      if (videoId) return `https://www.youtube.com/embed/${videoId}?rel=0`;
+    }
+
+    return url;
+  } catch {
+    return url;
+  }
 };
 
 export default function ChciSePridatPage() {
@@ -292,17 +315,21 @@ export default function ChciSePridatPage() {
             </div>
           </div>
           <div ref={videoScrollRef} className="flex gap-5 overflow-x-auto pb-2 scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {NABOR_VIDEOS.map((video, index) => (
+            {NABOR_VIDEOS.map((video) => (
               <article
-                key={`${video.title}-${index}`}
+                key={video.id}
                 className="rounded-2xl overflow-hidden border border-[#6EE76D]/12 bg-[#101a10] flex-shrink-0 w-[calc((100%-2.5rem)/3)] min-w-[200px]"
               >
-                <div className="aspect-[9/16] bg-black">
-                  <ImageWithFallback src={video.poster} alt={video.title} className="w-full h-full object-cover" />
-                </div>
-                <div className="p-4 flex items-center gap-2 text-white/75">
-                  <Play className="w-4 h-4 text-[#6EE76D]" />
-                  <p className="text-sm" style={{ fontFamily: inter }}>{video.title}</p>
+                <div className="relative aspect-[9/16] bg-black">
+                  <iframe
+                    src={getYoutubeEmbedUrl(video.url)}
+                    title={video.title}
+                    className="absolute inset-0 w-full h-full"
+                    loading="lazy"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerPolicy="strict-origin-when-cross-origin"
+                    allowFullScreen
+                  />
                 </div>
               </article>
             ))}
