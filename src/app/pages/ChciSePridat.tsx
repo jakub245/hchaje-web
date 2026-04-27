@@ -383,7 +383,7 @@ export default function ChciSePridatPage() {
           <div className="text-center mb-12">
             <SectionLabel>Kontakt</SectionLabel>
             <h2 className="text-4xl lg:text-5xl text-white uppercase mb-4" style={{ fontFamily: bebas }}>
-              Přijďte si to vyzkoušet
+              Přijďte si to vyzkoušet, zcela zdarma
             </h2>
             <p className="text-white/55 max-w-2xl mx-auto" style={{ fontFamily: inter }}>
               {nbspShortWords("Domluvte si návštěvu na prvním ukázkovém tréninku přes kontakty níže. Nebo vyplňte kontaktní formulář a ozveme se vám zpět.")}
@@ -391,11 +391,6 @@ export default function ChciSePridatPage() {
           </div>
 
           <div className="max-w-4xl mx-auto p-6 lg:p-8 rounded-2xl bg-gradient-to-r from-[#6EE76D]/8 via-[#6EE76D]/4 to-[#6EE76D]/8 border border-[#6EE76D]/15">
-            <SectionLabel>Těšíme se na vás</SectionLabel>
-            <h2 className="text-3xl lg:text-4xl text-white uppercase mb-6" style={{ fontFamily: bebas }}>
-              První trénink je zdarma
-            </h2>
-
             {submitState.type !== "idle" && (
               <div
                 className={`mb-6 rounded-2xl px-4 py-3 text-sm ${submitState.type === "success" ? "bg-[#6EE76D]/12 text-[#9CF59B] border border-[#6EE76D]/25" : "bg-red-500/10 text-red-200 border border-red-400/20"}`}
@@ -409,7 +404,6 @@ export default function ChciSePridatPage() {
                   <input type="text" name="website" value={formData.website} onChange={handleChange} className="hidden" tabIndex={-1} autoComplete="off" />
 
                   <div className="pb-8">
-                    <h3 className="text-white uppercase mb-5 tracking-[0.08em]" style={{ fontFamily: bebas }}>Údaje rodiče</h3>
                     <div className="grid md:grid-cols-2 gap-4">
                       <label className="block md:col-span-2">
                         <span className="mb-2 block text-white/75 text-sm" style={{ fontFamily: inter }}>Jméno a příjmení</span>
@@ -538,13 +532,11 @@ export default function ChciSePridatPage() {
                   key={contact.name}
                   className="px-1"
                 >
-                  <div className="flex items-center justify-center gap-2 mb-1">
-                    <div className="w-7 h-7 rounded-full bg-[#6EE76D]/10 flex items-center justify-center flex-shrink-0">
-                      <contact.icon className="w-4 h-4 text-[#6EE76D]" />
-                    </div>
-                    <p className="text-white text-base leading-tight" style={{ fontFamily: inter }}>{contact.name}</p>
+                  <div className="w-8 h-8 rounded-full bg-[#6EE76D]/10 flex items-center justify-center mx-auto mb-2">
+                    <contact.icon className="w-4 h-4 text-[#6EE76D]" />
                   </div>
-                  <p className="text-white text-base leading-tight" style={{ fontFamily: inter }}>{contact.value}</p>
+                  <p className="text-white text-base leading-tight text-center mb-1" style={{ fontFamily: inter }}>{contact.name}</p>
+                  <p className="text-white text-base leading-tight text-center" style={{ fontFamily: inter }}>{contact.value}</p>
                 </div>
               ))}
             </div>
