@@ -390,48 +390,22 @@ export default function ChciSePridatPage() {
             </p>
           </div>
 
-          <div className="rounded-2xl border border-[#6EE76D]/20 bg-gradient-to-r from-[#6EE76D]/8 via-[#6EE76D]/4 to-[#6EE76D]/8 p-8 lg:p-10">
-            <div className="grid lg:grid-cols-2 gap-10 lg:gap-16">
-              {/* Left: contact info */}
-              <div>
-                <h3 className="text-2xl lg:text-3xl text-white uppercase mb-6" style={{ fontFamily: bebas }}>Ozvěte se na přímo</h3>
-                <div className="space-y-5">
-                  {[
-                    { icon: Phone, label: "Petr Paulín", value: "792 336 535", href: "tel:+420792336535" },
-                    { icon: Phone, label: "Petr Zálešák", value: "777 721 282", href: "tel:+420777721282" },
-                    { icon: Phone, label: "Kateřina Bláhová", value: "608 981 667", href: "tel:+420608981667" },
-                    { icon: Mail, label: "E-mail", value: "pripravkahchaje@gmail.com", href: "mailto:pripravkahchaje@gmail.com" },
-                  ].map((c) => (
-                    <div key={c.label} className="flex items-start gap-4">
-                      <div className="w-12 h-12 rounded-full bg-[#6EE76D]/10 flex items-center justify-center flex-shrink-0">
-                        <c.icon className="w-5 h-5 text-[#6EE76D]" />
-                      </div>
-                      <div>
-                        <p className="text-white/35 text-sm mb-1" style={{ fontFamily: inter }}>{c.label}</p>
-                        <a href={c.href} className="text-white hover:text-[#6EE76D] transition-colors" style={{ fontFamily: inter }}>{c.value}</a>
-                      </div>
-                    </div>
-                  ))}
-                </div>
+          <div className="p-8 lg:p-10 rounded-2xl bg-gradient-to-r from-[#6EE76D]/8 via-[#6EE76D]/4 to-[#6EE76D]/8 border border-[#6EE76D]/15">
+            <SectionLabel>Těšíme se na vás</SectionLabel>
+            <h2 className="text-3xl lg:text-4xl text-white uppercase mb-6" style={{ fontFamily: bebas }}>
+              První trénink je zdarma
+            </h2>
+
+            {submitState.type !== "idle" && (
+              <div
+                className={`mb-6 rounded-2xl px-4 py-3 text-sm ${submitState.type === "success" ? "bg-[#6EE76D]/12 text-[#9CF59B] border border-[#6EE76D]/25" : "bg-red-500/10 text-red-200 border border-red-400/20"}`}
+                style={{ fontFamily: inter }}
+              >
+                {submitState.message}
               </div>
+            )}
 
-              {/* Right: form */}
-              <div>
-                <SectionLabel>Těšíme se na vás</SectionLabel>
-                <h2 className="text-3xl lg:text-4xl text-white uppercase mb-6" style={{ fontFamily: bebas }}>
-                  První trénink je zdarma
-                </h2>
-
-                {submitState.type !== "idle" && (
-                  <div
-                    className={`mb-6 rounded-2xl px-4 py-3 text-sm ${submitState.type === "success" ? "bg-[#6EE76D]/12 text-[#9CF59B] border border-[#6EE76D]/25" : "bg-red-500/10 text-red-200 border border-red-400/20"}`}
-                    style={{ fontFamily: inter }}
-                  >
-                    {submitState.message}
-                  </div>
-                )}
-
-                <form onSubmit={handleSubmit} className="space-y-0">
+            <form onSubmit={handleSubmit} className="space-y-0">
                   <input type="text" name="website" value={formData.website} onChange={handleChange} className="hidden" tabIndex={-1} autoComplete="off" />
 
                   <div className="pb-8">
@@ -548,12 +522,36 @@ export default function ChciSePridatPage() {
                     <Mail className="w-4 h-4" />
                   </button>
                 </div>
-              </form>
+            </form>
+          </div>
+
+          <div className="mt-8 lg:mt-10">
+            <h3 className="text-2xl lg:text-3xl text-white uppercase mb-5" style={{ fontFamily: bebas }}>Ozvěte se na přímo</h3>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+              {[
+                { icon: Phone, name: "Petr Paulín", value: "792 336 535", href: "tel:+420792336535" },
+                { icon: Phone, name: "Petr Zálešák", value: "777 721 282", href: "tel:+420777721282" },
+                { icon: Phone, name: "Kateřina Bláhová", value: "608 981 667", href: "tel:+420608981667" },
+                { icon: Mail, name: "E-mail", value: "pripravkahchaje@gmail.com", href: "mailto:pripravkahchaje@gmail.com" },
+              ].map((contact) => (
+                <a
+                  key={contact.name}
+                  href={contact.href}
+                  className="rounded-2xl border border-[#6EE76D]/15 bg-[#101a10] px-4 py-4 hover:border-[#6EE76D]/35 transition-colors"
+                >
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="w-9 h-9 rounded-full bg-[#6EE76D]/10 flex items-center justify-center flex-shrink-0">
+                      <contact.icon className="w-4 h-4 text-[#6EE76D]" />
+                    </div>
+                    <p className="text-white text-base leading-tight" style={{ fontFamily: inter }}>{contact.name}</p>
+                  </div>
+                  <p className="text-white text-base leading-tight break-all" style={{ fontFamily: inter }}>{contact.value}</p>
+                </a>
+              ))}
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
     </>
   );
 }
