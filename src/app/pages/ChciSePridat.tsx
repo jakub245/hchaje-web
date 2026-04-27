@@ -274,16 +274,14 @@ export default function ChciSePridatPage() {
       <section className="reveal-on-scroll pb-16 lg:pb-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
           <div className="rounded-2xl border border-[#6EE76D]/20 bg-[#101a10] p-6 lg:p-8">
-            <div className="max-w-3xl mx-auto text-center">
-              <SectionLabel>Jak trénujeme?</SectionLabel>
-              <h3 className="text-2xl lg:text-3xl text-white uppercase mb-5" style={{ fontFamily: bebas }}>Miniházená pro nejmladší</h3>
-              <p className="text-white/80 mb-4" style={{ fontFamily: inter }}>
-                {nbspShortWords("U nejmladších začínáme miniházenou, zábavnou a bezpečnou verzí házené pro děti. Hraje se s měkkým míčem, na menším hřišti a s menšími bránami. Díky tomu si děti rychle osvojí základy a hra je opravdu baví.")}
-              </p>
-              <p className="text-white/80" style={{ fontFamily: inter }}>
-                {nbspShortWords("V létě trénujeme na venkovním hřišti, v zimě v tělocvičnách na Jižním Městě. První měsíc tréninků je zpravidla zdarma bez členských poplatků, dál se domluvíme individuálně.")}
-              </p>
-            </div>
+            <SectionLabel>Jak trénujeme?</SectionLabel>
+            <h3 className="text-2xl lg:text-3xl text-white uppercase mb-5" style={{ fontFamily: bebas }}>Miniházená pro nejmladší</h3>
+            <p className="text-white/80 mb-4" style={{ fontFamily: inter }}>
+              {nbspShortWords("U nejmladších začínáme miniházenou, zábavnou a bezpečnou verzí házené pro děti. Hraje se s měkkým míčem, na menším hřišti a s menšími bránami. Díky tomu si děti rychle osvojí základy a hra je opravdu baví.")}
+            </p>
+            <p className="text-white/80" style={{ fontFamily: inter }}>
+              {nbspShortWords("V létě trénujeme na venkovním hřišti, v zimě v tělocvičnách na Jižním Městě. První měsíc tréninků je zpravidla zdarma bez členských poplatků, dál se domluvíme individuálně.")}
+            </p>
           </div>
         </div>
       </section>
