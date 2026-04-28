@@ -183,13 +183,6 @@ export default function AkcePage() {
               })}
             </div>
 
-            {eventsLoading && (
-              <div className="rounded-2xl bg-[#6EE76D]/5 border border-[#6EE76D]/20 px-4 py-3 mt-4 flex items-center gap-3">
-                <div className="w-4 h-4 rounded-full bg-[#6EE76D] animate-pulse" />
-                <p className="text-[#6EE76D] text-sm" style={{ fontFamily: inter }}>Načítám data akcí...</p>
-              </div>
-            )}
-
             {source === "fallback" && !eventsLoading && (
               <p className="mt-4 text-white/45 text-sm" style={{ fontFamily: inter }}>
                 {nbspShortWords("Aktuálně se zobrazují záložní data z webu. Po připojení Notion databáze se načtou živé akce.")}
@@ -197,7 +190,24 @@ export default function AkcePage() {
             )}
           </div>
 
-          {filteredEvents.length ? (
+          {eventsLoading ? (
+            <div className="space-y-4">
+              {[...Array(5)].map((_, i) => (
+                <div key={`skeleton-event-${i}`} className={`grid gap-3 md:grid-cols-[1fr_1.2fr_1.2fr_1fr] py-5 animate-pulse ${i !== 0 ? "border-t border-[#6EE76D]/15" : ""}`}>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-2xl bg-[#6EE76D]/10 flex-shrink-0" />
+                    <div className="flex-1">
+                      <div className="h-4 bg-[#6EE76D]/10 rounded w-20 mb-2" />
+                      <div className="h-5 bg-[#6EE76D]/10 rounded w-16" />
+                    </div>
+                  </div>
+                  <div className="hidden md:block h-5 bg-[#6EE76D]/10 rounded w-3/4 self-center" />
+                  <div className="hidden md:block h-5 bg-[#6EE76D]/10 rounded w-1/2 self-center" />
+                  <div className="hidden md:block h-5 bg-[#6EE76D]/10 rounded w-2/3 self-center" />
+                </div>
+              ))}
+            </div>
+          ) : filteredEvents.length ? (
             <div className="px-0">
               <div className="hidden md:grid grid-cols-[1fr_1.2fr_1.2fr_1fr] gap-6 pb-3 text-white/45 text-sm" style={{ fontFamily: inter }}>
                 <div>Datum</div>
