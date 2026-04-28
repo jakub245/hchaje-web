@@ -26,6 +26,17 @@ type EventItem = {
 
 type ApiEvent = Partial<EventItem>;
 
+type PlayerItem = {
+  id: string;
+  name: string;
+  position: string;
+  number: string;
+  teamName: string;
+  teamSlug: string;
+};
+
+type ApiPlayer = Partial<PlayerItem>;
+
 type CoachItem = {
   id: string;
   name: string;
@@ -61,6 +72,9 @@ export default function DruzstvoDetail() {
   const [events, setEvents] = useState<EventItem[]>([]);
   const [eventsLoading, setEventsLoading] = useState(true);
   const [eventsLoaded, setEventsLoaded] = useState(false);
+  const [players, setPlayers] = useState<PlayerItem[]>([]);
+  const [playersLoading, setPlayersLoading] = useState(true);
+  const [playersLoaded, setPlayersLoaded] = useState(false);
   const [coaches, setCoaches] = useState<CoachItem[]>([]);
   const [coachesLoading, setCoachesLoading] = useState(true);
   const [coachesLoaded, setCoachesLoaded] = useState(false);
@@ -68,7 +82,7 @@ export default function DruzstvoDetail() {
   const playersScrollRef = useRef<HTMLDivElement | null>(null);
   const newsScrollRef = useRef<HTMLDivElement | null>(null);
 
-  const teamPlayerPhotos = import.meta.glob("../../imports/foto/**/*.{jpg,jpeg,png}", { eager: true, as: "url" }) as Record<string, string>;
+  const teamPlayerPhotos = import.meta.glob("../../imports/foto/druzstva/**/*.{jpg,jpeg,png}", { eager: true, as: "url" }) as Record<string, string>;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -113,24 +127,40 @@ export default function DruzstvoDetail() {
   };
 
   const getTeamPhoto = (name: string) => {
+    const toNameTokens = (value: string) =>
+      normalizeText(value)
+        .replace(/[0-9]/g, "")
+        .split(/[^a-z]+/)
+        .filter(Boolean);
+
     const currentTeamSlug = normalizeText(team.slug);
-    const normalizedName = normalizeText(name);
-    const parts = name.split(/\s+/).map(normalizeText).filter(Boolean);
-    const reversedName = [...parts].reverse().join("");
+    const playerTokens = toNameTokens(name);
+    const normalizedName = playerTokens.join("");
+    const reversedName = [...playerTokens].reverse().join("");
 
     const candidates = Object.entries(teamPlayerPhotos)
       .filter(([path]) => normalizeText(path).includes(currentTeamSlug))
       .map(([path, url]) => {
         const fileName = path.split("/").pop()?.replace(/\.(jpg|jpeg|png)$/i, "") || "";
-        return { baseName: normalizeText(fileName), url };
+        const tokens = toNameTokens(fileName);
+        return {
+          baseName: normalizeText(fileName),
+          tokenJoin: tokens.join(""),
+          tokenJoinReversed: [...tokens].reverse().join(""),
+          url,
+        };
       });
 
     const exactMatch = candidates.find(
-      (candidate) => candidate.baseName === normalizedName || candidate.baseName === reversedName
+      (candidate) =>
+        candidate.baseName === normalizedName ||
+        candidate.baseName === reversedName ||
+        candidate.tokenJoin === normalizedName ||
+        candidate.tokenJoinReversed === normalizedName
     );
     if (exactMatch) return exactMatch.url;
 
-    const surname = parts[0] || "";
+    const surname = playerTokens[0] || "";
     const surnameMatches = candidates.filter((candidate) => candidate.baseName.startsWith(surname));
     if (surnameMatches.length === 1) return surnameMatches[0].url;
 
@@ -185,6 +215,60 @@ export default function DruzstvoDetail() {
       activeRequest = false;
     };
   }, [team.name, team.slug]);
+
+  useEffect(() => {
+    let activeRequest = true;
+
+    const normalizeTeamSlug = (value: string) =>
+      value
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]/g, "-")
+        .replace(/-+/g, "-")
+        .replace(/^-|-$/g, "");
+
+    const loadTeamPlayers = async () => {
+      setPlayersLoading(true);
+      try {
+        const response = await fetch("/api/players");
+        if (!response.ok) throw new Error("Nepodařilo se načíst data z API.");
+
+        const payload = (await response.json()) as { players?: ApiPlayer[] };
+        const normalizedPlayers = (payload.players ?? [])
+          .map((item, index) => ({
+            id: item.id || `notion-player-${index}`,
+            name: item.name || "",
+            position: item.position || "",
+            number: item.number || "",
+            teamName: item.teamName || "",
+            teamSlug: item.teamSlug || "",
+          }))
+          .filter((item) => {
+            const itemTeamSlug = normalizeTeamSlug(item.teamSlug);
+            const itemTeamName = normalizeTeamSlug(item.teamName);
+            return itemTeamSlug === team.slug || itemTeamName === team.slug;
+          })
+          .sort((a, b) => a.name.localeCompare(b.name, "cs"));
+
+        if (!activeRequest) return;
+        setPlayers(normalizedPlayers);
+        setPlayersLoading(false);
+        setPlayersLoaded(true);
+      } catch {
+        if (!activeRequest) return;
+        setPlayers([]);
+        setPlayersLoading(false);
+        setPlayersLoaded(true);
+      }
+    };
+
+    loadTeamPlayers();
+
+    return () => {
+      activeRequest = false;
+    };
+  }, [team.slug]);
 
   useEffect(() => {
     let activeRequest = true;
@@ -253,6 +337,17 @@ export default function DruzstvoDetail() {
         { name: team.coach, phone: "", email: "" },
         ...(team.assistantCoach ? [{ name: team.assistantCoach, phone: "", email: "" }] : []),
       ];
+  const displayedPlayers = playersLoaded && players.length > 0
+    ? players
+    : team.players.map((player, index) => ({
+        id: `fallback-player-${index}`,
+        name: player.name,
+        position: player.position,
+        number: String(player.number ?? ""),
+        teamName: team.name,
+        teamSlug: team.slug,
+      }));
+  const displayedPlayerCount = displayedPlayers.length;
   const displayedNews = newsSorted;
 
   return (
@@ -307,7 +402,7 @@ export default function DruzstvoDetail() {
 
               <div className="grid grid-cols-2 gap-4 mb-8">
                 <div className="mobile-solid-card p-4 rounded-2xl bg-[#101a10] border border-[#6EE76D]/12">
-                  <div className="text-3xl text-[#6EE76D]" style={{ fontFamily: bebas }}>{team.playerCount}</div>
+                  <div className="text-3xl text-[#6EE76D]" style={{ fontFamily: bebas }}>{displayedPlayerCount}</div>
                   <div className="text-white/35 text-sm" style={{ fontFamily: inter }}>Hráček</div>
                 </div>
                 <div className="mobile-solid-card p-4 rounded-2xl bg-[#101a10] border border-[#6EE76D]/12">
@@ -465,7 +560,7 @@ export default function DruzstvoDetail() {
               <span className="text-[#6EE76D] text-sm tracking-[0.2em] uppercase mb-3 block" style={{ fontFamily: bebas }}>Soupiska</span>
               <h2 className="text-3xl lg:text-4xl text-white uppercase" style={{ fontFamily: bebas }}>Hráčky</h2>
             </div>
-            {team.players.length > 4 && (
+            {displayedPlayers.length > 4 && (
               <div className="flex gap-2">
                 <button
                   onClick={() => scrollPlayers(-1)}
@@ -485,11 +580,18 @@ export default function DruzstvoDetail() {
             )}
           </div>
 
+          {playersLoading && (
+            <div className="rounded-2xl bg-[#6EE76D]/5 border border-[#6EE76D]/20 px-4 py-3 mb-8 flex items-center gap-3">
+              <div className="w-4 h-4 rounded-full bg-[#6EE76D] animate-pulse" />
+              <p className="text-[#6EE76D] text-sm" style={{ fontFamily: inter }}>Načítám data hráček...</p>
+            </div>
+          )}
+
           <div ref={playersScrollRef} className="flex gap-4 overflow-x-auto pb-4 scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {team.players.map((p) => {
+            {displayedPlayers.map((p) => {
               const photo = getTeamPhoto(p.name);
               return (
-                <div key={p.name} className="mobile-solid-card min-w-[16rem] md:min-w-[calc((100%-1rem)/2)] lg:min-w-[calc((100%-2rem)/3)] xl:min-w-[calc((100%-3rem)/4)] flex-shrink-0 h-[21rem] rounded-3xl bg-[#101a10] border border-[#6EE76D]/12 hover:border-[#6EE76D]/25 transition-all p-6 flex flex-col items-center justify-center text-center">
+                <div key={p.id || p.name} className="mobile-solid-card min-w-[16rem] md:min-w-[calc((100%-1rem)/2)] lg:min-w-[calc((100%-2rem)/3)] xl:min-w-[calc((100%-3rem)/4)] flex-shrink-0 h-[21rem] rounded-3xl bg-[#101a10] border border-[#6EE76D]/12 hover:border-[#6EE76D]/25 transition-all p-6 flex flex-col items-center justify-center text-center">
                   <div className="mobile-solid-chip w-24 h-24 rounded-full overflow-hidden bg-[#6EE76D]/14 border border-[#6EE76D]/20 flex items-center justify-center mb-5">
                     {photo ? (
                       <ImageWithFallback src={photo} alt={p.name} className="w-full h-full object-cover" />
@@ -498,8 +600,8 @@ export default function DruzstvoDetail() {
                     )}
                   </div>
                   <div className="text-white text-[16px]" style={{ fontFamily: inter }}>{p.name}</div>
-                  <div className="text-white/45 text-sm mt-2" style={{ fontFamily: inter }}>{playerMetaLabel} {p.position}</div>
-                  <div className="text-[#6EE76D] text-2xl mt-3" style={{ fontFamily: bebas }}>{p.number ?? "—"}</div>
+                  <div className="text-white/45 text-sm mt-2" style={{ fontFamily: inter }}>{playerMetaLabel} {p.position || "—"}</div>
+                  <div className="text-[#6EE76D] text-2xl mt-3" style={{ fontFamily: bebas }}>{p.number || "—"}</div>
                 </div>
               );
             })}

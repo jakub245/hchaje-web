@@ -64,12 +64,14 @@ const teamOrder = new Map([
 export default function AkcePage() {
   const [selectedTeam, setSelectedTeam] = useState("all");
   const [events, setEvents] = useState<EventItem[]>(fallbackEvents);
+  const [eventsLoading, setEventsLoading] = useState(true);
   const [source, setSource] = useState<"notion" | "fallback">("fallback");
 
   useEffect(() => {
     let active = true;
 
     const loadEvents = async () => {
+      setEventsLoading(true);
       try {
         const response = await fetch("/api/events");
         if (!response.ok) throw new Error("Nepodařilo se načíst data z API.");
@@ -94,13 +96,22 @@ export default function AkcePage() {
           .filter((item) => item.title)
           .sort((a, b) => parseCzDate(a.date) - parseCzDate(b.date));
 
-        if (!active || normalized.length === 0) return;
-        setEvents(normalized);
-        setSource("notion");
+        if (!active) return;
+
+        if (normalized.length > 0) {
+          setEvents(normalized);
+          setSource("notion");
+        } else {
+          setEvents(fallbackEvents);
+          setSource("fallback");
+        }
+
+        setEventsLoading(false);
       } catch {
         if (!active) return;
         setEvents(fallbackEvents);
         setSource("fallback");
+        setEventsLoading(false);
       }
     };
 
@@ -172,7 +183,14 @@ export default function AkcePage() {
               })}
             </div>
 
-            {source === "fallback" && (
+            {eventsLoading && (
+              <div className="rounded-2xl bg-[#6EE76D]/5 border border-[#6EE76D]/20 px-4 py-3 mt-4 flex items-center gap-3">
+                <div className="w-4 h-4 rounded-full bg-[#6EE76D] animate-pulse" />
+                <p className="text-[#6EE76D] text-sm" style={{ fontFamily: inter }}>Načítám data akcí...</p>
+              </div>
+            )}
+
+            {source === "fallback" && !eventsLoading && (
               <p className="mt-4 text-white/45 text-sm" style={{ fontFamily: inter }}>
                 {nbspShortWords("Aktuálně se zobrazují záložní data z webu. Po připojení Notion databáze se načtou živé akce.")}
               </p>
