@@ -21,7 +21,7 @@ export const INSTAGRAM_URL = "https://www.instagram.com/hchajeprahacze";
 
 const NAV = [
   { label: "Družstva", to: "/druzstva" },
-  { label: "Tréninky", to: "/treninky" },
+  { label: "Akce", to: "/akce" },
   { label: "Aktuality", to: "/aktuality" },
   { label: "O klubu", to: "/o-klubu" },
   { label: "Kontakty", to: "/kontakty" },

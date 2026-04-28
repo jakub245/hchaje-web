@@ -8,4 +8,15 @@
   Run `npm i` to install the dependencies.
 
   Run `npm run dev` to start the development server.
+
+  ## Akce page data source (Notion)
+
+  The `/akce` page loads events from the backend endpoint `/api/events`.
+
+  Configure these environment variables for Notion access:
+
+  - `NOTION_TOKEN`
+  - `NOTION_DATABASE_ID`
+
+  If Notion is unavailable, the frontend automatically falls back to events from local team data.
   

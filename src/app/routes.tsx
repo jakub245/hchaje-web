@@ -5,7 +5,7 @@ import AktualityPage from "./pages/Aktuality";
 import AktualitaDetailPage from "./pages/AktualitaDetail";
 import DruzstvaPage from "./pages/Druzstva";
 import DruzstvoDetail from "./pages/DruzstvoDetail";
-import TreninkyPage from "./pages/Treninky";
+import AkcePage from "./pages/Akce";
 import OKlubuPage from "./pages/OKlubu";
 import KontaktyPage from "./pages/Kontakty";
 import ChciSePridatPage from "./pages/ChciSePridat";
@@ -20,7 +20,8 @@ export const router = createBrowserRouter([
       { path: "aktuality/:articleSlug", Component: AktualitaDetailPage },
       { path: "druzstva", Component: DruzstvaPage },
       { path: "druzstva/:slug", Component: DruzstvoDetail },
-      { path: "treninky", Component: TreninkyPage },
+      { path: "akce", Component: AkcePage },
+      { path: "treninky", Component: AkcePage },
       { path: "o-klubu", Component: OKlubuPage },
       { path: "kontakty", Component: KontaktyPage },
       { path: "chci-se-pridat", Component: ChciSePridatPage },

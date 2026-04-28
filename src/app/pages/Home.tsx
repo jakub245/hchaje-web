@@ -130,7 +130,7 @@ function Hero() {
           <div className="inline-flex items-center gap-2 bg-[#6EE76D]/10 border border-[#6EE76D]/20 rounded-full px-4 py-1.5 mb-6">
             <div className="w-2 h-2 rounded-full bg-[#6EE76D] animate-pulse" />
             <span className="text-[#6EE76D] text-sm" style={{ fontFamily: bebas, letterSpacing: "0.1em" }}>
-              Sezóna 2025 / 2026
+              Sezóna 2026
             </span>
           </div>
 
@@ -148,7 +148,7 @@ function Hero() {
 
           <div className="flex flex-wrap gap-4">
             <Btn variant="primary" to="/kontakty">
-              Přijdu na trénink <ArrowRight className="w-4 h-4" />
+              Chci zkusit trénink <ArrowRight className="w-4 h-4" />
             </Btn>
             <Btn variant="secondary" to="/o-klubu">Více o klubu</Btn>
           </div>
