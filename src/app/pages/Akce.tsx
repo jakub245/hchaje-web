@@ -51,6 +51,15 @@ const fallbackEvents: EventItem[] = TEAMS.flatMap((team) =>
 
 const teamSlugSet = new Set(TEAMS.map((team) => team.slug));
 const teamNameToSlug = new Map(TEAMS.map((team) => [normalizeText(team.name), team.slug] as const));
+const teamOrder = new Map([
+  ["pripravka", 0],
+  ["mini-zakyne", 1],
+  ["mladsi-zakyne", 2],
+  ["starsi-zakyne", 3],
+  ["mladsi-dorostenky", 4],
+  ["starsi-dorostenky", 5],
+  ["zeny", 6],
+]);
 
 export default function AkcePage() {
   const [selectedTeam, setSelectedTeam] = useState("all");
@@ -111,7 +120,13 @@ export default function AkcePage() {
 
     return Array.from(bySlug.entries())
       .map(([slug, name]) => ({ slug, name }))
-      .sort((a, b) => a.name.localeCompare(b.name, "cs"));
+      .sort((a, b) => {
+        const aOrder = teamOrder.get(a.slug) ?? Number.MAX_SAFE_INTEGER;
+        const bOrder = teamOrder.get(b.slug) ?? Number.MAX_SAFE_INTEGER;
+
+        if (aOrder !== bOrder) return aOrder - bOrder;
+        return a.name.localeCompare(b.name, "cs");
+      });
   }, [events]);
 
   const filteredEvents = selectedTeam === "all"
