@@ -13,6 +13,7 @@ type CachedPlayers = {
     id: string;
     name: string;
     year: string;
+    position: string;
     number: string;
     teamName: string;
     teamSlug: string;
@@ -137,6 +138,7 @@ const loadPlayersFromNotion = async () => {
       const properties = page?.properties ?? {};
       const name = parseTitle(findProperty(properties, ["Jméno", "Jmeno", "Name"]) || properties.title);
       const year = parseRichText(findProperty(properties, ["Ročník", "Rocnik", "Year", "Věk", "Vek"])) || "";
+      const position = parseRichText(findProperty(properties, ["Pozice", "Post", "Role", "Position"])) || "";
       const number = parseNumber(findProperty(properties, ["Číslo", "Cislo", "Číslo hráčky", "Cislo hracky", "Number", "Registrační číslo", "Registracni cislo"])) || "";
 
       const teamProperty = findProperty(properties, ["Družstvo", "Druzstvo", "Team", "Tým", "Tym"]);
@@ -167,6 +169,7 @@ const loadPlayersFromNotion = async () => {
         id: page?.id || `notion-player-${index}`,
         name,
         year,
+        position,
         number,
         teamName,
         teamSlug,

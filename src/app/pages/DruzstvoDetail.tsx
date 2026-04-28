@@ -30,6 +30,7 @@ type PlayerItem = {
   id: string;
   name: string;
   year: string;
+  position: string;
   number: string;
   teamName: string;
   teamSlug: string;
@@ -256,7 +257,8 @@ export default function DruzstvoDetail() {
           .map((item, index) => ({
             id: item.id || `notion-player-${index}`,
             name: item.name || "",
-            year: item.year || "",
+            year: item.year || item.position || "",
+            position: item.position || "",
             number: item.number || "",
             teamName: item.teamName || "",
             teamSlug: item.teamSlug || "",
@@ -360,6 +362,7 @@ export default function DruzstvoDetail() {
         id: `fallback-player-${index}`,
         name: player.name,
         year: player.position,
+        position: player.position,
         number: String(player.number ?? ""),
         teamName: team.name,
         teamSlug: team.slug,
