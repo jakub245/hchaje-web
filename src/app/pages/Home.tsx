@@ -372,13 +372,13 @@ function PartnersSection() {
           <h2 className="text-white/60 uppercase mb-12" style={{ fontFamily: bebas, fontSize: '20px' }}>
             Děkujeme našim partnerům
           </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 lg:gap-8 items-center justify-items-center">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 md:gap-8 items-center justify-items-center lg:flex lg:flex-nowrap lg:items-center lg:justify-between lg:gap-[clamp(0.75rem,2.2vw,2.5rem)]">
             {PARTNERS.map((partner) => (
-              <div key={partner.alt} className="flex items-center justify-center">
+              <div key={partner.alt} className="flex items-center justify-center lg:flex-1 lg:min-w-0">
                 <ImageWithFallback
                   src={partner.src}
                   alt={partner.alt}
-                  className="h-[3.9rem] lg:h-[4.9rem] w-auto object-contain opacity-40 hover:opacity-80 transition-opacity duration-300 filter brightness-0 invert"
+                  className="h-[3.9rem] lg:h-[4.2rem] xl:h-[4.9rem] w-auto max-w-full object-contain opacity-40 hover:opacity-80 transition-opacity duration-300 filter brightness-0 invert"
                 />
               </div>
             ))}
