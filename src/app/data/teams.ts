@@ -14,14 +14,25 @@ const normalizeText = (value: string) =>
 
 const teamHeroFiles = import.meta.glob("../../imports/**/*.{jpg,jpeg,png,webp,svg}", { eager: true, as: "url" }) as Record<string, string>;
 
+const TEAM_HERO_ALIASES: Record<string, string[]> = {
+  "pripravka": ["pripravka"],
+  "mini-zakyne": ["minizakyne", "mini2025"],
+  "mladsi-zakyne": ["mladsizakyne"],
+  "starsi-zakyne": ["starsizakyne"],
+  "mladsi-dorostenky": ["mladsidorost", "mladsidorostenky"],
+  "starsi-dorostenky": ["starsidorost", "starsidorostenky"],
+  "zeny": ["zeny"],
+};
+
 const resolveTeamHero = (slug: string, teamName: string, fallback: string) => {
   const slugKey = normalizeText(slug);
   const nameKey = normalizeText(teamName);
+  const aliasKeys = TEAM_HERO_ALIASES[slug] ?? [];
 
   const match = Object.entries(teamHeroFiles).find(([path]) => {
     const fileName = path.split("/").pop()?.replace(/\.(jpg|jpeg|png|webp|svg)$/i, "") || "";
     const key = normalizeText(fileName);
-    return key === slugKey || key === nameKey;
+    return key === slugKey || key === nameKey || aliasKeys.includes(key);
   });
 
   return match?.[1] || fallback;
