@@ -26,6 +26,18 @@ type EventItem = {
 
 type ApiEvent = Partial<EventItem>;
 
+type TrainingItem = {
+  id: string;
+  day: string;
+  time: string;
+  hall: string;
+  section: string;
+  teamSlug: string;
+  teamName: string;
+};
+
+type ApiTraining = Partial<TrainingItem>;
+
 type PlayerItem = {
   id: string;
   name: string;
@@ -73,6 +85,9 @@ export default function DruzstvoDetail() {
   const [events, setEvents] = useState<EventItem[]>([]);
   const [eventsLoading, setEventsLoading] = useState(true);
   const [eventsLoaded, setEventsLoaded] = useState(false);
+  const [trainings, setTrainings] = useState<TrainingItem[]>([]);
+  const [trainingsLoading, setTrainingsLoading] = useState(true);
+  const [trainingsLoaded, setTrainingsLoaded] = useState(false);
   const [players, setPlayers] = useState<PlayerItem[]>([]);
   const [playersLoading, setPlayersLoading] = useState(true);
   const [playersLoaded, setPlayersLoaded] = useState(false);
@@ -116,7 +131,6 @@ export default function DruzstvoDetail() {
     sectionRefs.current[id]?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
-  const isMiniTeam = team.slug === "mini-zakyne";
   const playerYearLabel = "Ročník";
 
   const scrollPlayers = (direction: number) => {
@@ -246,6 +260,60 @@ export default function DruzstvoDetail() {
         .replace(/-+/g, "-")
         .replace(/^-|-$/g, "");
 
+    const loadTeamTrainings = async () => {
+      setTrainingsLoading(true);
+      try {
+        const response = await fetch("/api/trainings");
+        if (!response.ok) throw new Error("Nepodařilo se načíst data z API.");
+
+        const payload = (await response.json()) as { trainings?: ApiTraining[] };
+        const normalizedTrainings = (payload.trainings ?? [])
+          .map((item, index) => ({
+            id: item.id || `notion-training-${index}`,
+            day: item.day || "",
+            time: item.time || "",
+            hall: item.hall || "",
+            section: item.section || "",
+            teamName: item.teamName || "",
+            teamSlug: item.teamSlug || "",
+          }))
+          .filter((item) => {
+            const itemTeamSlug = normalizeTeamSlug(item.teamSlug);
+            const itemTeamName = normalizeTeamSlug(item.teamName);
+            return itemTeamSlug === team.slug || itemTeamName === team.slug;
+          });
+
+        if (!activeRequest) return;
+        setTrainings(normalizedTrainings);
+        setTrainingsLoading(false);
+        setTrainingsLoaded(true);
+      } catch {
+        if (!activeRequest) return;
+        setTrainings([]);
+        setTrainingsLoading(false);
+        setTrainingsLoaded(true);
+      }
+    };
+
+    loadTeamTrainings();
+
+    return () => {
+      activeRequest = false;
+    };
+  }, [team.slug]);
+
+  useEffect(() => {
+    let activeRequest = true;
+
+    const normalizeTeamSlug = (value: string) =>
+      value
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]/g, "-")
+        .replace(/-+/g, "-")
+        .replace(/^-|-$/g, "");
+
     const loadTeamPlayers = async () => {
       setPlayersLoading(true);
       try {
@@ -336,8 +404,41 @@ export default function DruzstvoDetail() {
   }, [team.slug]);
 
   const newsSorted = [...team.news].sort((a, b) => parseCzDate(b.date) - parseCzDate(a.date));
-  const trainingBlocks = team.trainingSections ?? [];
-  const trainingCount = trainingBlocks[0]?.items.length || team.trainings.length;
+  const apiHasTrainingSections = trainings.some((item: TrainingItem) => Boolean(item.section?.trim()));
+  const apiTrainingMap = trainings.reduce((map: Map<string, Array<{ day: string; time: string; hall: string }>>, item: TrainingItem) => {
+    const section = item.section?.trim() || "Tréninky";
+    const list = map.get(section) || [];
+    list.push({
+      day: item.day,
+      time: item.time,
+      hall: item.hall,
+    });
+    map.set(section, list);
+    return map;
+  }, new Map<string, Array<{ day: string; time: string; hall: string }>>());
+
+  const apiTrainingBlocks = apiHasTrainingSections
+    ? [...apiTrainingMap.entries()].map((entry) => {
+        const [title, items] = entry as [string, Array<{ day: string; time: string; hall: string }>];
+        return { title, items };
+      })
+    : [];
+
+  const trainingBlocks = trainingsLoaded && trainings.length > 0 && apiTrainingBlocks.length > 0
+    ? apiTrainingBlocks
+    : (team.trainingSections ?? []);
+
+  const displayedTrainings = trainingsLoaded && trainings.length > 0
+    ? trainings.map((item: TrainingItem) => ({
+        day: item.day,
+        time: item.time,
+        hall: item.hall,
+      }))
+    : team.trainings;
+
+  const trainingCount = trainingBlocks.length > 0
+    ? trainingBlocks.reduce((sum, block: { title: string; items: Array<{ day: string; time: string; hall: string }> }) => sum + block.items.length, 0)
+    : displayedTrainings.length;
 
   const displayedEvents = eventsLoaded
     ? events.map((event: EventItem) => ({
@@ -354,7 +455,6 @@ export default function DruzstvoDetail() {
     ? coaches.map((c: CoachItem) => ({ name: c.name, phone: c.phone, email: c.email }))
     : [];
   const displayedPlayers = playersLoaded && players.length > 0 ? players : [];
-  const showPlayersFallback = !playersLoading && displayedPlayers.length === 0;
   const displayedPlayerCount = playersLoaded && players.length > 0 ? players.length : team.players.length;
   const displayedNews = newsSorted;
 
@@ -441,7 +541,35 @@ export default function DruzstvoDetail() {
           <span className="text-[#6EE76D] text-sm tracking-[0.2em] uppercase mb-3 block" style={{ fontFamily: bebas }}>Rozvrh</span>
           <h2 className="text-3xl lg:text-4xl text-white uppercase mb-8" style={{ fontFamily: bebas }}>Tréninky</h2>
 
-          {trainingBlocks.length > 0 ? (
+          {trainingsLoading && (
+            <div className="rounded-2xl bg-[#6EE76D]/5 border border-[#6EE76D]/20 px-4 py-3 mb-8 flex items-center gap-3">
+              <div className="w-4 h-4 rounded-full bg-[#6EE76D] animate-pulse" />
+              <p className="text-[#6EE76D] text-sm" style={{ fontFamily: inter }}>Načítám data tréninků...</p>
+            </div>
+          )}
+
+          {trainingsLoading ? (
+            <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+              {[...Array(3)].map((_, i) => (
+                <div key={`skeleton-training-${i}`} className="rounded-3xl border border-[#6EE76D]/12 bg-[#101a10] p-6 animate-pulse">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-12 h-12 rounded-2xl bg-[#6EE76D]/10" />
+                    <div className="h-6 bg-[#6EE76D]/10 rounded w-28" />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <div className="h-3 bg-[#6EE76D]/10 rounded w-10 mb-2" />
+                      <div className="h-4 bg-[#6EE76D]/10 rounded w-20" />
+                    </div>
+                    <div>
+                      <div className="h-3 bg-[#6EE76D]/10 rounded w-12 mb-2" />
+                      <div className="h-4 bg-[#6EE76D]/10 rounded w-24" />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : trainingBlocks.length > 0 ? (
             <div className="space-y-10">
               {trainingBlocks.map((block) => (
                 <div key={block.title}>
@@ -471,9 +599,9 @@ export default function DruzstvoDetail() {
                 </div>
               ))}
             </div>
-          ) : (
+          ) : displayedTrainings.length > 0 ? (
             <div className="flex gap-4 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              {team.trainings.map((t, i) => (
+              {displayedTrainings.map((t, i) => (
                 <div key={i} className="mobile-solid-card min-w-[18rem] flex-shrink-0 p-5 rounded-3xl bg-[#101a10] border border-[#6EE76D]/12 hover:border-[#6EE76D]/25 transition-all">
                   <div className="flex items-center gap-4 mb-4">
                     <div className="mobile-solid-chip w-12 h-12 rounded-2xl bg-[#6EE76D]/14 flex items-center justify-center">
@@ -488,6 +616,10 @@ export default function DruzstvoDetail() {
                   <div className="mt-1 text-[15px]" style={{ fontFamily: inter, color: "#FFFFFF", fontWeight: 600 }}>{t.time}</div>
                 </div>
               ))}
+            </div>
+          ) : (
+            <div className="rounded-3xl border border-[#6EE76D]/8 bg-[#0e160e] p-8 text-white/70" style={{ fontFamily: inter }}>
+              Tréninky pro toto družstvo zatím nejsou k dispozici.
             </div>
           )}
         </div>

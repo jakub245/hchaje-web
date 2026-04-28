@@ -522,12 +522,214 @@ function localApiPlayersProxy() {
   }
 }
 
+function localApiTrainingsProxy() {
+  const notionApiBase = 'https://api.notion.com/v1'
+  const notionVersion = '2022-06-28'
+  const notionToken = process.env.NOTION_TOKEN || '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'
+  const notionTrainingsDatabaseId = process.env.NOTION_TRAININGS_DATABASE_ID || '350c5ef377c780f697d7eae5d0688831'
+
+  const normalizeKey = (value: string) =>
+    value
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]/g, '')
+
+  const findProperty = (properties: Record<string, any>, names: string[]) => {
+    const map = new Map(Object.entries(properties).map(([key, value]) => [normalizeKey(key), value] as const))
+    for (const name of names) {
+      const hit = map.get(normalizeKey(name))
+      if (hit) return hit
+    }
+    return undefined
+  }
+
+  const parseRichText = (property: any): string => {
+    if (!property || typeof property !== 'object') return ''
+    if (property.type === 'title') {
+      const rich = property.title ?? []
+      return rich.map((item: any) => item?.plain_text || '').join('').trim()
+    }
+    const rich = property.rich_text ?? []
+    return rich.map((item: any) => item?.plain_text || '').join('').trim()
+  }
+
+  const parseProperty = (property: any): string => {
+    if (!property || typeof property !== 'object') return ''
+
+    if (property.type === 'select' && property.select) {
+      return property.select.name || ''
+    }
+
+    if (property.type === 'multi_select' && property.multi_select) {
+      return (property.multi_select as any[]).map((item: any) => item?.name || '').filter(Boolean).join(', ')
+    }
+
+    if (property.type === 'number' && property.number !== null && property.number !== undefined) {
+      return String(property.number)
+    }
+
+    if (property.type === 'date' && property.date?.start) {
+      return property.date.start
+    }
+
+    return parseRichText(property)
+  }
+
+  const toSlug = (value: string) =>
+    value
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '')
+
+  const parseTimeWindow = (properties: Record<string, any>) => {
+    const directTime = parseProperty(findProperty(properties, ['Čas', 'Cas', 'Time', 'Kdy', 'Trénink'])) || ''
+    if (directTime) return directTime
+
+    const from = parseProperty(findProperty(properties, ['Od', 'Začátek', 'Zacatek', 'Start'])) || ''
+    const to = parseProperty(findProperty(properties, ['Do', 'Konec', 'End'])) || ''
+    if (from && to) return `${from} - ${to}`
+    return from || to || ''
+  }
+
+  const loadTrainings = async () => {
+    const pages: any[] = []
+    let hasMore = true
+    let nextCursor: string | null = null
+
+    while (hasMore) {
+      const response = await fetch(`${notionApiBase}/databases/${notionTrainingsDatabaseId}/query`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${notionToken}`,
+          'Notion-Version': notionVersion,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          page_size: 100,
+          ...(nextCursor ? { start_cursor: nextCursor } : {}),
+        }),
+      })
+
+      if (!response.ok) throw new Error(`Notion API error (${response.status})`)
+
+      const data = await response.json()
+      pages.push(...(data.results ?? []))
+      hasMore = Boolean(data.has_more)
+      nextCursor = data.next_cursor ?? null
+    }
+
+    const relatedTitleCache = new Map<string, string>()
+    const readRelatedTitle = async (pageId: string) => {
+      if (relatedTitleCache.has(pageId)) return relatedTitleCache.get(pageId) || ''
+
+      const response = await fetch(`${notionApiBase}/pages/${pageId}`, {
+        headers: {
+          Authorization: `Bearer ${notionToken}`,
+          'Notion-Version': notionVersion,
+        },
+      })
+
+      if (!response.ok) {
+        relatedTitleCache.set(pageId, '')
+        return ''
+      }
+
+      const data = await response.json()
+      const properties = data?.properties ?? {}
+      const titleProperty = Object.values(properties).find((property: any) => property?.type === 'title')
+      const title = parseRichText(titleProperty as any)
+      relatedTitleCache.set(pageId, title)
+      return title
+    }
+
+    const trainings = await Promise.all(
+      pages.map(async (page: any, index: number) => {
+        const properties = page?.properties ?? {}
+        const day = parseProperty(findProperty(properties, ['Den', 'Day'])) || ''
+        const time = parseTimeWindow(properties) || ''
+        const hall = parseProperty(findProperty(properties, ['Místo', 'Misto', 'Hala', 'Hall', 'Location'])) || ''
+        const section = parseProperty(findProperty(properties, ['Sekce', 'Období', 'Obdobi', 'Blok', 'Title', 'Název', 'Nazev'])) || ''
+
+        let teamName = 'Nezařazeno'
+        let teamSlug = ''
+
+        const teamProperty = findProperty(properties, ['Družstvo', 'Druzstvo', 'Team', 'Tým', 'Tym'])
+
+        if (teamProperty?.type === 'relation') {
+          const relationIds = (teamProperty.relation ?? []).map((relation: any) => relation?.id).filter(Boolean)
+          if (relationIds.length > 0) {
+            const resolvedNames = await Promise.all(relationIds.map((relationId: string) => readRelatedTitle(relationId)))
+            const resolved = resolvedNames.filter(Boolean)
+            if (resolved.length > 0) {
+              teamName = resolved[0]
+              teamSlug = toSlug(teamName)
+            }
+          }
+        }
+
+        if (teamName === 'Nezařazeno') {
+          const plain = parseProperty(teamProperty)
+          if (plain) {
+            teamName = plain
+            teamSlug = toSlug(teamName)
+          }
+        }
+
+        return {
+          id: page?.id || `notion-training-${index}`,
+          day,
+          time,
+          hall,
+          section,
+          teamName,
+          teamSlug,
+        }
+      }),
+    )
+
+    return trainings.filter((item) => item.day || item.time || item.hall)
+  }
+
+  const handleRequest = async (req: any, res: any, next: any) => {
+    if (req.method !== 'GET') {
+      next()
+      return
+    }
+
+    try {
+      const trainings = await loadTrainings()
+      res.setHeader('Content-Type', 'application/json')
+      res.statusCode = 200
+      res.end(JSON.stringify({ trainings, source: 'notion-dev-proxy' }))
+    } catch (error) {
+      res.setHeader('Content-Type', 'application/json')
+      res.statusCode = 500
+      res.end(JSON.stringify({
+        error: 'Tréninky se nepodařilo načíst z Notion v lokálním proxy režimu.',
+        detail: error instanceof Error ? error.message : 'Unknown error',
+      }))
+    }
+  }
+
+  return {
+    name: 'local-api-trainings-proxy',
+    configureServer(server) {
+      server.middlewares.use('/api/trainings', handleRequest)
+    },
+  }
+}
+
 export default defineConfig({
   plugins: [
     figmaAssetResolver(),
     localApiEventsProxy(),
     localApiCoachesProxy(),
     localApiPlayersProxy(),
+    localApiTrainingsProxy(),
     // The React and Tailwind plugins are both required for Make, even if
     // Tailwind is not being actively used – do not remove them
     react(),
