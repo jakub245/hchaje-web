@@ -589,8 +589,8 @@ function localApiTrainingsProxy() {
     const directTime = parseProperty(findProperty(properties, ['Čas', 'Cas', 'Time', 'Kdy', 'Trénink'])) || ''
     if (directTime) return directTime
 
-    const from = parseProperty(findProperty(properties, ['Od', 'Začátek', 'Zacatek', 'Start'])) || ''
-    const to = parseProperty(findProperty(properties, ['Do', 'Konec', 'End'])) || ''
+    const from = parseProperty(findProperty(properties, ['Čas od', 'Cas od', 'Od', 'Začátek', 'Zacatek', 'Start'])) || ''
+    const to = parseProperty(findProperty(properties, ['Čas do', 'Cas do', 'Do', 'Konec', 'End'])) || ''
     if (from && to) return `${from} - ${to}`
     return from || to || ''
   }
@@ -653,6 +653,8 @@ function localApiTrainingsProxy() {
         const time = parseTimeWindow(properties) || ''
         const hall = parseProperty(findProperty(properties, ['Místo', 'Misto', 'Hala', 'Hall', 'Location'])) || ''
         const section = parseProperty(findProperty(properties, [
+          'Sezona',
+          'Sezóna',
           'Sekce',
           'Období',
           'Obdobi',
