@@ -52,7 +52,7 @@ export default function DruzstvoDetail() {
   const playersScrollRef = useRef<HTMLDivElement | null>(null);
   const newsScrollRef = useRef<HTMLDivElement | null>(null);
 
-  const teamPlayerPhotos = import.meta.glob("../../imports/foto/*/*.{jpg,jpeg,png}", { eager: true, as: "url" }) as Record<string, string>;
+  const teamPlayerPhotos = import.meta.glob("../../imports/foto/**/*.{jpg,jpeg,png}", { eager: true, as: "url" }) as Record<string, string>;
 
   useEffect(() => {
     const observer = new IntersectionObserver(

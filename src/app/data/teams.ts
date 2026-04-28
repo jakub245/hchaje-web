@@ -2,8 +2,8 @@
 // NOVÉ: Mladší dorostenky, Starší dorostenky
 // TODO: tréninky pro nové kategorie
 
-import miniPhoto from "../../imports/mini2025.jpg";
-import pripravkaPhoto from "../../imports/pripravka.png";
+import miniPhoto from "../../imports/foto/druzstva/Minizakyne.jpg";
+import pripravkaPhoto from "../../imports/foto/druzstva/Pripravka.jpg";
 
 const normalizeText = (value: string) =>
   value
@@ -29,11 +29,17 @@ const resolveTeamHero = (slug: string, teamName: string, fallback: string) => {
   const nameKey = normalizeText(teamName);
   const aliasKeys = TEAM_HERO_ALIASES[slug] ?? [];
 
-  const match = Object.entries(teamHeroFiles).find(([path]) => {
+  const match = Object.entries(teamHeroFiles)
+    .sort(([pathA], [pathB]) => {
+      const aPreferred = pathA.includes("/foto/druzstva/") ? 0 : 1;
+      const bPreferred = pathB.includes("/foto/druzstva/") ? 0 : 1;
+      return aPreferred - bPreferred;
+    })
+    .find(([path]) => {
     const fileName = path.split("/").pop()?.replace(/\.(jpg|jpeg|png|webp|svg)$/i, "") || "";
     const key = normalizeText(fileName);
     return key === slugKey || key === nameKey || aliasKeys.includes(key);
-  });
+    });
 
   return match?.[1] || fallback;
 };
