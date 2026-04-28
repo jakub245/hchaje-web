@@ -26,6 +26,18 @@ type EventItem = {
 
 type ApiEvent = Partial<EventItem>;
 
+type CoachItem = {
+  id: string;
+  name: string;
+  position: string;
+  teamName: string;
+  teamSlug: string;
+  phone: string;
+  email: string;
+};
+
+type ApiCoach = Partial<CoachItem>;
+
 const SECTIONS = [
   { id: "prehled", label: "Přehled" },
   { id: "treninky", label: "Tréninky" },
@@ -48,6 +60,8 @@ export default function DruzstvoDetail() {
   const [active, setActive] = useState("prehled");
   const [events, setEvents] = useState<EventItem[]>([]);
   const [eventsLoaded, setEventsLoaded] = useState(false);
+  const [coaches, setCoaches] = useState<CoachItem[]>([]);
+  const [coachesLoaded, setCoachesLoaded] = useState(false);
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
   const playersScrollRef = useRef<HTMLDivElement | null>(null);
   const newsScrollRef = useRef<HTMLDivElement | null>(null);
@@ -167,6 +181,49 @@ export default function DruzstvoDetail() {
     };
   }, [team.name, team.slug]);
 
+  useEffect(() => {
+    let activeRequest = true;
+
+    const loadTeamCoaches = async () => {
+      try {
+        const response = await fetch("/api/coaches");
+        if (!response.ok) throw new Error("Nepodařilo se načíst data z API.");
+
+        const payload = (await response.json()) as { coaches?: ApiCoach[] };
+        const normalizedCoaches = (payload.coaches ?? [])
+          .map((item, index) => ({
+            id: item.id || `notion-coach-${index}`,
+            name: item.name || "",
+            position: item.position || "",
+            teamName: item.teamName || "",
+            teamSlug: item.teamSlug || "",
+            phone: item.phone || "",
+            email: item.email || "",
+          }))
+          .filter((item) => item.teamSlug === team.slug)
+          .sort((a, b) => {
+            const aIsHead = normalizeText(a.position).includes("hlavni") ? 0 : 1;
+            const bIsHead = normalizeText(b.position).includes("hlavni") ? 0 : 1;
+            return aIsHead - bIsHead;
+          });
+
+        if (!activeRequest) return;
+        setCoaches(normalizedCoaches);
+        setCoachesLoaded(true);
+      } catch {
+        if (!activeRequest) return;
+        setCoaches([]);
+        setCoachesLoaded(true);
+      }
+    };
+
+    loadTeamCoaches();
+
+    return () => {
+      activeRequest = false;
+    };
+  }, [team.slug]);
+
   const newsSorted = [...team.news].sort((a, b) => parseCzDate(b.date) - parseCzDate(a.date));
   const trainingBlocks = team.trainingSections ?? [];
   const trainingCount = trainingBlocks[0]?.items.length || team.trainings.length;
@@ -182,8 +239,8 @@ export default function DruzstvoDetail() {
         title: event.title,
         location: event.location,
       }));
-  const displayedStaff = team.staff
-    ? team.staff.map((m) => ({ name: m.name, phone: m.phone ?? "", email: m.email ?? "" }))
+  const displayedStaff = coachesLoaded && coaches.length > 0
+    ? coaches.map((c: CoachItem) => ({ name: c.name, phone: c.phone, email: c.email }))
     : [
         { name: team.coach, phone: "", email: "" },
         ...(team.assistantCoach ? [{ name: team.assistantCoach, phone: "", email: "" }] : []),

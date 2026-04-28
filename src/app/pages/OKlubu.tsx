@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Target, Heart, Award, Users, Building2, UserRound } from "lucide-react";
 import { PageHero, Btn, CtaStrip, SectionLabel, bebas, inter, CONTACT_EMAIL, nbspShortWords } from "../components/shared";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
@@ -18,39 +19,62 @@ const MILESTONES = [
   { year: "Dnes", text: "Hlavním cílem klubu je nadchnout co nejvíce dětí pro pravidelné sportování." },
 ];
 
-const COACH_DIRECTORY: Record<string, { age?: string }> = {
-  "Petr Zálešák": { age: "36 let" },
-  "Kateřina Bláhová": { age: "34 let" },
-  "Veronika Zálešáková": { age: "32 let" },
-  "Barbora Bláhová": { age: "31 let" },
-  "Petr Paulín": { age: "38 let" },
-  "Nela Černá": { age: "30 let" },
-  "Mgr. Jana Dvořáková": { age: "40 let" },
-  "Petr Novák": { age: "37 let" },
-  "Kateřina Malá": { age: "33 let" },
+
+
+type CoachItem = {
+  id: string;
+  name: string;
+  position: string;
+  teamName: string;
+  teamSlug: string;
+  phone: string;
+  email: string;
 };
 
-const COACHES = Array.from(
-  TEAMS.flatMap((team) => [
-    { name: team.coach, teamName: team.name },
-    ...(team.assistantCoach ? [{ name: team.assistantCoach, teamName: team.name }] : []),
-  ]).reduce((map, item) => {
-    const existing = map.get(item.name) ?? {
-      name: item.name,
-      teams: [] as string[],
-      age: COACH_DIRECTORY[item.name]?.age,
-    };
-
-    if (!existing.teams.includes(item.teamName)) {
-      existing.teams.push(item.teamName);
-    }
-
-    map.set(item.name, existing);
-    return map;
-  }, new Map<string, { name: string; teams: string[]; age?: string }>()).values(),
-).sort((a, b) => a.name.localeCompare(b.name, "cs"));
+type ApiCoach = Partial<CoachItem>;
 
 export default function OKlubuPage() {
+  const [coaches, setCoaches] = useState<CoachItem[]>([]);
+  const [coachesLoaded, setCoachesLoaded] = useState(false);
+
+  useEffect(() => {
+    let activeRequest = true;
+
+    const loadCoaches = async () => {
+      try {
+        const response = await fetch("/api/coaches");
+        if (!response.ok) throw new Error("Nepodařilo se načíst data z API.");
+
+        const payload = (await response.json()) as { coaches?: ApiCoach[] };
+        const normalizedCoaches = (payload.coaches ?? [])
+          .map((item, index) => ({
+            id: item.id || `notion-coach-${index}`,
+            name: item.name || "",
+            position: item.position || "",
+            teamName: item.teamName || "",
+            teamSlug: item.teamSlug || "",
+            phone: item.phone || "",
+            email: item.email || "",
+          }))
+          .sort((a, b) => a.name.localeCompare(b.name, "cs"));
+
+        if (!activeRequest) return;
+        setCoaches(normalizedCoaches);
+        setCoachesLoaded(true);
+      } catch {
+        if (!activeRequest) return;
+        setCoaches([]);
+        setCoachesLoaded(true);
+      }
+    };
+
+    loadCoaches();
+
+    return () => {
+      activeRequest = false;
+    };
+  }, []);
+
   return (
     <>
       <PageHero title="O klubu" subtitle="Poznejte příběh HC Háje — od založení až po současnost." />
@@ -126,30 +150,26 @@ export default function OKlubuPage() {
           <SectionLabel>Trenéři</SectionLabel>
           <h2 className="text-3xl lg:text-4xl text-white uppercase mb-12" style={{ fontFamily: bebas }}>Kdo vede naše družstva</h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {COACHES.map((coach) => (
-              <div key={coach.name} className="mobile-solid-card rounded-3xl bg-[#101a10] border border-[#6EE76D]/12 hover:border-[#6EE76D]/25 transition-all p-6 flex flex-col items-center justify-center text-center min-h-[22rem]">
+            {coaches.map((coach) => (
+              <div key={coach.id} className="mobile-solid-card rounded-3xl bg-[#101a10] border border-[#6EE76D]/12 hover:border-[#6EE76D]/25 transition-all p-6 flex flex-col items-center justify-center text-center min-h-[22rem]">
                 <div className="mobile-solid-chip w-24 h-24 rounded-full overflow-hidden bg-[#6EE76D]/14 border border-[#6EE76D]/20 flex items-center justify-center mb-5">
                   <UserRound className="w-10 h-10 text-[#6EE76D]" />
                 </div>
 
                 <div className="text-white text-[18px]" style={{ fontFamily: inter }}>{coach.name}</div>
-                <div className="text-white/45 text-sm mt-2" style={{ fontFamily: inter }}>{coach.age || "35 let"}</div>
+                <div className="text-white/45 text-sm mt-2" style={{ fontFamily: inter }}>{coach.position || "—"}</div>
 
-                <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
-                  {coach.teams.map((teamName) => {
-                    const team = TEAMS.find((item) => item.name === teamName);
-                    return (
-                      <Btn
-                        key={teamName}
-                        variant="secondary"
-                        to={team ? `/druzstva/${team.slug}` : "/druzstva"}
-                        className="px-3.5 py-1 text-[12px]"
-                      >
-                        {teamName}
-                      </Btn>
-                    );
-                  })}
-                </div>
+                {coach.teamSlug && (
+                  <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+                    <Btn
+                      variant="secondary"
+                      to={`/druzstva/${coach.teamSlug}`}
+                      className="px-3.5 py-1 text-[12px]"
+                    >
+                      {coach.teamName}
+                    </Btn>
+                  </div>
+                )}
               </div>
             ))}
           </div>
