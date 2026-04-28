@@ -67,6 +67,28 @@ const parseNumber = (property: any): string => {
   return "";
 };
 
+const parseProperty = (property: any): string => {
+  if (!property || typeof property !== "object") return "";
+  
+  // Handle select
+  if (property.type === "select" && property.select) {
+    return property.select.name || "";
+  }
+  
+  // Handle multi_select
+  if (property.type === "multi_select" && property.multi_select) {
+    return (property.multi_select as any[]).map((item: any) => item.name).join(", ");
+  }
+  
+  // Handle number
+  if (property.type === "number" && property.number !== null && property.number !== undefined) {
+    return String(property.number);
+  }
+  
+  // Handle rich_text / title
+  return parseRichText(property);
+};
+
 const toSlug = (value: string) =>
   value
     .toLowerCase()
@@ -137,8 +159,8 @@ const loadPlayersFromNotion = async () => {
     pages.map(async (page: any, index: number) => {
       const properties = page?.properties ?? {};
       const name = parseTitle(findProperty(properties, ["Jméno", "Jmeno", "Name"]) || properties.title);
-      const year = parseRichText(findProperty(properties, ["Ročník", "Rocnik", "Year", "Věk", "Vek"])) || "";
-      const position = parseRichText(findProperty(properties, ["Pozice", "Post", "Role", "Position"])) || "";
+      const year = parseProperty(findProperty(properties, ["Ročník", "Rocnik", "Year", "Věk", "Vek"])) || "";
+      const position = parseProperty(findProperty(properties, ["Pozice", "Post", "Role", "Position"])) || "";
       const number = parseNumber(findProperty(properties, ["Číslo", "Cislo", "Číslo hráčky", "Cislo hracky", "Number", "Registrační číslo", "Registracni cislo"])) || "";
 
       const teamProperty = findProperty(properties, ["Družstvo", "Druzstvo", "Team", "Tým", "Tym"]);
