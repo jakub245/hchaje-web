@@ -25,6 +25,7 @@ const normalizeText = (value: string) =>
     .replace(/^-|-$/g, "");
 
 const parseCzDate = (value: string) => {
+  if (!value) return Number.MAX_SAFE_INTEGER;
   const clean = value.replace(/\s/g, "");
 
   if (/^\d{4}-\d{2}-\d{2}/.test(clean)) {
@@ -74,14 +75,14 @@ export default function AkcePage() {
 
             return {
               id: item.id || `notion-${index}`,
-              date: item.date || "",
+              date: item.date || "—",
               title: item.title || "Akce",
               location: item.location || "",
               teamSlug,
               teamName,
             };
           })
-          .filter((item) => item.date && item.title)
+          .filter((item) => item.title)
           .sort((a, b) => parseCzDate(a.date) - parseCzDate(b.date));
 
         if (!active || normalized.length === 0) return;

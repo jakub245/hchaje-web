@@ -9,6 +9,12 @@ type NotionPage = {
   properties?: Record<string, any>;
 };
 
+type NotionQueryResponse = {
+  results?: NotionPage[];
+  has_more?: boolean;
+  next_cursor?: string | null;
+};
+
 export type NotionEvent = {
   id: string;
   date: string;
@@ -125,11 +131,16 @@ const findProperty = (properties: Record<string, any> | undefined, names: string
   return undefined;
 };
 
+const findPropertyByType = (properties: Record<string, any> | undefined, types: string[]) => {
+  if (!properties) return undefined;
+  return Object.values(properties).find((property: any) => property && types.includes(property.type));
+};
+
 const parseNotionEvent = (page: NotionPage): NotionEvent | null => {
-  const titleProp = findProperty(page.properties, ["Název", "Nazev", "Name", "Akce", "Event"]);
-  const dateProp = findProperty(page.properties, ["Datum", "Date", "Kdy"]);
-  const locationProp = findProperty(page.properties, ["Místo", "Misto", "Location", "Kde"]);
-  const teamProp = findProperty(page.properties, ["Družstvo", "Druzstvo", "Team", "Kategorie"]);
+  const titleProp = findProperty(page.properties, ["Název", "Nazev", "Name", "Akce", "Event", "Název akce", "Nazev akce"]) || findPropertyByType(page.properties, ["title"]);
+  const dateProp = findProperty(page.properties, ["Datum", "Date", "Kdy", "Termín", "Termin", "Od", "Start"]) || findPropertyByType(page.properties, ["date"]);
+  const locationProp = findProperty(page.properties, ["Místo", "Misto", "Location", "Kde", "Místo konání", "Misto konani"]) || findPropertyByType(page.properties, ["select", "rich_text"]);
+  const teamProp = findProperty(page.properties, ["Družstvo", "Druzstvo", "Team", "Kategorie", "Tým", "Tym"]) || findPropertyByType(page.properties, ["select", "multi_select", "rich_text"]);
 
   const title = extractPlainText(titleProp) || "Akce";
   const rawDate = extractDate(dateProp);
@@ -137,8 +148,6 @@ const parseNotionEvent = (page: NotionPage): NotionEvent | null => {
   const location = extractPlainText(locationProp) || "";
   const teamName = extractPlainText(teamProp) || "Nezařazeno";
   const teamSlug = toSlug(teamName);
-
-  if (!date) return null;
 
   return {
     id: page.id,
@@ -154,25 +163,36 @@ const notionToken = process.env.NOTION_TOKEN || FALLBACK_NOTION_TOKEN;
 const notionDatabaseId = process.env.NOTION_DATABASE_ID || FALLBACK_NOTION_DATABASE_ID;
 
 export async function loadEventsFromNotion(): Promise<NotionEvent[]> {
-  const response = await fetch(`${NOTION_API_BASE}/databases/${notionDatabaseId}/query`, {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${notionToken}`,
-      "Notion-Version": NOTION_VERSION,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      page_size: 100,
-    }),
-  });
+  const pages: NotionPage[] = [];
+  let nextCursor: string | null = null;
+  let hasMore = true;
 
-  if (!response.ok) {
-    const detail = await response.text();
-    throw new Error(`Notion API error (${response.status}): ${detail}`);
+  while (hasMore) {
+    const response = await fetch(`${NOTION_API_BASE}/databases/${notionDatabaseId}/query`, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${notionToken}`,
+        "Notion-Version": NOTION_VERSION,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        page_size: 100,
+        ...(nextCursor ? { start_cursor: nextCursor } : {}),
+      }),
+    });
+
+    if (!response.ok) {
+      const detail = await response.text();
+      throw new Error(`Notion API error (${response.status}): ${detail}`);
+    }
+
+    const data = (await response.json()) as NotionQueryResponse;
+    pages.push(...(data.results ?? []));
+    hasMore = Boolean(data.has_more);
+    nextCursor = data.next_cursor ?? null;
   }
 
-  const data = (await response.json()) as { results?: NotionPage[] };
-  const events = (data.results ?? [])
+  const events = pages
     .map(parseNotionEvent)
     .filter((item): item is NotionEvent => Boolean(item));
 
