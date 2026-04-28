@@ -59,8 +59,10 @@ export default function DruzstvoDetail() {
   const team = getTeamBySlug(slug || "");
   const [active, setActive] = useState("prehled");
   const [events, setEvents] = useState<EventItem[]>([]);
+  const [eventsLoading, setEventsLoading] = useState(true);
   const [eventsLoaded, setEventsLoaded] = useState(false);
   const [coaches, setCoaches] = useState<CoachItem[]>([]);
+  const [coachesLoading, setCoachesLoading] = useState(true);
   const [coachesLoaded, setCoachesLoaded] = useState(false);
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
   const playersScrollRef = useRef<HTMLDivElement | null>(null);
@@ -139,6 +141,7 @@ export default function DruzstvoDetail() {
     let activeRequest = true;
 
     const loadTeamEvents = async () => {
+      setEventsLoading(true);
       try {
         const response = await fetch("/api/events");
         if (!response.ok) throw new Error("Nepodařilo se načíst data z API.");
@@ -166,10 +169,12 @@ export default function DruzstvoDetail() {
 
         if (!activeRequest) return;
         setEvents(normalizedEvents);
+        setEventsLoading(false);
         setEventsLoaded(true);
       } catch {
         if (!activeRequest) return;
         setEvents([]);
+        setEventsLoading(false);
         setEventsLoaded(true);
       }
     };
@@ -185,6 +190,7 @@ export default function DruzstvoDetail() {
     let activeRequest = true;
 
     const loadTeamCoaches = async () => {
+      setCoachesLoading(true);
       try {
         const response = await fetch("/api/coaches");
         if (!response.ok) throw new Error("Nepodařilo se načíst data z API.");
@@ -209,10 +215,12 @@ export default function DruzstvoDetail() {
 
         if (!activeRequest) return;
         setCoaches(normalizedCoaches);
+        setCoachesLoading(false);
         setCoachesLoaded(true);
       } catch {
         if (!activeRequest) return;
         setCoaches([]);
+        setCoachesLoading(false);
         setCoachesLoaded(true);
       }
     };
@@ -387,6 +395,13 @@ export default function DruzstvoDetail() {
           <span className="text-[#6EE76D] text-sm tracking-[0.2em] uppercase mb-3 block" style={{ fontFamily: bebas }}>Kalendář</span>
           <h2 className="text-3xl lg:text-4xl text-white uppercase mb-8" style={{ fontFamily: bebas }}>Akce</h2>
 
+          {eventsLoading && (
+            <div className="rounded-2xl bg-[#6EE76D]/5 border border-[#6EE76D]/20 px-4 py-3 mb-8 flex items-center gap-3">
+              <div className="w-4 h-4 rounded-full bg-[#6EE76D] animate-pulse" />
+              <p className="text-[#6EE76D] text-sm" style={{ fontFamily: inter }}>Načítám data akcí...</p>
+            </div>
+          )}
+
           {displayedEvents.length ? (
             <div className="px-0">
               <div className="hidden md:grid grid-cols-[1fr_1.4fr_1fr] gap-6 pb-3 text-white/45 text-sm" style={{ fontFamily: inter }}>
@@ -496,6 +511,13 @@ export default function DruzstvoDetail() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <span className="text-[#6EE76D] text-sm tracking-[0.2em] uppercase mb-3 block" style={{ fontFamily: bebas }}>Realizační tým</span>
           <h2 className="text-3xl lg:text-4xl text-white uppercase mb-8" style={{ fontFamily: bebas }}>Trenéři</h2>
+
+          {coachesLoading && (
+            <div className="rounded-2xl bg-[#6EE76D]/5 border border-[#6EE76D]/20 px-4 py-3 mb-8 flex items-center gap-3">
+              <div className="w-4 h-4 rounded-full bg-[#6EE76D] animate-pulse" />
+              <p className="text-[#6EE76D] text-sm" style={{ fontFamily: inter }}>Načítám data trenérů...</p>
+            </div>
+          )}
 
           <div className="px-0">
             <div className="hidden md:grid grid-cols-[1.2fr_1fr_1.1fr] gap-6 pb-3 text-white/45 text-sm" style={{ fontFamily: inter }}>

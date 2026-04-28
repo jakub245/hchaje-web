@@ -35,12 +35,14 @@ type ApiCoach = Partial<CoachItem>;
 
 export default function OKlubuPage() {
   const [coaches, setCoaches] = useState<CoachItem[]>([]);
+  const [coachesLoading, setCoachesLoading] = useState(true);
   const [coachesLoaded, setCoachesLoaded] = useState(false);
 
   useEffect(() => {
     let activeRequest = true;
 
     const loadCoaches = async () => {
+      setCoachesLoading(true);
       try {
         const response = await fetch("/api/coaches");
         if (!response.ok) throw new Error("Nepodařilo se načíst data z API.");
@@ -60,10 +62,12 @@ export default function OKlubuPage() {
 
         if (!activeRequest) return;
         setCoaches(normalizedCoaches);
+        setCoachesLoading(false);
         setCoachesLoaded(true);
       } catch {
         if (!activeRequest) return;
         setCoaches([]);
+        setCoachesLoading(false);
         setCoachesLoaded(true);
       }
     };
@@ -149,6 +153,12 @@ export default function OKlubuPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionLabel>Trenéři</SectionLabel>
           <h2 className="text-3xl lg:text-4xl text-white uppercase mb-12" style={{ fontFamily: bebas }}>Kdo vede naše družstva</h2>
+          {coachesLoading && (
+            <div className="rounded-2xl bg-[#6EE76D]/5 border border-[#6EE76D]/20 px-4 py-3 mb-8 flex items-center gap-3">
+              <div className="w-4 h-4 rounded-full bg-[#6EE76D] animate-pulse" />
+              <p className="text-[#6EE76D] text-sm" style={{ fontFamily: inter }}>Načítám data trenérů...</p>
+            </div>
+          )}
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
             {coaches.map((coach) => (
               <div key={coach.id} className="mobile-solid-card rounded-3xl bg-[#101a10] border border-[#6EE76D]/12 hover:border-[#6EE76D]/25 transition-all p-6 flex flex-col items-center justify-center text-center min-h-[22rem]">
