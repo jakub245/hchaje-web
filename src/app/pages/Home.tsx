@@ -8,6 +8,12 @@ import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { Btn, SectionLabel, CtaStrip, bebas, inter, nbspShortWords } from "../components/shared";
 import { TEAMS, getAllTeamNews } from "../data/teams";
 import heroBackground from "../../imports/hc-haje-pozadi.png";
+import carouselHch02 from "../../imports/foto/carousel hp/HCH_02.jpg";
+import carouselHch03 from "../../imports/foto/carousel hp/HCH_03.jpg";
+import carouselHch04 from "../../imports/foto/carousel hp/HCH_04.jpg";
+import carouselHch06 from "../../imports/foto/carousel hp/HCH_06.jpg";
+import carouselHch10 from "../../imports/foto/carousel hp/HCH_10.jpg";
+import carouselHch13 from "../../imports/foto/carousel hp/HCH_13.jpg";
 import bistorGreenLogo from "../../imports/loga/logo-green.svg";
 import kasiaLogo from "../../imports/loga/logo-kasia.png";
 import macronLogo from "../../imports/loga/logo-macron.svg";
@@ -35,10 +41,12 @@ const PARTNERS = [
 ];
 
 const CAROUSEL_IMAGES = [
-  "https://images.unsplash.com/photo-1769614075229-bfc51a41aa78?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxoYW5kYmFsbCUyMHRlYW0lMjB0cmFpbmluZyUyMGluZG9vcnxlbnwxfHx8fDE3NzYwODU5NjZ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-  "https://images.unsplash.com/photo-1575367728985-8cb72541609a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxoYW5kYmFsbCUyMGdhbWUlMjBtYXRjaCUyMGFjdGlvbnxlbnwxfHx8fDE3NzYwODU5NjZ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-  "https://images.unsplash.com/photo-1669046239665-5dcfc2ecc468?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxoYW5kYmFsbCUyMGNvdXJ0JTIwaW5kb29yJTIwc3BvcnRzJTIwaGFsbHxlbnwxfHx8fDE3NzYwODU5NjZ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
-  "https://images.unsplash.com/photo-1552127966-d24b805b9be7?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3b21lbiUyMGhhbmRiYWxsJTIwcGxheWVycyUyMHRlYW18ZW58MXx8fHwxNzc2MDg1OTY3fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+  carouselHch06,
+  carouselHch02,
+  carouselHch03,
+  carouselHch04,
+  carouselHch10,
+  carouselHch13,
 ];
 
 const YOUTUBE_SHORTS = [
@@ -147,7 +155,7 @@ function Hero() {
           </p>
 
           <div className="flex flex-wrap gap-4">
-            <Btn variant="primary" to="/kontakty">
+            <Btn variant="primary" to="/chci-se-pridat">
               Chci zkusit trénink <ArrowRight className="w-4 h-4" />
             </Btn>
             <Btn variant="secondary" to="/o-klubu">Více o klubu</Btn>

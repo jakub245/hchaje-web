@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { Target, Heart, Award, Users, Building2, UserRound } from "lucide-react";
+import { Target, Heart, Award, Users, Building2, UserRound, ArrowRight } from "lucide-react";
 import { PageHero, Btn, CtaStrip, SectionLabel, bebas, inter, CONTACT_EMAIL, nbspShortWords } from "../components/shared";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { TEAMS } from "../data/teams";
+import hriste5Photo from "../../imports/foto/hriste5.jpg";
 
 const VALUES = [
   { icon: Heart, title: "Vášeň", desc: "Házená není jen sport — je to způsob života. Každý trénink dáváme maximum." },
@@ -113,11 +114,13 @@ export default function OKlubuPage() {
                   </div>
                 </div>
               </div>
-              <Btn variant="primary" to="/kontakty">Přijdu na trénink</Btn>
+              <Btn variant="primary" to="/chci-se-pridat">
+                Chci zkusit trénink <ArrowRight className="w-4 h-4" />
+              </Btn>
             </div>
             <div className="relative rounded-2xl overflow-hidden aspect-[4/3]">
               <ImageWithFallback
-                src="https://images.unsplash.com/photo-1769614075229-bfc51a41aa78?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxoYW5kYmFsbCUyMHRlYW0lMjB0cmFpbmluZyUyMGluZG9vcnxlbnwxfHx8fDE3NzYwODU5NjZ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
+                src={hriste5Photo}
                 alt="HC Háje tým" className="w-full h-full object-cover"
               />
               <div className="absolute inset-0 border border-[#6EE76D]/10 rounded-2xl" />
