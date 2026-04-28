@@ -5,6 +5,21 @@ declare const process: any;
 
 const FALLBACK_NOTION_TOKEN = "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";
 const FALLBACK_NOTION_DATABASE_ID = "350c5ef377c78092a67cd5e8b3869bb8";
+const EVENTS_CACHE_TTL_MS = 1000 * 60 * 3;
+
+type CachedEvents = {
+  events: Array<{
+    id: string;
+    date: string;
+    title: string;
+    location: string;
+    teamName: string;
+    teamSlug: string;
+  }>;
+  fetchedAt: number;
+};
+
+let cachedEvents: CachedEvents | null = null;
 
 const normalizeKey = (value: string) =>
   value
@@ -158,10 +173,27 @@ export default async function handler(req: any, res: any) {
   }
 
   try {
-    const events = await loadEventsFromNotion();
+    const now = Date.now();
+    const canUseCache = cachedEvents && now - cachedEvents.fetchedAt < EVENTS_CACHE_TTL_MS;
+    const events = canUseCache && cachedEvents ? cachedEvents.events : await loadEventsFromNotion();
+
+    if (!canUseCache) {
+      cachedEvents = {
+        events,
+        fetchedAt: now,
+      };
+    }
+
+    res.setHeader("Cache-Control", "s-maxage=180, stale-while-revalidate=600");
     return res.status(200).json({ events, source: "notion" });
   } catch (error: any) {
     console.error("Events API error:", error);
+
+    if (cachedEvents) {
+      res.setHeader("Cache-Control", "s-maxage=60, stale-while-revalidate=600");
+      return res.status(200).json({ events: cachedEvents.events, source: "cache" });
+    }
+
     return res.status(500).json({
       error: "Akce se nepodařilo načíst z Notion.",
       detail: error?.message || "Unknown error",
