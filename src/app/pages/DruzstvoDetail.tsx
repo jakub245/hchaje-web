@@ -352,22 +352,10 @@ export default function DruzstvoDetail() {
       }));
   const displayedStaff = coachesLoaded && coaches.length > 0
     ? coaches.map((c: CoachItem) => ({ name: c.name, phone: c.phone, email: c.email }))
-    : [
-        { name: team.coach, phone: "", email: "" },
-        ...(team.assistantCoach ? [{ name: team.assistantCoach, phone: "", email: "" }] : []),
-      ];
-  const displayedPlayers = playersLoaded && players.length > 0
-    ? players
-    : team.players.map((player, index) => ({
-        id: `fallback-player-${index}`,
-        name: player.name,
-        year: player.position,
-        position: player.position,
-        number: String(player.number ?? ""),
-        teamName: team.name,
-        teamSlug: team.slug,
-      }));
-  const displayedPlayerCount = displayedPlayers.length;
+    : [];
+  const displayedPlayers = playersLoaded && players.length > 0 ? players : [];
+  const showPlayersFallback = !playersLoading && displayedPlayers.length === 0;
+  const displayedPlayerCount = playersLoaded && players.length > 0 ? players.length : team.players.length;
   const displayedNews = newsSorted;
 
   return (
@@ -517,7 +505,23 @@ export default function DruzstvoDetail() {
             </div>
           )}
 
-          {displayedEvents.length ? (
+          {eventsLoading ? (
+            <div className="space-y-4">
+              {[...Array(3)].map((_, i) => (
+                <div key={`skeleton-event-${i}`} className="grid gap-3 md:grid-cols-[1fr_1.4fr_1fr] py-5 animate-pulse">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-2xl bg-[#6EE76D]/10 flex-shrink-0" />
+                    <div className="flex-1">
+                      <div className="h-4 bg-[#6EE76D]/10 rounded w-20 mb-2" />
+                      <div className="h-5 bg-[#6EE76D]/10 rounded w-16" />
+                    </div>
+                  </div>
+                  <div className="hidden md:block h-5 bg-[#6EE76D]/10 rounded w-2/3" />
+                  <div className="hidden md:block h-5 bg-[#6EE76D]/10 rounded w-1/2" />
+                </div>
+              ))}
+            </div>
+          ) : displayedEvents.length ? (
             <div className="px-0">
               <div className="hidden md:grid grid-cols-[1fr_1.4fr_1fr] gap-6 pb-3 text-white/45 text-sm" style={{ fontFamily: inter }}>
                 <div>Datum</div>
@@ -608,23 +612,43 @@ export default function DruzstvoDetail() {
           )}
 
           <div ref={playersScrollRef} className="flex gap-4 overflow-x-auto pb-4 scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {displayedPlayers.map((p) => {
-              const photo = getTeamPhoto(p.name);
-              return (
-                <div key={p.id || p.name} className="mobile-solid-card min-w-[16rem] md:min-w-[calc((100%-1rem)/2)] lg:min-w-[calc((100%-2rem)/3)] xl:min-w-[calc((100%-3rem)/4)] flex-shrink-0 h-[21rem] rounded-3xl bg-[#101a10] border border-[#6EE76D]/12 hover:border-[#6EE76D]/25 transition-all p-6 flex flex-col items-center justify-center text-center">
-                  <div className="mobile-solid-chip w-24 h-24 rounded-full overflow-hidden bg-[#6EE76D]/14 border border-[#6EE76D]/20 flex items-center justify-center mb-5">
-                    {photo ? (
-                      <ImageWithFallback src={photo} alt={p.name} className="w-full h-full object-cover" />
-                    ) : (
-                      <Users className="w-8 h-8 text-[#6EE76D]" />
-                    )}
+            {playersLoading ? (
+              <>
+                {[...Array(4)].map((_, i) => (
+                  <div
+                    key={`skeleton-${i}`}
+                    className="mobile-solid-card min-w-[16rem] md:min-w-[calc((100%-1rem)/2)] lg:min-w-[calc((100%-2rem)/3)] xl:min-w-[calc((100%-3rem)/4)] flex-shrink-0 h-[21rem] rounded-3xl bg-[#101a10] border border-[#6EE76D]/12 p-6 flex flex-col items-center justify-center text-center animate-pulse"
+                  >
+                    <div className="mobile-solid-chip w-24 h-24 rounded-full bg-[#6EE76D]/10 mb-5" />
+                    <div className="w-full h-4 bg-[#6EE76D]/10 rounded mb-3" />
+                    <div className="w-3/4 h-3 bg-[#6EE76D]/10 rounded mb-4" />
+                    <div className="w-12 h-8 bg-[#6EE76D]/10 rounded" />
                   </div>
-                  <div className="text-white text-[16px]" style={{ fontFamily: inter }}>{p.name}</div>
-                  <div className="text-white/45 text-sm mt-2" style={{ fontFamily: inter }}>{playerYearLabel} {p.year || "—"}</div>
-                  <div className="text-[#6EE76D] text-2xl mt-3" style={{ fontFamily: bebas }}>{p.number || "—"}</div>
-                </div>
-              );
-            })}
+                ))}
+              </>
+            ) : displayedPlayers.length > 0 ? (
+              displayedPlayers.map((p) => {
+                const photo = getTeamPhoto(p.name);
+                return (
+                  <div key={p.id || p.name} className="mobile-solid-card min-w-[16rem] md:min-w-[calc((100%-1rem)/2)] lg:min-w-[calc((100%-2rem)/3)] xl:min-w-[calc((100%-3rem)/4)] flex-shrink-0 h-[21rem] rounded-3xl bg-[#101a10] border border-[#6EE76D]/12 hover:border-[#6EE76D]/25 transition-all p-6 flex flex-col items-center justify-center text-center">
+                    <div className="mobile-solid-chip w-24 h-24 rounded-full overflow-hidden bg-[#6EE76D]/14 border border-[#6EE76D]/20 flex items-center justify-center mb-5">
+                      {photo ? (
+                        <ImageWithFallback src={photo} alt={p.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <Users className="w-8 h-8 text-[#6EE76D]" />
+                      )}
+                    </div>
+                    <div className="text-white text-[16px]" style={{ fontFamily: inter }}>{p.name}</div>
+                    <div className="text-white/45 text-sm mt-2" style={{ fontFamily: inter }}>{playerYearLabel} {p.year || "—"}</div>
+                    <div className="text-[#6EE76D] text-2xl mt-3" style={{ fontFamily: bebas }}>{p.number || "—"}</div>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="w-full py-12 text-center">
+                <p className="text-white/50" style={{ fontFamily: inter }}>Žádné hráčky nejsou zatím k dispozici.</p>
+              </div>
+            )}
           </div>
         </div>
       </section>
@@ -641,55 +665,76 @@ export default function DruzstvoDetail() {
             </div>
           )}
 
-          <div className="px-0">
-            <div className="hidden md:grid grid-cols-[1.2fr_1fr_1.1fr] gap-6 pb-3 text-white/45 text-sm" style={{ fontFamily: inter }}>
-              <div>Jméno</div>
-              <div>Telefon</div>
-              <div>E-mail</div>
-            </div>
-
-            <div>
-              {displayedStaff.map((member, i) => (
-                <div key={member.name} className={`grid gap-4 md:grid-cols-[1.2fr_1fr_1.1fr] py-5 ${i !== 0 ? "border-t border-[#6EE76D]/15" : ""}`}>
+          {coachesLoading ? (
+            <div className="space-y-4">
+              {[...Array(2)].map((_, i) => (
+                <div key={`skeleton-coach-${i}`} className="grid gap-4 md:grid-cols-[1.2fr_1fr_1.1fr] py-5 animate-pulse">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full overflow-hidden bg-[#101a10] border border-[#6EE76D]/20 flex items-center justify-center flex-shrink-0">
-                      <User className="w-4 h-4 text-[#6EE76D]" />
-                    </div>
-                    <div>
-                      <div className="text-white/45 text-sm md:hidden" style={{ fontFamily: inter }}>Jméno</div>
-                      <div className="text-white text-[16px]" style={{ fontFamily: inter }}>{member.name}</div>
+                    <div className="w-10 h-10 rounded-full bg-[#6EE76D]/10 flex-shrink-0" />
+                    <div className="flex-1">
+                      <div className="h-4 bg-[#6EE76D]/10 rounded w-32" />
                     </div>
                   </div>
-
-                  <div className="pl-[3.25rem] md:pl-0 flex items-center gap-2">
-                    {member.phone ? <Phone className="w-4 h-4 text-[#6EE76D] shrink-0" /> : <span className="hidden md:block w-4" />}
-                    <div>
-                      <div className="text-white/45 text-sm md:hidden mb-1" style={{ fontFamily: inter }}>Telefon</div>
-                      <div className="text-white break-all" style={{ fontFamily: inter }}>{member.phone || "—"}</div>
-                    </div>
-                  </div>
-
-                  <div className="pl-[3.25rem] md:pl-0 flex items-center gap-2">
-                    {member.email ? <Mail className="w-4 h-4 text-[#6EE76D] shrink-0" /> : <span className="hidden md:block w-4" />}
-                    <div>
-                      <div className="text-white/45 text-sm md:hidden mb-1" style={{ fontFamily: inter }}>E-mail</div>
-                      {member.email ? (
-                        <a
-                          href={`mailto:${member.email}`}
-                          className="mail-link transition-colors break-all"
-                          style={{ fontFamily: inter }}
-                        >
-                          {member.email}
-                        </a>
-                      ) : (
-                        <div className="text-white break-all" style={{ fontFamily: inter }}>—</div>
-                      )}
-                    </div>
-                  </div>
+                  <div className="hidden md:block h-4 bg-[#6EE76D]/10 rounded w-24" />
+                  <div className="hidden md:block h-4 bg-[#6EE76D]/10 rounded w-40" />
                 </div>
               ))}
             </div>
-          </div>
+          ) : coaches.length > 0 ? (
+            <div className="px-0">
+              <div className="hidden md:grid grid-cols-[1.2fr_1fr_1.1fr] gap-6 pb-3 text-white/45 text-sm" style={{ fontFamily: inter }}>
+                <div>Jméno</div>
+                <div>Telefon</div>
+                <div>E-mail</div>
+              </div>
+
+              <div>
+                {displayedStaff.map((member, i) => (
+                  <div key={member.name} className={`grid gap-4 md:grid-cols-[1.2fr_1fr_1.1fr] py-5 ${i !== 0 ? "border-t border-[#6EE76D]/15" : ""}`}>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full overflow-hidden bg-[#101a10] border border-[#6EE76D]/20 flex items-center justify-center flex-shrink-0">
+                        <User className="w-4 h-4 text-[#6EE76D]" />
+                      </div>
+                      <div>
+                        <div className="text-white/45 text-sm md:hidden" style={{ fontFamily: inter }}>Jméno</div>
+                        <div className="text-white text-[16px]" style={{ fontFamily: inter }}>{member.name}</div>
+                      </div>
+                    </div>
+
+                    <div className="pl-[3.25rem] md:pl-0 flex items-center gap-2">
+                      {member.phone ? <Phone className="w-4 h-4 text-[#6EE76D] shrink-0" /> : <span className="hidden md:block w-4" />}
+                      <div>
+                        <div className="text-white/45 text-sm md:hidden mb-1" style={{ fontFamily: inter }}>Telefon</div>
+                        <div className="text-white break-all" style={{ fontFamily: inter }}>{member.phone || "—"}</div>
+                      </div>
+                    </div>
+
+                    <div className="pl-[3.25rem] md:pl-0 flex items-center gap-2">
+                      {member.email ? <Mail className="w-4 h-4 text-[#6EE76D] shrink-0" /> : <span className="hidden md:block w-4" />}
+                      <div>
+                        <div className="text-white/45 text-sm md:hidden mb-1" style={{ fontFamily: inter }}>E-mail</div>
+                        {member.email ? (
+                          <a
+                            href={`mailto:${member.email}`}
+                            className="mail-link transition-colors break-all"
+                            style={{ fontFamily: inter }}
+                          >
+                            {member.email}
+                          </a>
+                        ) : (
+                          <div className="text-white break-all" style={{ fontFamily: inter }}>—</div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <div className="rounded-3xl border border-[#6EE76D]/8 bg-[#0e160e] p-8 text-white/70" style={{ fontFamily: inter }}>
+              Žádní trenéři nejsou zatím přiřazeni.
+            </div>
+          )}
         </div>
       </section>
 
