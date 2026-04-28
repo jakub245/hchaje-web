@@ -29,7 +29,7 @@ type ApiEvent = Partial<EventItem>;
 type PlayerItem = {
   id: string;
   name: string;
-  position: string;
+  year: string;
   number: string;
   teamName: string;
   teamSlug: string;
@@ -116,7 +116,7 @@ export default function DruzstvoDetail() {
   };
 
   const isMiniTeam = team.slug === "mini-zakyne";
-  const playerMetaLabel = isMiniTeam || team.slug === "pripravka" ? "Ročník" : "Post";
+  const playerYearLabel = "Ročník";
 
   const scrollPlayers = (direction: number) => {
     playersScrollRef.current?.scrollBy({ left: direction * 900, behavior: "smooth" });
@@ -128,9 +128,9 @@ export default function DruzstvoDetail() {
 
   const getTeamPhoto = (name: string) => {
     const toNameTokens = (value: string) =>
-      normalizeText(value)
-        .replace(/[0-9]/g, "")
-        .split(/[^a-z]+/)
+      value
+        .split(/[\s\-]+/)
+        .map(token => normalizeText(token))
         .filter(Boolean);
 
     const currentTeamSlug = normalizeText(team.slug);
@@ -145,12 +145,14 @@ export default function DruzstvoDetail() {
         const tokens = toNameTokens(fileName);
         return {
           baseName: normalizeText(fileName),
+          tokens,
           tokenJoin: tokens.join(""),
           tokenJoinReversed: [...tokens].reverse().join(""),
           url,
         };
       });
 
+    // Pokus 1: Přesná shoda - normalizované jméno
     const exactMatch = candidates.find(
       (candidate) =>
         candidate.baseName === normalizedName ||
@@ -160,9 +162,24 @@ export default function DruzstvoDetail() {
     );
     if (exactMatch) return exactMatch.url;
 
+    // Pokus 2: Všechny tokeny se nacházejí v kandidátovi
+    const allTokensMatch = candidates.find((candidate) =>
+      playerTokens.every(token => candidate.tokenJoin.includes(token))
+    );
+    if (allTokensMatch) return allTokensMatch.url;
+
+    // Pokus 3: Příjmení (první token) + jakýkoliv další token
     const surname = playerTokens[0] || "";
-    const surnameMatches = candidates.filter((candidate) => candidate.baseName.startsWith(surname));
+    const surnameMatches = candidates.filter((candidate) => 
+      candidate.tokenJoin.includes(surname) && candidate.tokens.length >= 1
+    );
     if (surnameMatches.length === 1) return surnameMatches[0].url;
+
+    // Pokus 4: Jakýkoliv token se v kandidátovi vyskytuje
+    const anyTokenMatch = candidates.find((candidate) =>
+      playerTokens.some(token => candidate.tokenJoin.includes(token) && token.length > 3)
+    );
+    if (anyTokenMatch) return anyTokenMatch.url;
 
     return "";
   };
@@ -239,7 +256,7 @@ export default function DruzstvoDetail() {
           .map((item, index) => ({
             id: item.id || `notion-player-${index}`,
             name: item.name || "",
-            position: item.position || "",
+            year: item.year || "",
             number: item.number || "",
             teamName: item.teamName || "",
             teamSlug: item.teamSlug || "",
@@ -342,7 +359,7 @@ export default function DruzstvoDetail() {
     : team.players.map((player, index) => ({
         id: `fallback-player-${index}`,
         name: player.name,
-        position: player.position,
+        year: player.position,
         number: String(player.number ?? ""),
         teamName: team.name,
         teamSlug: team.slug,
@@ -600,7 +617,7 @@ export default function DruzstvoDetail() {
                     )}
                   </div>
                   <div className="text-white text-[16px]" style={{ fontFamily: inter }}>{p.name}</div>
-                  <div className="text-white/45 text-sm mt-2" style={{ fontFamily: inter }}>{playerMetaLabel} {p.position || "—"}</div>
+                  <div className="text-white/45 text-sm mt-2" style={{ fontFamily: inter }}>{playerYearLabel} {p.year || "—"}</div>
                   <div className="text-[#6EE76D] text-2xl mt-3" style={{ fontFamily: bebas }}>{p.number || "—"}</div>
                 </div>
               );
