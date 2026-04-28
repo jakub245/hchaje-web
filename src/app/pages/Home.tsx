@@ -21,15 +21,9 @@ import pragueLogo from "../../imports/loga/logo-prague.svg";
 import praha11Logo from "../../imports/loga/logo-praha11.svg";
 import sprinklerGroupLogo from "../../imports/loga/logo-sprinkler.svg";
 
-const totalPlayers = TEAMS.reduce((sum, team) => sum + team.playerCount, 0);
+const fallbackPlayerCount = TEAMS.reduce((sum, team) => sum + team.playerCount, 0);
 const totalTeams = TEAMS.length;
-const totalTrainingsPerWeek = TEAMS.reduce((sum, team) => sum + team.trainings.length, 0);
-
-const STATS = [
-  { value: `${totalPlayers}`, label: "Aktivních hráček" },
-  { value: `${totalTeams}`, label: "Družstev" },
-  { value: `${totalTrainingsPerWeek}`, label: "Tréninků týdně" },
-];
+const fallbackTrainingsPerWeek = TEAMS.reduce((sum, team) => sum + team.trainings.length, 0);
 
 const PARTNERS = [
   { src: kasiaLogo, alt: "Kasia - Partneři" },
@@ -121,6 +115,31 @@ const latestNews = getAllTeamNews()
 
 /* ══════════════ HERO ══════════════ */
 function Hero() {
+  const [livePlayerCount, setLivePlayerCount] = useState<number | null>(null);
+  const [liveTrainingCount, setLiveTrainingCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetch("/api/players")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((payload: { players?: Array<unknown> } | null) => {
+        if (payload?.players?.length) setLivePlayerCount(payload.players.length);
+      })
+      .catch(() => {});
+
+    fetch("/api/trainings")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((payload: { trainings?: Array<unknown> } | null) => {
+        if (payload?.trainings?.length) setLiveTrainingCount(payload.trainings.length);
+      })
+      .catch(() => {});
+  }, []);
+
+  const stats = [
+    { value: `${livePlayerCount ?? fallbackPlayerCount}`, label: "Aktivních hráček" },
+    { value: `${totalTeams}`, label: "Družstev" },
+    { value: `${liveTrainingCount ?? fallbackTrainingsPerWeek}`, label: "Tréninků týdně" },
+  ];
+
   return (
     <section className="reveal-on-scroll relative min-h-screen flex items-center overflow-hidden pt-20">
       <div className="absolute inset-0">
@@ -163,7 +182,7 @@ function Hero() {
         </div>
 
         <div className="mt-16 lg:mt-24 grid grid-cols-3 gap-8 max-w-xl">
-          {STATS.map((s) => (
+          {stats.map((s) => (
             <div key={s.label}>
               <div className="text-4xl lg:text-5xl text-[#6EE76D]" style={{ fontFamily: bebas }}>{s.value}</div>
               <div className="text-white/40 text-sm mt-1" style={{ fontFamily: inter }}>{s.label}</div>
