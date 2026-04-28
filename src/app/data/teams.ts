@@ -1,98 +1,35 @@
-// ⚠️ UPRAVENO podle klienta 21. 4. 2026
-// Změny: Ženy, Starší žákyně, Mladší žákyně, Mini žákyně, Přípravka
-// TODO: Doplnit data pro Mladší dorostenky + Starší dorostenky (trenér, tréninky)
+// ⚠️ UPRAVENO podle klienta 28. 4. 2026
+// NOVÉ: Mladší dorostenky, Starší dorostenky
+// TODO: tréninky pro nové kategorie
 
 import miniPhoto from "../../imports/mini2025.jpg";
 import pripravkaPhoto from "../../imports/pripravka.png";
 
-export interface Player {
-  name: string;
-  position: string;
-  number?: string | number;
-}
-
-export interface Training {
-  day: string;
-  time: string;
-  hall: string;
-}
-
-export interface TrainingSection {
-  title: string;
-  items: Training[];
-}
-
-export interface TeamNews {
-  date: string;
-  title: string;
-  excerpt?: string;
-  content?: string;
-}
-
-export interface TeamEvent {
-  date: string;
-  title: string;
-  location: string;
-}
-
-export interface StaffMember {
-  name: string;
-  phone?: string;
-  email?: string;
-}
-
+export interface Player { name: string; position: string; number?: string | number; }
+export interface Training { day: string; time: string; hall: string; }
+export interface TrainingSection { title: string; items: Training[]; }
+export interface TeamNews { date: string; title: string; excerpt?: string; content?: string; }
+export interface TeamEvent { date: string; title: string; location: string; }
 export interface Team {
-  slug: string;
-  name: string;
-  shortName: string;
-  desc: string;
-  longDesc: string;
-  img: string;
-  coach: string;
-  assistantCoach?: string;
-  staff?: StaffMember[];
-  playerCount: number;
-  ageRange: string;
-  trainings: Training[];
-  trainingSections?: TrainingSection[];
-  players: Player[];
-  news: TeamNews[];
-  events?: TeamEvent[];
+  slug: string; name: string; shortName: string; desc: string; longDesc: string;
+  img: string; coach: string; assistantCoach?: string; playerCount: number;
+  ageRange: string; trainings: Training[]; trainingSections?: TrainingSection[];
+  players: Player[]; news: TeamNews[]; events?: TeamEvent[];
 }
 
 const CLUB_NEWS: TeamNews[] = [
-  {
-    date: "12. 4. 2026",
-    title: "Klubové focení a společné odpoledne v areálu Háje",
-    excerpt: "Celý klub se sejde na společném focení, krátkém programu pro rodiče a neformálním posezení po trénincích.",
-    content:
-      "V neděli odpoledne nás čeká společné klubové focení všech kategorií, krátké setkání s rodiči a společný program v areálu Háje. Prosíme všechny hráčky, aby dorazily v klubovém oblečení a s dobrou náladou.",
-  },
-  {
-    date: "28. 3. 2026",
-    title: "HC Háje děkuje rodičům a partnerům za podporu jarní části sezóny",
-    excerpt: "Děkujeme všem, kdo pomáhají vytvářet děvčatům skvělé prostředí pro sport, růst a radost ze hry.",
-    content:
-      "Jarní část sezóny je v plném proudu a my si velmi vážíme podpory rodičů, dobrovolníků i partnerů klubu. Právě díky nim můžeme dál rozvíjet všechna družstva a posouvat klub kupředu.",
-  },
+  { date: "12. 4. 2026", title: "Klubové focení a společné odpoledne v areálu Háje", excerpt: "Celý klub se sejde na společném focení, krátkém programu pro rodiče a neformálním posezení po trénincích.", content: "V neděli odpoledne nás čeká společné klubové focení všech kategorií, krátké setkání s rodiči a společný program v areálu Háje." },
+  { date: "28. 3. 2026", title: "HC Háje děkuje rodičům a partnerům za podporu jarní části sezóny", excerpt: "Děkujeme všem, kdo pomáhají vytvářet děvčatům skvělé prostředí pro sport, růst a radost ze hry.", content: "Jarní část sezóny je v plném proudu a my si velmi vážíme podpory rodičů, dobrovolníků i partnerů klubu." },
 ];
 
 export const TEAMS: Team[] = [
   {
-    slug: "zeny",
-    name: "Ženy",
-    shortName: "Ženy",
-    // ✅ ZMĚNA klient
+    slug: "zeny", name: "Ženy", shortName: "Ženy",
     desc: "A-tým hrající 2. ligu - Čechy.",
-    // ✅ ZMĚNA klient
     longDesc: "Ženský tým představuje vrchol klubové cesty, kde se propojují zkušenosti, výkonnost a týmová soudržnost. Hráčky rozvíjejí technickou i taktickou vyspělost, schopnost zvládat náročné zápasové situace a společně usilují o co nejlepší sportovní výsledky. Důležitou součástí je také týmový charakter, vzájemná podpora a radost ze společné hry i reprezentace klubu.",
     img: "https://images.unsplash.com/photo-1552127966-d24b805b9be7?w=800",
-    // ✅ ZMĚNA klient
-    coach: "Miroslav Cabalka",
-    // ✅ ZMĚNA klient
-    assistantCoach: "Magdaléna Cabalková",
-    playerCount: 18,
-    ageRange: "18+",
+    coach: "Miroslav Cabalka", assistantCoach: "Magdaléna Cabalková",
+    playerCount: 18, ageRange: "18+",
     trainings: [
       { day: "Úterý", time: "18:00 – 19:30", hall: "Sportovní hala Háje" },
       { day: "Středa", time: "19:30 – 21:00", hall: "Sportovní hala Háje" },
@@ -123,21 +60,12 @@ export const TEAMS: Team[] = [
     ],
   },
   {
-    slug: "starsi-zakyne",
-    name: "Starší žákyně",
-    shortName: "St. žákyně",
-    // ✅ ZMĚNA klient
+    slug: "starsi-zakyne", name: "Starší žákyně", shortName: "St. žákyně",
     desc: "Soutěžní tým 12-14 let.",
-    // ✅ ZMĚNA klient
     longDesc: "Kategorie starších žákyň navazuje na získané základy a rozvíjí herní dovednosti do větší variability a jistoty i pod tlakem soupeře. Hráčky si osvojují základy pozičního útoku, spolupráci v menších skupinách i specifické role na hřišti, přičemž se učí lépe využívat prostor a rozhodovat se v reálných herních situacích. Důraz je kladen také na samostatnost, zodpovědnost za vlastní výkon a pochopení širších souvislostí hry i regenerace.",
     img: "https://images.unsplash.com/photo-1769614075229-bfc51a41aa78?w=800",
-    // ✅ ZMĚNA klient
-    coach: "Milan Ernest",
-    // ✅ ZMĚNA klient
-    assistantCoach: "Pavla Martin",
-    playerCount: 16,
-    // ✅ ZMĚNA klient
-    ageRange: "12-14 let",
+    coach: "Milan Ernest", assistantCoach: "Pavla Martin",
+    playerCount: 16, ageRange: "12-14 let",
     trainings: [
       { day: "Úterý", time: "16:00 – 17:30", hall: "Sportovní hala Háje" },
       { day: "Čtvrtek", time: "17:00 – 18:30", hall: "Sportovní hala Háje" },
@@ -156,19 +84,12 @@ export const TEAMS: Team[] = [
     ],
   },
   {
-    slug: "mladsi-zakyne",
-    name: "Mladší žákyně",
-    shortName: "Ml. žákyně",
+    slug: "mladsi-zakyne", name: "Mladší žákyně", shortName: "Ml. žákyně",
     desc: "Dívky 10–12 let rozvíjející herní dovednosti.",
-    // ✅ ZMĚNA klient
     longDesc: "Stavíme především na budování pozitivního vztahu k házené jako pravidelné a radostné součásti života. Hráčky si rozvíjejí útočné dovednosti, základní herní návyky a postupně objevují různé role na hřišti, přičemž důraz je kladen na vlastní pokrok a odvahu zkoušet nové věci. Důležitou součástí je také porozumění hře jako celku – střídání jednotlivých fází a spolupráce v týmu, kde má přednost radost ze hry před samotným výsledkem.",
     img: "https://images.unsplash.com/photo-1575367728985-8cb72541609a?w=800",
-    // ✅ ZMĚNA klient
-    coach: "Jůlia Dvořáková",
-    // ✅ ZMĚNA klient
-    assistantCoach: "Petr Novák",
-    playerCount: 20,
-    ageRange: "10–12 let",
+    coach: "Jůlia Dvořáková", assistantCoach: "Petr Novák",
+    playerCount: 20, ageRange: "10–12 let",
     trainings: [
       { day: "Pondělí", time: "17:45 – 19:15", hall: "Sportovní hala Háje" },
       { day: "Středa", time: "17:45 – 19:15", hall: "Sportovní hala Háje" },
@@ -186,45 +107,28 @@ export const TEAMS: Team[] = [
     ],
   },
   {
-    slug: "mini-zakyne",
-    name: "Mini žákyně",
-    shortName: "Mini",
+    slug: "mini-zakyne", name: "Mini žákyně", shortName: "Mini",
     desc: "Nejmladší házenkářky 8–10 let.",
-    // ✅ ZMĚNA klient
     longDesc: "Mini žákyně jsou budoucností našeho klubu. Trénujeme formou her a zábavných cvičení, která děti baví a zároveň rozvíjejí koordinaci, rychlost a základní házenkářské dovednosti. Holky se zde poprvé seznámí s velkou házenou 6+1.",
     img: miniPhoto,
-    coach: "Petr Zálešák",
-    assistantCoach: "Kateřina Bláhová",
-    staff: [
-      { name: "Petr Zálešák", phone: "777 721 282", email: "minihchaje@gmail.com" },
-      { name: "Kateřina Bláhová", phone: "608 981 667", email: "minihchaje@gmail.com" },
-      { name: "Veronika Zálešáková" },
-      { name: "Barbora Bláhová" },
-    ],
-    playerCount: 19,
-    ageRange: "8–10 let",
+    coach: "Petr Zálešák", assistantCoach: "Kateřina Bláhová",
+    playerCount: 19, ageRange: "8–10 let",
     trainings: [
       { day: "Pondělí", time: "17:00 - 18:30", hall: "Hala TJ JM Chodov" },
       { day: "Úterý", time: "17:15 - 18:45", hall: "Tělocvična ZŠ K Milíčovu" },
       { day: "Čtvrtek", time: "16:30 - 18:00", hall: "Tělocvična ZŠ Mendelova" },
     ],
     trainingSections: [
-      {
-        title: "Tréninky září, květen - červen",
-        items: [
-          { day: "Pondělí", time: "17:00 - 18:30", hall: "Hala TJ JM Chodov" },
-          { day: "Úterý", time: "16:30 - 18:00", hall: "Areál TJ Háje" },
-          { day: "Čtvrtek", time: "16:30 - 18:00", hall: "Areál TJ Háje" },
-        ],
-      },
-      {
-        title: "Tréninky říjen - duben",
-        items: [
-          { day: "Pondělí", time: "17:00 - 18:30", hall: "Hala TJ JM Chodov" },
-          { day: "Úterý", time: "17:15 - 18:45", hall: "Tělocvična ZŠ K Milíčovu" },
-          { day: "Čtvrtek", time: "16:30 - 18:00", hall: "Tělocvična ZŠ Mendelova" },
-        ],
-      },
+      { title: "Tréninky září, květen - červen", items: [
+        { day: "Pondělí", time: "17:00 - 18:30", hall: "Hala TJ JM Chodov" },
+        { day: "Úterý", time: "16:30 - 18:00", hall: "Areál TJ Háje" },
+        { day: "Čtvrtek", time: "16:30 - 18:00", hall: "Areál TJ Háje" },
+      ]},
+      { title: "Tréninky říjen - duben", items: [
+        { day: "Pondělí", time: "17:00 - 18:30", hall: "Hala TJ JM Chodov" },
+        { day: "Úterý", time: "17:15 - 18:45", hall: "Tělocvična ZŠ K Milíčovu" },
+        { day: "Čtvrtek", time: "16:30 - 18:00", hall: "Tělocvična ZŠ Mendelova" },
+      ]},
     ],
     players: [
       { name: "Badíková Barbora", position: "2016", number: "092689" },
@@ -254,44 +158,25 @@ export const TEAMS: Team[] = [
     ],
   },
   {
-    slug: "pripravka",
-    name: "Přípravka",
-    shortName: "Přípravka",
-    // ✅ ZMĚNA klient
+    slug: "pripravka", name: "Přípravka", shortName: "Přípravka",
     desc: "Sportovní kroužek pro holky 6-8 let",
-    // ✅ ZMĚNA klient
     longDesc: "Přípravka je určená pro úplné začátečnice. Formou hry a pohybových aktivit se holky učí základům házené i obecné sportovní přípravě. Cílem je hlavně radost z pohybu a kamarádství. Utkání se hrají formou miniházené 4+1 s měkkým míčem a na menším hřišti.",
     img: pripravkaPhoto,
-    // ✅ ZMĚNA klient
-    coach: "Petr Paulín",
-    // ✅ ZMĚNA klient
-    assistantCoach: "Nela Černá",
-    staff: [
-      { name: "Kateřina Bláhová", phone: "608 981 667", email: "pripravkahchaje@gmail.com" },
-      { name: "Petr Paulín" },
-      { name: "Nela Černá" },
-    ],
-    playerCount: 18,
-    ageRange: "6–8 let",
+    coach: "Petr Paulín", assistantCoach: "Nela Černá",
+    playerCount: 18, ageRange: "6–8 let",
     trainings: [
       { day: "Úterý", time: "17:15 - 18:45", hall: "Tělocvična ZŠ K Milíčovu" },
       { day: "Čtvrtek", time: "16:30 - 18:00", hall: "Tělocvična ZŠ Mendelova" },
     ],
     trainingSections: [
-      {
-        title: "Tréninky září, květen - červen",
-        items: [
-          { day: "Úterý", time: "17:00 - 18:30", hall: "Areál TJ Háje" },
-          { day: "Čtvrtek", time: "17:00 - 18:30", hall: "Areál TJ Háje" },
-        ],
-      },
-      {
-        title: "Tréninky říjen - duben",
-        items: [
-          { day: "Úterý", time: "17:15 - 18:45", hall: "Tělocvična ZŠ K Milíčovu" },
-          { day: "Čtvrtek", time: "16:30 - 18:00", hall: "Tělocvična ZŠ Mendelova" },
-        ],
-      },
+      { title: "Tréninky září, květen - červen", items: [
+        { day: "Úterý", time: "17:00 - 18:30", hall: "Areál TJ Háje" },
+        { day: "Čtvrtek", time: "17:00 - 18:30", hall: "Areál TJ Háje" },
+      ]},
+      { title: "Tréninky říjen - duben", items: [
+        { day: "Úterý", time: "17:15 - 18:45", hall: "Tělocvična ZŠ K Milíčovu" },
+        { day: "Čtvrtek", time: "16:30 - 18:00", hall: "Tělocvična ZŠ Mendelova" },
+      ]},
     ],
     players: [
       { name: "Bachynská Viktorie", position: "2017", number: "099871" },
@@ -320,36 +205,27 @@ export const TEAMS: Team[] = [
     ],
   },
 
-  // ⚠️ TODO: Mladší dorostenky — klient žádá přidání
-  // Potřebuješ doplnit: coach, assistantCoach, trainings, players, news
-  // {
-  //   slug: "mladsi-dorostenky",
-  //   name: "Mladší dorostenky",
-  //   shortName: "Ml. dorostenky",
-  //   desc: "Doplnit od klienta.",
-  //   longDesc: "Doplnit od klienta.",
-  //   img: "...",
-  //   coach: "Doplnit",
-  //   ageRange: "14-16 let",
-  //   trainings: [],
-  //   players: [],
-  //   news: [],
-  // },
+  // ✅ NOVÉ
+  {
+    slug: "mladsi-dorostenky", name: "Mladší dorostenky", shortName: "Ml. dorostenky",
+    desc: "Soutěžní tým 14-16 let.",
+    longDesc: "Kategorie mladších dorostenek je obdobím výrazného výkonnostního růstu, kdy hráčky rozvíjejí samostatnost, zodpovědný přístup k tréninku a zdravý životní styl. Vedle zachování univerzálnosti začíná také specializace podle herních postů, zdokonalování individuálních činností v útoku i obraně a schopnost rozhodovat se pod tlakem soupeře. Důležitou součástí přípravy je práce s tempem hry, analýza výkonu a regenerace jako přirozená součást cesty za zlepšením.",
+    img: "https://images.unsplash.com/photo-1769614075229-bfc51a41aa78?w=800",
+    coach: "Václav Škarda", assistantCoach: "Jana Klímová",
+    playerCount: 0, ageRange: "14-16 let",
+    trainings: [], players: [], news: [],
+  },
 
-  // ⚠️ TODO: Starší dorostenky — klient žádá přidání
-  // {
-  //   slug: "starsi-dorostenky",
-  //   name: "Starší dorostenky",
-  //   shortName: "St. dorostenky",
-  //   desc: "Doplnit od klienta.",
-  //   longDesc: "Doplnit od klienta.",
-  //   img: "...",
-  //   coach: "Doplnit",
-  //   ageRange: "16-18 let",
-  //   trainings: [],
-  //   players: [],
-  //   news: [],
-  // },
+  // ✅ NOVÉ
+  {
+    slug: "starsi-dorostenky", name: "Starší dorostenky", shortName: "St. dorostenky",
+    desc: "Soutěžní tým 16-18 let.",
+    longDesc: "Kategorie starších dorostenek připravuje hráčky na přechod do seniorského házenkářského prostředí a další výkonnostní posun. Důraz je kladen na zdokonalení individuálního herního stylu na konkrétních postech, přesnost rozhodování v klíčových situacích a schopnost zvládat náročné herní momenty včetně početní nerovnováhy. Součástí přípravy je také cílený rozvoj kondice, mentální odolnosti, individuální práce a kvalitní regenerace.",
+    img: "https://images.unsplash.com/photo-1552127966-d24b805b9be7?w=800",
+    coach: "Anna Šimánková", assistantCoach: "Stanislav Toman",
+    playerCount: 0, ageRange: "16-18 let",
+    trainings: [], players: [], news: [],
+  },
 ];
 
 export function getTeamBySlug(slug: string): Team | undefined {
@@ -357,21 +233,7 @@ export function getTeamBySlug(slug: string): Team | undefined {
 }
 
 export function getAllTeamNews() {
-  const clubItems = CLUB_NEWS.map((item, index) => ({
-    ...item,
-    id: `klub-${index}`,
-    teamName: "Klub",
-    teamSlug: "klub",
-  }));
-
-  const teamItems = TEAMS.flatMap((team) =>
-    team.news.map((item, index) => ({
-      ...item,
-      id: `${team.slug}-${index}`,
-      teamName: team.name,
-      teamSlug: team.slug,
-    })),
-  );
-
+  const clubItems = CLUB_NEWS.map((item, index) => ({ ...item, id: `klub-${index}`, teamName: "Klub", teamSlug: "klub" }));
+  const teamItems = TEAMS.flatMap((team) => team.news.map((item, index) => ({ ...item, id: `${team.slug}-${index}`, teamName: team.name, teamSlug: team.slug })));
   return [...clubItems, ...teamItems];
 }
