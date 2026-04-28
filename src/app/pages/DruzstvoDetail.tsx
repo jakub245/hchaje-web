@@ -417,28 +417,20 @@ export default function DruzstvoDetail() {
     return map;
   }, new Map<string, Array<{ day: string; time: string; hall: string }>>());
 
-  const apiTrainingBlocks = apiHasTrainingSections
-    ? [...apiTrainingMap.entries()].map((entry) => {
-        const [title, items] = entry as [string, Array<{ day: string; time: string; hall: string }>];
-        return { title, items };
-      })
-    : [];
+  const apiTrainingBlocks = [...apiTrainingMap.entries()].map((entry) => {
+    const [title, items] = entry as [string, Array<{ day: string; time: string; hall: string }>];
+    return { title, items };
+  });
 
-  const trainingBlocks = trainingsLoaded && trainings.length > 0 && apiTrainingBlocks.length > 0
-    ? apiTrainingBlocks
-    : (team.trainingSections ?? []);
+  const trainingBlocks = trainingsLoaded && trainings.length > 0
+    ? (apiHasTrainingSections
+      ? apiTrainingBlocks
+      : [{ title: "Tréninky", items: trainings.map((item: TrainingItem) => ({ day: item.day, time: item.time, hall: item.hall })) }])
+    : ((team.trainingSections && team.trainingSections.length > 0)
+      ? team.trainingSections
+      : [{ title: "Tréninky", items: team.trainings }]);
 
-  const displayedTrainings = trainingsLoaded && trainings.length > 0
-    ? trainings.map((item: TrainingItem) => ({
-        day: item.day,
-        time: item.time,
-        hall: item.hall,
-      }))
-    : team.trainings;
-
-  const trainingCount = trainingBlocks.length > 0
-    ? trainingBlocks.reduce((sum, block: { title: string; items: Array<{ day: string; time: string; hall: string }> }) => sum + block.items.length, 0)
-    : displayedTrainings.length;
+  const trainingCount = trainingBlocks.reduce((sum, block: { title: string; items: Array<{ day: string; time: string; hall: string }> }) => sum + block.items.length, 0);
 
   const displayedEvents = eventsLoaded
     ? events.map((event: EventItem) => ({
@@ -573,10 +565,12 @@ export default function DruzstvoDetail() {
             <div className="space-y-10">
               {trainingBlocks.map((block) => (
                 <div key={block.title}>
-                  <h3 className="text-xl text-white/45 mb-4 normal-case" style={{ fontFamily: inter }}>{block.title}</h3>
+                  {(block.title !== "Tréninky" || trainingBlocks.length > 1) && (
+                    <h3 className="text-xl text-white/45 mb-4 normal-case" style={{ fontFamily: inter }}>{block.title}</h3>
+                  )}
                   <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-                    {block.items.map((item) => (
-                      <div key={item.day + item.time + item.hall} className="mobile-solid-card rounded-3xl border border-[#6EE76D]/12 bg-[#101a10] p-6">
+                    {block.items.map((item, itemIndex) => (
+                      <div key={`${item.day}-${item.time}-${item.hall}-${itemIndex}`} className="mobile-solid-card rounded-3xl border border-[#6EE76D]/12 bg-[#101a10] p-6">
                         <div className="flex items-center gap-3 mb-4">
                           <div className="mobile-solid-chip w-12 h-12 rounded-2xl bg-[#6EE76D]/14 flex items-center justify-center">
                             <Calendar className="w-5 h-5 text-[#6EE76D]" />
@@ -596,24 +590,6 @@ export default function DruzstvoDetail() {
                       </div>
                     ))}
                   </div>
-                </div>
-              ))}
-            </div>
-          ) : displayedTrainings.length > 0 ? (
-            <div className="flex gap-4 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              {displayedTrainings.map((t, i) => (
-                <div key={i} className="mobile-solid-card min-w-[18rem] flex-shrink-0 p-5 rounded-3xl bg-[#101a10] border border-[#6EE76D]/12 hover:border-[#6EE76D]/25 transition-all">
-                  <div className="flex items-center gap-4 mb-4">
-                    <div className="mobile-solid-chip w-12 h-12 rounded-2xl bg-[#6EE76D]/14 flex items-center justify-center">
-                      <Calendar className="w-5 h-5 text-[#6EE76D]" />
-                    </div>
-                    <div>
-                      <div className="text-sm uppercase tracking-[0.2em]" style={{ fontFamily: bebas, color: "rgb(255 255 255 / 0.46)" }}>Trénink</div>
-                      <div className="mt-1 text-[15px] leading-snug" style={{ fontFamily: inter, color: "#FFFFFF", fontWeight: 600 }}>{t.hall}</div>
-                    </div>
-                  </div>
-                  <div className="text-2xl text-white" style={{ fontFamily: bebas }}>{t.day}</div>
-                  <div className="mt-1 text-[15px]" style={{ fontFamily: inter, color: "#FFFFFF", fontWeight: 600 }}>{t.time}</div>
                 </div>
               ))}
             </div>

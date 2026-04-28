@@ -652,7 +652,19 @@ function localApiTrainingsProxy() {
         const day = parseProperty(findProperty(properties, ['Den', 'Day'])) || ''
         const time = parseTimeWindow(properties) || ''
         const hall = parseProperty(findProperty(properties, ['Místo', 'Misto', 'Hala', 'Hall', 'Location'])) || ''
-        const section = parseProperty(findProperty(properties, ['Sekce', 'Období', 'Obdobi', 'Blok', 'Title', 'Název', 'Nazev'])) || ''
+        const section = parseProperty(findProperty(properties, [
+          'Sekce',
+          'Období',
+          'Obdobi',
+          'Období tréninků',
+          'Obdobi treninku',
+          'Rozvrh',
+          'Skupina',
+          'Blok',
+          'Title',
+          'Název',
+          'Nazev',
+        ])) || ''
 
         let teamName = 'Nezařazeno'
         let teamSlug = ''
