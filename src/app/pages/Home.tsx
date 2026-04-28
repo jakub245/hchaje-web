@@ -13,6 +13,7 @@ import kasiaLogo from "../../imports/loga/logo-kasia.png";
 import macronLogo from "../../imports/loga/logo-macron.svg";
 import pragueLogo from "../../imports/loga/logo-prague.svg";
 import praha11Logo from "../../imports/loga/logo-praha11.svg";
+import sprinklerGroupLogo from "../../imports/loga/logo-sprinkler.svg";
 
 const totalPlayers = TEAMS.reduce((sum, team) => sum + team.playerCount, 0);
 const totalTeams = TEAMS.length;
@@ -29,6 +30,7 @@ const PARTNERS = [
   { src: macronLogo, alt: "Macron - Partneři" },
   { src: pragueLogo, alt: "Praha - Partneři" },
   { src: praha11Logo, alt: "Praha 11 - Partneři" },
+  { src: sprinklerGroupLogo, alt: "Sprinkler Group - Partneři" },
   { src: bistorGreenLogo, alt: "Bistor Green - Partneři" },
 ];
 
