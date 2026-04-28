@@ -154,34 +154,51 @@ export default function AkcePage() {
       <section className="reveal-on-scroll pb-20 lg:pb-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-10">
-            <div className="flex items-center gap-2 text-white/80 mb-4" style={{ fontFamily: bebas }}>
-              <Calendar className="w-4 h-4 text-[#6EE76D]" />
-              Filtrovat podle družstva
-            </div>
+            {eventsLoading ? (
+              <div className="flex flex-wrap gap-3">
+                {[...Array(5)].map((_, i) => (
+                  <div key={`skeleton-filter-${i}`} className={`h-9 rounded-full bg-[#6EE76D]/10 animate-pulse ${i === 0 ? "w-36" : i === 1 ? "w-20" : i === 2 ? "w-28" : i === 3 ? "w-24" : "w-32"}`} />
+                ))}
+              </div>
+            ) : (
+              <>
+                <div className="flex items-center gap-2 text-white/80 mb-4" style={{ fontFamily: bebas }}>
+                  <Calendar className="w-4 h-4 text-[#6EE76D]" />
+                  Filtrovat podle družstva
+                </div>
 
-            <div className="flex flex-wrap gap-3">
-              <button
-                onClick={() => setSelectedTeam("all")}
-                className={`rounded-full border px-4 py-2 text-sm transition-all ${selectedTeam === "all" ? "border-[#F587B9] bg-[#F587B9]/12 text-white shadow-[0_0_18px_rgba(245,135,185,0.12)]" : "border-white/10 text-white/70 hover:border-[#F587B9]/40 hover:text-white"}`}
-                style={{ fontFamily: inter }}
-              >
-                Všechna družstva
-              </button>
-
-              {teamOptions.map((team) => {
-                const isActive = selectedTeam === team.slug;
-                return (
+                <div className="flex flex-wrap gap-3">
                   <button
-                    key={team.slug}
-                    onClick={() => setSelectedTeam(team.slug)}
-                    className={`rounded-full border px-4 py-2 text-sm transition-all ${isActive ? "border-[#F587B9] bg-[#F587B9]/12 text-white shadow-[0_0_18px_rgba(245,135,185,0.12)]" : "border-white/10 text-white/70 hover:border-[#F587B9]/40 hover:text-white"}`}
+                    onClick={() => setSelectedTeam("all")}
+                    className={`rounded-full border px-4 py-2 text-sm transition-all ${selectedTeam === "all" ? "border-[#F587B9] bg-[#F587B9]/12 text-white shadow-[0_0_18px_rgba(245,135,185,0.12)]" : "border-white/10 text-white/70 hover:border-[#F587B9]/40 hover:text-white"}`}
                     style={{ fontFamily: inter }}
                   >
-                    {team.name}
+                    Všechna družstva
                   </button>
-                );
-              })}
-            </div>
+
+                  {teamOptions.map((team) => {
+                    const isActive = selectedTeam === team.slug;
+                    return (
+                      <button
+                        key={team.slug}
+                        onClick={() => setSelectedTeam(team.slug)}
+                        className={`rounded-full border px-4 py-2 text-sm transition-all ${isActive ? "border-[#F587B9] bg-[#F587B9]/12 text-white shadow-[0_0_18px_rgba(245,135,185,0.12)]" : "border-white/10 text-white/70 hover:border-[#F587B9]/40 hover:text-white"}`}
+                        style={{ fontFamily: inter }}
+                      >
+                        {team.name}
+                      </button>
+                    );
+                  })}
+                </div>
+              </>
+            )}
+
+            {eventsLoading && (
+              <div className="rounded-2xl bg-[#6EE76D]/5 border border-[#6EE76D]/20 px-4 py-3 mt-4 flex items-center gap-3">
+                <div className="w-4 h-4 rounded-full bg-[#6EE76D] animate-pulse" />
+                <p className="text-[#6EE76D] text-sm" style={{ fontFamily: inter }}>Načítám aktuální data...</p>
+              </div>
+            )}
 
             {source === "fallback" && !eventsLoading && (
               <p className="mt-4 text-white/45 text-sm" style={{ fontFamily: inter }}>
