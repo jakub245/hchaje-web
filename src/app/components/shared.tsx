@@ -312,7 +312,7 @@ export function CtaStrip() {
           Přijď se podívat na trénink a poznej náš tým!
         </p>
         <Btn variant="primary" to="/chci-se-pridat" className="px-10 py-4">
-          Chci se přijít podívat <ArrowRight className="w-5 h-5" />
+          Chci zkusit trénink <ArrowRight className="w-5 h-5" />
         </Btn>
       </div>
     </section>

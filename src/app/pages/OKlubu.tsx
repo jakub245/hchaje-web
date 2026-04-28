@@ -87,7 +87,7 @@ export default function OKlubuPage() {
       {/* Intro */}
       <section className="reveal-on-scroll pb-16 lg:pb-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-12 items-start">
             <div>
               <p className="text-white text-lg mb-4" style={{ fontFamily: inter }}>
                 {nbspShortWords("HC Háje je dívčí a ženský házenkářský klub z Prahy 4, který patří od svého založení v roce 1980 mezi výrazná centra dívčí házené v Praze i v rámci celé České republiky.")}
