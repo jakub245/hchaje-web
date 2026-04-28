@@ -138,7 +138,7 @@ const findPropertyByType = (properties: Record<string, any> | undefined, types: 
 
 const parseNotionEvent = (page: NotionPage): NotionEvent | null => {
   const titleProp = findProperty(page.properties, ["Název", "Nazev", "Name", "Akce", "Event", "Název akce", "Nazev akce"]) || findPropertyByType(page.properties, ["title"]);
-  const dateProp = findProperty(page.properties, ["Datum", "Date", "Kdy", "Termín", "Termin", "Od", "Start"]) || findPropertyByType(page.properties, ["date"]);
+  const dateProp = findProperty(page.properties, ["Datum", "Datum od", "Datum do", "Date", "Kdy", "Termín", "Termin", "Od", "Start"]) || findPropertyByType(page.properties, ["date"]);
   const locationProp = findProperty(page.properties, ["Místo", "Misto", "Location", "Kde", "Místo konání", "Misto konani"]) || findPropertyByType(page.properties, ["select", "rich_text"]);
   const teamProp = findProperty(page.properties, ["Družstvo", "Druzstvo", "Team", "Kategorie", "Tým", "Tym"]) || findPropertyByType(page.properties, ["select", "multi_select", "rich_text"]);
 
