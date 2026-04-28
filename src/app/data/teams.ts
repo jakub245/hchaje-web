@@ -5,6 +5,40 @@
 import miniPhoto from "../../imports/mini2025.jpg";
 import pripravkaPhoto from "../../imports/pripravka.png";
 
+const normalizeText = (value: string) =>
+  value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]/g, "");
+
+const teamHeroFiles = import.meta.glob("../../imports/**/*.{jpg,jpeg,png,webp,svg}", { eager: true, as: "url" }) as Record<string, string>;
+
+const resolveTeamHero = (slug: string, teamName: string, fallback: string) => {
+  const slugKey = normalizeText(slug);
+  const nameKey = normalizeText(teamName);
+
+  const match = Object.entries(teamHeroFiles).find(([path]) => {
+    const fileName = path.split("/").pop()?.replace(/\.(jpg|jpeg|png|webp|svg)$/i, "") || "";
+    const key = normalizeText(fileName);
+    return key === slugKey || key === nameKey;
+  });
+
+  return match?.[1] || fallback;
+};
+
+const TEAM_ORDER = [
+  "pripravka",
+  "mini-zakyne",
+  "mladsi-zakyne",
+  "starsi-zakyne",
+  "mladsi-dorostenky",
+  "starsi-dorostenky",
+  "zeny",
+] as const;
+
+const TEAM_ORDER_MAP = new Map(TEAM_ORDER.map((slug, index) => [slug, index] as const));
+
 export interface Player { name: string; position: string; number?: string | number; }
 export interface Training { day: string; time: string; hall: string; }
 export interface TrainingSection { title: string; items: Training[]; }
@@ -22,12 +56,12 @@ const CLUB_NEWS: TeamNews[] = [
   { date: "28. 3. 2026", title: "HC Háje děkuje rodičům a partnerům za podporu jarní části sezóny", excerpt: "Děkujeme všem, kdo pomáhají vytvářet děvčatům skvělé prostředí pro sport, růst a radost ze hry.", content: "Jarní část sezóny je v plném proudu a my si velmi vážíme podpory rodičů, dobrovolníků i partnerů klubu." },
 ];
 
-export const TEAMS: Team[] = [
+const TEAM_DATA: Team[] = [
   {
     slug: "zeny", name: "Ženy", shortName: "Ženy",
     desc: "A-tým hrající 2. ligu - Čechy.",
     longDesc: "Ženský tým představuje vrchol klubové cesty, kde se propojují zkušenosti, výkonnost a týmová soudržnost. Hráčky rozvíjejí technickou i taktickou vyspělost, schopnost zvládat náročné zápasové situace a společně usilují o co nejlepší sportovní výsledky. Důležitou součástí je také týmový charakter, vzájemná podpora a radost ze společné hry i reprezentace klubu.",
-    img: "https://images.unsplash.com/photo-1552127966-d24b805b9be7?w=800",
+    img: resolveTeamHero("zeny", "Ženy", "https://images.unsplash.com/photo-1552127966-d24b805b9be7?w=800"),
     coach: "Miroslav Cabalka", assistantCoach: "Magdaléna Cabalková",
     playerCount: 18, ageRange: "18+",
     trainings: [
@@ -63,7 +97,7 @@ export const TEAMS: Team[] = [
     slug: "starsi-zakyne", name: "Starší žákyně", shortName: "St. žákyně",
     desc: "Soutěžní tým 12-14 let.",
     longDesc: "Kategorie starších žákyň navazuje na získané základy a rozvíjí herní dovednosti do větší variability a jistoty i pod tlakem soupeře. Hráčky si osvojují základy pozičního útoku, spolupráci v menších skupinách i specifické role na hřišti, přičemž se učí lépe využívat prostor a rozhodovat se v reálných herních situacích. Důraz je kladen také na samostatnost, zodpovědnost za vlastní výkon a pochopení širších souvislostí hry i regenerace.",
-    img: "https://images.unsplash.com/photo-1769614075229-bfc51a41aa78?w=800",
+    img: resolveTeamHero("starsi-zakyne", "Starší žákyně", "https://images.unsplash.com/photo-1769614075229-bfc51a41aa78?w=800"),
     coach: "Milan Ernest", assistantCoach: "Pavla Martin",
     playerCount: 16, ageRange: "12-14 let",
     trainings: [
@@ -87,7 +121,7 @@ export const TEAMS: Team[] = [
     slug: "mladsi-zakyne", name: "Mladší žákyně", shortName: "Ml. žákyně",
     desc: "Dívky 10–12 let rozvíjející herní dovednosti.",
     longDesc: "Stavíme především na budování pozitivního vztahu k házené jako pravidelné a radostné součásti života. Hráčky si rozvíjejí útočné dovednosti, základní herní návyky a postupně objevují různé role na hřišti, přičemž důraz je kladen na vlastní pokrok a odvahu zkoušet nové věci. Důležitou součástí je také porozumění hře jako celku – střídání jednotlivých fází a spolupráce v týmu, kde má přednost radost ze hry před samotným výsledkem.",
-    img: "https://images.unsplash.com/photo-1575367728985-8cb72541609a?w=800",
+    img: resolveTeamHero("mladsi-zakyne", "Mladší žákyně", "https://images.unsplash.com/photo-1575367728985-8cb72541609a?w=800"),
     coach: "Jůlia Dvořáková", assistantCoach: "Petr Novák",
     playerCount: 20, ageRange: "10–12 let",
     trainings: [
@@ -110,7 +144,7 @@ export const TEAMS: Team[] = [
     slug: "mini-zakyne", name: "Mini žákyně", shortName: "Mini",
     desc: "Nejmladší házenkářky 8–10 let.",
     longDesc: "Mini žákyně jsou budoucností našeho klubu. Trénujeme formou her a zábavných cvičení, která děti baví a zároveň rozvíjejí koordinaci, rychlost a základní házenkářské dovednosti. Holky se zde poprvé seznámí s velkou házenou 6+1.",
-    img: miniPhoto,
+    img: resolveTeamHero("mini-zakyne", "Mini žákyně", miniPhoto),
     coach: "Petr Zálešák", assistantCoach: "Kateřina Bláhová",
     playerCount: 19, ageRange: "8–10 let",
     trainings: [
@@ -161,7 +195,7 @@ export const TEAMS: Team[] = [
     slug: "pripravka", name: "Přípravka", shortName: "Přípravka",
     desc: "Sportovní kroužek pro holky 6-8 let",
     longDesc: "Přípravka je určená pro úplné začátečnice. Formou hry a pohybových aktivit se holky učí základům házené i obecné sportovní přípravě. Cílem je hlavně radost z pohybu a kamarádství. Utkání se hrají formou miniházené 4+1 s měkkým míčem a na menším hřišti.",
-    img: pripravkaPhoto,
+    img: resolveTeamHero("pripravka", "Přípravka", pripravkaPhoto),
     coach: "Petr Paulín", assistantCoach: "Nela Černá",
     playerCount: 18, ageRange: "6–8 let",
     trainings: [
@@ -210,7 +244,7 @@ export const TEAMS: Team[] = [
     slug: "mladsi-dorostenky", name: "Mladší dorostenky", shortName: "Ml. dorostenky",
     desc: "Soutěžní tým 14-16 let.",
     longDesc: "Kategorie mladších dorostenek je obdobím výrazného výkonnostního růstu, kdy hráčky rozvíjejí samostatnost, zodpovědný přístup k tréninku a zdravý životní styl. Vedle zachování univerzálnosti začíná také specializace podle herních postů, zdokonalování individuálních činností v útoku i obraně a schopnost rozhodovat se pod tlakem soupeře. Důležitou součástí přípravy je práce s tempem hry, analýza výkonu a regenerace jako přirozená součást cesty za zlepšením.",
-    img: "https://images.unsplash.com/photo-1769614075229-bfc51a41aa78?w=800",
+    img: resolveTeamHero("mladsi-dorostenky", "Mladší dorostenky", "https://images.unsplash.com/photo-1769614075229-bfc51a41aa78?w=800"),
     coach: "Václav Škarda", assistantCoach: "Jana Klímová",
     playerCount: 0, ageRange: "14-16 let",
     trainings: [], players: [], news: [],
@@ -221,12 +255,16 @@ export const TEAMS: Team[] = [
     slug: "starsi-dorostenky", name: "Starší dorostenky", shortName: "St. dorostenky",
     desc: "Soutěžní tým 16-18 let.",
     longDesc: "Kategorie starších dorostenek připravuje hráčky na přechod do seniorského házenkářského prostředí a další výkonnostní posun. Důraz je kladen na zdokonalení individuálního herního stylu na konkrétních postech, přesnost rozhodování v klíčových situacích a schopnost zvládat náročné herní momenty včetně početní nerovnováhy. Součástí přípravy je také cílený rozvoj kondice, mentální odolnosti, individuální práce a kvalitní regenerace.",
-    img: "https://images.unsplash.com/photo-1552127966-d24b805b9be7?w=800",
+    img: resolveTeamHero("starsi-dorostenky", "Starší dorostenky", "https://images.unsplash.com/photo-1552127966-d24b805b9be7?w=800"),
     coach: "Anna Šimánková", assistantCoach: "Stanislav Toman",
     playerCount: 0, ageRange: "16-18 let",
     trainings: [], players: [], news: [],
   },
 ];
+
+export const TEAMS: Team[] = [...TEAM_DATA].sort(
+  (a, b) => (TEAM_ORDER_MAP.get(a.slug) ?? Number.MAX_SAFE_INTEGER) - (TEAM_ORDER_MAP.get(b.slug) ?? Number.MAX_SAFE_INTEGER),
+);
 
 export function getTeamBySlug(slug: string): Team | undefined {
   return TEAMS.find((t) => t.slug === slug);
