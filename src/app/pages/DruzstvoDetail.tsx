@@ -15,6 +15,17 @@ import { bebas, inter, CtaStrip, NewsCard, nbspShortWords } from "../components/
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { getTeamBySlug, TEAMS } from "../data/teams";
 
+type EventItem = {
+  id: string;
+  date: string;
+  title: string;
+  location: string;
+  teamSlug: string;
+  teamName: string;
+};
+
+type ApiEvent = Partial<EventItem>;
+
 const SECTIONS = [
   { id: "prehled", label: "Přehled" },
   { id: "treninky", label: "Tréninky" },
@@ -35,6 +46,8 @@ export default function DruzstvoDetail() {
   const { slug } = useParams();
   const team = getTeamBySlug(slug || "");
   const [active, setActive] = useState("prehled");
+  const [events, setEvents] = useState<EventItem[]>([]);
+  const [eventsLoaded, setEventsLoaded] = useState(false);
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
   const playersScrollRef = useRef<HTMLDivElement | null>(null);
   const newsScrollRef = useRef<HTMLDivElement | null>(null);
@@ -73,8 +86,7 @@ export default function DruzstvoDetail() {
   };
 
   const isMiniTeam = team.slug === "mini-zakyne";
-  const isPripravkaTeam = team.slug === "pripravka";
-  const isKidsTeam = isMiniTeam || isPripravkaTeam;
+  const playerMetaLabel = isMiniTeam || team.slug === "pripravka" ? "Ročník" : "Post";
 
   const scrollPlayers = (direction: number) => {
     playersScrollRef.current?.scrollBy({ left: direction * 900, behavior: "smooth" });
@@ -109,31 +121,67 @@ export default function DruzstvoDetail() {
     return "";
   };
 
+  useEffect(() => {
+    let activeRequest = true;
+
+    const loadTeamEvents = async () => {
+      try {
+        const response = await fetch("/api/events");
+        if (!response.ok) throw new Error("Nepodařilo se načíst data z API.");
+
+        const payload = (await response.json()) as { events?: ApiEvent[] };
+        const normalizedEvents = (payload.events ?? [])
+          .map((item, index) => {
+            const teamName = (item.teamName ?? "Nezařazeno").trim();
+            const teamSlug = (item.teamSlug ?? "").trim();
+
+            return {
+              id: item.id || `notion-${index}`,
+              date: item.date || "—",
+              title: item.title || "Akce",
+              location: item.location || "",
+              teamSlug,
+              teamName,
+            };
+          })
+          .filter((item) => {
+            const normalizedTeamName = normalizeText(item.teamName);
+            return item.teamSlug === team.slug || normalizedTeamName.includes(normalizeText(team.name));
+          })
+          .sort((a, b) => parseCzDate(a.date) - parseCzDate(b.date));
+
+        if (!activeRequest) return;
+        setEvents(normalizedEvents);
+        setEventsLoaded(true);
+      } catch {
+        if (!activeRequest) return;
+        setEvents([]);
+        setEventsLoaded(true);
+      }
+    };
+
+    loadTeamEvents();
+
+    return () => {
+      activeRequest = false;
+    };
+  }, [team.name, team.slug]);
+
   const newsSorted = [...team.news].sort((a, b) => parseCzDate(b.date) - parseCzDate(a.date));
   const trainingBlocks = team.trainingSections ?? [];
   const trainingCount = trainingBlocks[0]?.items.length || team.trainings.length;
 
-  const displayedEvents = isMiniTeam
-    ? [
-        { date: "18.04.2026", title: "Turnaj 6+1", location: "Hala ZŠ a MŠ Chýně" },
-        { date: "25.04.2026", title: "Turnaj 4+1", location: "Hala Kobylisy" },
-        { date: "02.05.2026", title: "Memoriál Karla Šulce 4+1", location: "Plzeň" },
-        { date: "08.05.2026\naž\n10.05.2026", title: "MEMORIÁL KARLA ŠULCE 2026", location: "Plzeň" },
-      ]
-    : isPripravkaTeam
-      ? [
-          { date: "25.04.2026", title: "Turnaj 4+1", location: "Hala Kobylisy" },
-          { date: "02.05.2026", title: "Memoriál Karla Šulce 4+1", location: "Plzeň" },
-          { date: "17.05.2026", title: "Turnaj 4+1", location: "" },
-          { date: "30.05.2026", title: "Turnaj 4+1\nPořadatelství HC Háje", location: "Areál TJ Háje" },
-          { date: "06.06.2026", title: "Mináček 4+1\n2017 a mladší", location: "DHC Slavia" },
-          { date: "14.06.2026", title: "Závěrečný turnaj 4+1", location: "Astra" },
-        ]
-      : (team.events ?? []).map((event) => ({
-          date: event.date,
-          title: event.title,
-          location: event.location,
-        }));
+  const displayedEvents = eventsLoaded
+    ? events.map((event: EventItem) => ({
+        date: event.date,
+        title: event.title,
+        location: event.location,
+      }))
+    : (team.events ?? []).map((event) => ({
+        date: event.date,
+        title: event.title,
+        location: event.location,
+      }));
   const displayedStaff = team.staff
     ? team.staff.map((m) => ({ name: m.name, phone: m.phone ?? "", email: m.email ?? "" }))
     : [
@@ -345,7 +393,7 @@ export default function DruzstvoDetail() {
               <span className="text-[#6EE76D] text-sm tracking-[0.2em] uppercase mb-3 block" style={{ fontFamily: bebas }}>Soupiska</span>
               <h2 className="text-3xl lg:text-4xl text-white uppercase" style={{ fontFamily: bebas }}>Hráčky</h2>
             </div>
-            {isKidsTeam && (
+            {team.players.length > 4 && (
               <div className="flex gap-2">
                 <button
                   onClick={() => scrollPlayers(-1)}
@@ -365,45 +413,25 @@ export default function DruzstvoDetail() {
             )}
           </div>
 
-          {isKidsTeam ? (
-            <div ref={playersScrollRef} className="flex gap-4 overflow-x-auto pb-4 scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              {team.players.map((p) => {
-                const photo = getTeamPhoto(p.name);
-                return (
-                  <div key={p.name} className="mobile-solid-card min-w-[16rem] md:min-w-[calc((100%-1rem)/2)] lg:min-w-[calc((100%-2rem)/3)] xl:min-w-[calc((100%-3rem)/4)] flex-shrink-0 h-[21rem] rounded-3xl bg-[#101a10] border border-[#6EE76D]/12 hover:border-[#6EE76D]/25 transition-all p-6 flex flex-col items-center justify-center text-center">
-                    <div className="mobile-solid-chip w-24 h-24 rounded-full overflow-hidden bg-[#6EE76D]/14 border border-[#6EE76D]/20 flex items-center justify-center mb-5">
-                      {photo ? (
-                        <ImageWithFallback src={photo} alt={p.name} className="w-full h-full object-cover" />
-                      ) : (
-                        <Users className="w-8 h-8 text-[#6EE76D]" />
-                      )}
-                    </div>
-                    <div className="text-white text-[16px]" style={{ fontFamily: inter }}>{p.name}</div>
-                    <div className="text-white/45 text-sm mt-2" style={{ fontFamily: inter }}>Ročník {p.position}</div>
-                    <div className="text-[#6EE76D] text-2xl mt-3" style={{ fontFamily: bebas }}>{p.number}</div>
-                  </div>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {team.players.map((p, i) => (
-                <div key={i} className="mobile-solid-card flex items-center gap-4 p-4 rounded-2xl bg-[#101a10] border border-[#6EE76D]/12 hover:border-[#6EE76D]/25 transition-all">
-                  <div className="mobile-solid-chip w-12 h-12 rounded-full bg-[#6EE76D]/14 flex items-center justify-center flex-shrink-0">
-                    {p.number ? (
-                      <span className="text-[#6EE76D] text-lg" style={{ fontFamily: bebas }}>{p.number}</span>
+          <div ref={playersScrollRef} className="flex gap-4 overflow-x-auto pb-4 scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            {team.players.map((p) => {
+              const photo = getTeamPhoto(p.name);
+              return (
+                <div key={p.name} className="mobile-solid-card min-w-[16rem] md:min-w-[calc((100%-1rem)/2)] lg:min-w-[calc((100%-2rem)/3)] xl:min-w-[calc((100%-3rem)/4)] flex-shrink-0 h-[21rem] rounded-3xl bg-[#101a10] border border-[#6EE76D]/12 hover:border-[#6EE76D]/25 transition-all p-6 flex flex-col items-center justify-center text-center">
+                  <div className="mobile-solid-chip w-24 h-24 rounded-full overflow-hidden bg-[#6EE76D]/14 border border-[#6EE76D]/20 flex items-center justify-center mb-5">
+                    {photo ? (
+                      <ImageWithFallback src={photo} alt={p.name} className="w-full h-full object-cover" />
                     ) : (
-                      <Users className="w-5 h-5 text-[#6EE76D]" />
+                      <Users className="w-8 h-8 text-[#6EE76D]" />
                     )}
                   </div>
-                  <div>
-                    <div className="text-white" style={{ fontFamily: inter }}>{p.name}</div>
-                    <div className="text-white/35 text-sm" style={{ fontFamily: inter }}>{p.position}</div>
-                  </div>
+                  <div className="text-white text-[16px]" style={{ fontFamily: inter }}>{p.name}</div>
+                  <div className="text-white/45 text-sm mt-2" style={{ fontFamily: inter }}>{playerMetaLabel} {p.position}</div>
+                  <div className="text-[#6EE76D] text-2xl mt-3" style={{ fontFamily: bebas }}>{p.number ?? "—"}</div>
                 </div>
-              ))}
-            </div>
-          )}
+              );
+            })}
+          </div>
         </div>
       </section>
 
