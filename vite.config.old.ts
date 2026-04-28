@@ -54,71 +54,36 @@ function localApiEventsProxy() {
           'Notion-Version': notionVersion,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          page_size: 100,
-          ...(nextCursor ? { start_cursor: nextCursor } : {}),
-        }),
+        body: JSON.stringify({ page_size: 100, ...(nextCursor ? { start_cursor: nextCursor } : {}) }),
       })
 
-      if (!response.ok) throw new Error('Failed to query Notion events database')
-
-      const data = await response.json()
-      pages.push(...(data.results ?? []))
-      hasMore = Boolean(data.has_more)
-      nextCursor = data.next_cursor ?? null
-    }
-
-    const relatedTitleCache = new Map<string, string>()
-    const readRelatedTitle = async (pageId: string) => {
-      if (relatedTitleCache.has(pageId)) return relatedTitleCache.get(pageId) || ''
-      const response = await fetch(`${notionApiBase}/pages/${pageId}`, {
-        headers: {
-          Authorization: `Bearer ${notionToken}`,
-          'Notion-Version': notionVersion,
-        },
-      })
       if (!response.ok) {
-        relatedTitleCache.set(pageId, '')
-        return ''
+        const detail = await response.text()
+        throw new Error(`Notion API error (${response.status}): ${detail}`)
       }
+
       const data = await response.json()
-      const properties = data?.properties ?? {}
-      const titleProperty = Object.values(properties).find((property: any) => property?.type === 'title')
-      const title = parseRichText(titleProperty as any)
-      relatedTitleCache.set(pageId, title)
-      return title
+      pages.push(...(data.results || []))
+      hasMore = Boolean(data.has_more)
+      nextCursor = data.next_cursor || null
     }
 
-    return Promise.all(
-      pages.map(async (page: any) => {
-        const properties = page?.properties ?? {}
-        const date = parseRichText(properties?.['Datum'] || properties?.['Date'] || properties?.['date'])
-        const title = parseTitle(properties)
-        const location = parseRichText(properties?.['Místo'] || properties?.['Misto'] || properties?.['Location'] || properties?.['location'])
+    return pages.map((page: any, index: number) => {
+      const properties = page?.properties || {}
+      const title = parseTitle(properties)
+      const date = parseRichText(properties['Datum od'] || properties['Datum'] || properties['Date']) || '—'
+      const location = parseRichText(properties['Místo'] || properties['Misto'] || properties['Location']) || ''
+      const teamName = parseRichText(properties['Družstva'] || properties['Druzstva'] || properties['Team']) || 'Nezařazeno'
 
-        let teamName = 'Nezařazeno'
-        let teamSlug = ''
-
-        const teamRelation = properties?.['Družstvo']?.relation || properties?.['Druzstvo']?.relation || properties?.['Team']?.relation || properties?.['team']?.relation || []
-        if (Array.isArray(teamRelation) && teamRelation.length > 0) {
-          const resolvedNames = await Promise.all(teamRelation.map((relation: any) => readRelatedTitle(relation?.id)))
-          const resolved = resolvedNames.filter(Boolean)
-          if (resolved.length > 0) {
-            teamName = resolved[0]
-            teamSlug = toSlug(teamName)
-          }
-        }
-
-        return {
-          id: page?.id || '',
-          date,
-          title,
-          location,
-          teamName,
-          teamSlug: toSlug(teamName),
-        }
-      }),
-    )
+      return {
+        id: page?.id || `notion-${index}`,
+        date,
+        title,
+        location,
+        teamName,
+        teamSlug: toSlug(teamName),
+      }
+    })
   }
 
   const handleRequest = async (req: any, res: any, next: any) => {
@@ -157,33 +122,16 @@ function localApiCoachesProxy() {
   const notionToken = process.env.NOTION_TOKEN || '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'
   const notionCoachesDatabaseId = process.env.NOTION_COACHES_DATABASE_ID || '350c5ef377c780dc942cf8b85ee0366e'
 
-  const normalizeKey = (value: string) =>
-    value
-      .toLowerCase()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^a-z0-9]/g, '')
-
-  const findProperty = (properties: Record<string, any>, names: string[]) => {
-    const map = new Map(Object.entries(properties).map(([key, value]) => [normalizeKey(key), value] as const))
-    for (const name of names) {
-      const hit = map.get(normalizeKey(name))
-      if (hit) return hit
-    }
-    return undefined
+  const parseTitle = (property: any) => {
+    if (!property) return ''
+    const title = property.title ?? []
+    return title.map((item: any) => item?.plain_text || '').join('').trim()
   }
 
-  const parseRichText = (property: any): string => {
-    if (!property || typeof property !== 'object') return ''
+  const parseRichText = (property: any) => {
+    if (!property) return ''
     const richText = property.rich_text ?? []
     return richText.map((item: any) => item?.plain_text || '').join('').trim()
-  }
-
-  const parseTitle = (property: any): string => {
-    if (!property || typeof property !== 'object') return ''
-    const title = property.title ?? []
-    const value = title.map((item: any) => item?.plain_text || '').join('').trim()
-    return value || ''
   }
 
   const toSlug = (value: string) =>
@@ -196,9 +144,9 @@ function localApiCoachesProxy() {
       .replace(/^-|-$/g, '')
 
   const loadCoaches = async () => {
-    const pages: any[] = []
     let hasMore = true
     let nextCursor: string | null = null
+    const pages: any[] = []
 
     while (hasMore) {
       const response = await fetch(`${notionApiBase}/databases/${notionCoachesDatabaseId}/query`, {
@@ -214,7 +162,10 @@ function localApiCoachesProxy() {
         }),
       })
 
-      if (!response.ok) throw new Error(`Notion API error (${response.status})`)
+      if (!response.ok) {
+        const detail = await response.text()
+        throw new Error(`Notion API error (${response.status}): ${detail}`)
+      }
 
       const data = await response.json()
       pages.push(...(data.results ?? []))
@@ -225,23 +176,20 @@ function localApiCoachesProxy() {
     const relatedTitleCache = new Map<string, string>()
     const readRelatedTitle = async (pageId: string) => {
       if (relatedTitleCache.has(pageId)) return relatedTitleCache.get(pageId) || ''
-
       const response = await fetch(`${notionApiBase}/pages/${pageId}`, {
         headers: {
           Authorization: `Bearer ${notionToken}`,
           'Notion-Version': notionVersion,
         },
       })
-
       if (!response.ok) {
         relatedTitleCache.set(pageId, '')
         return ''
       }
-
       const data = await response.json()
       const properties = data?.properties ?? {}
       const titleProperty = Object.values(properties).find((property: any) => property?.type === 'title')
-      const title = parseRichText(titleProperty as any)
+      const title = parseRichText(titleProperty)
       relatedTitleCache.set(pageId, title)
       return title
     }
@@ -249,18 +197,19 @@ function localApiCoachesProxy() {
     return Promise.all(
       pages.map(async (page: any, index: number) => {
         const properties = page?.properties ?? {}
-        const name = parseTitle(findProperty(properties, ['Jméno', 'Jmeno', 'Name']) || properties.title)
-        const position = parseRichText(findProperty(properties, ['Pozice', 'Role', 'Position'])) || ''
-        const phone = parseRichText(findProperty(properties, ['Telefon', 'Phone'])) || ''
-        const email = parseRichText(findProperty(properties, ['E-mail', 'Email', 'Mail'])) || ''
+        const name = parseTitle(Object.values(properties).find((property: any) => property?.type === 'title'))
+        const position = parseRichText(Object.values(properties).find((property: any) => property?.type === 'rich_text' && property?.key !== 'email'))
+        const phone = parseRichText(Object.values(properties).find((property: any) => property?.key === 'Telefon' || property?.key === 'Phone'))
+        const email = parseRichText(Object.values(properties).find((property: any) => property?.key === 'E-mail' || property?.key === 'Email'))
 
         let teamName = 'Nezařazeno'
         let teamSlug = ''
 
-        const teamProperty = findProperty(properties, ['Družstvo', 'Druzstvo', 'Team', 'Tým', 'Tym'])
+        const teamProperties = Object.values(properties)
+        const teamProperty = teamProperties.find((property: any) => property?.type === 'relation')
 
-        if (teamProperty?.type === 'relation') {
-          const relationIds = (teamProperty.relation ?? []).map((relation: any) => relation?.id).filter(Boolean)
+        if (teamProperty?.relation && Array.isArray(teamProperty.relation)) {
+          const relationIds = teamProperty.relation.map((relation: any) => relation?.id).filter(Boolean)
           if (relationIds.length > 0) {
             const resolvedNames = await Promise.all(relationIds.map((relationId: string) => readRelatedTitle(relationId)))
             const resolved = resolvedNames.filter(Boolean)
@@ -268,14 +217,6 @@ function localApiCoachesProxy() {
               teamName = resolved[0]
               teamSlug = toSlug(teamName)
             }
-          }
-        }
-
-        if (teamName === 'Nezařazeno') {
-          const plain = parseRichText(teamProperty)
-          if (plain) {
-            teamName = plain
-            teamSlug = toSlug(teamName)
           }
         }
 
