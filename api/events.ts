@@ -6,8 +6,28 @@ declare const process: any;
 const FALLBACK_NOTION_TOKEN = "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";
 const FALLBACK_NOTION_DATABASE_ID = "350c5ef377c78092a67cd5e8b3869bb8";
 
+const normalizeKey = (value: string) =>
+  value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]/g, "");
+
+const findProperty = (properties: Record<string, any>, names: string[]) => {
+  const map = new Map(Object.entries(properties).map(([key, value]) => [normalizeKey(key), value] as const));
+  for (const name of names) {
+    const hit = map.get(normalizeKey(name));
+    if (hit) return hit;
+  }
+  return undefined;
+};
+
 const parseRichText = (property: any): string => {
   if (!property || typeof property !== "object") return "";
+  if (property.type === "title") {
+    const rich = property.title ?? [];
+    return rich.map((item: any) => item?.plain_text || "").join("").trim();
+  }
   const rich = property.rich_text ?? [];
   return rich.map((item: any) => item?.plain_text || "").join("").trim();
 };
@@ -70,13 +90,53 @@ const loadEventsFromNotion = async () => {
     nextCursor = data.next_cursor ?? null;
   }
 
-  return pages
-    .map((page: any, index: number) => {
+  const relatedTitleCache = new Map<string, string>();
+  const readRelatedTitle = async (pageId: string) => {
+    if (relatedTitleCache.has(pageId)) return relatedTitleCache.get(pageId) || "";
+
+    const response = await fetch(`${NOTION_API_BASE}/pages/${pageId}`, {
+      headers: {
+        Authorization: `Bearer ${notionToken}`,
+        "Notion-Version": NOTION_VERSION,
+      },
+    });
+
+    if (!response.ok) {
+      relatedTitleCache.set(pageId, "");
+      return "";
+    }
+
+    const data = await response.json();
+    const properties = data?.properties ?? {};
+    const titleProperty = Object.values(properties).find((property: any) => property?.type === "title");
+    const title = parseRichText(titleProperty);
+    relatedTitleCache.set(pageId, title);
+    return title;
+  };
+
+  const rawEvents = await Promise.all(
+    pages.map(async (page: any, index: number) => {
       const properties = page?.properties ?? {};
-      const title = parseTitle(properties["Název"] || properties["Nazev"] || properties["Name"] || properties["title"]);
-      const date = parseRichText(properties["Datum od"] || properties["Datum"] || properties["Date"]) || "—";
-      const location = parseRichText(properties["Místo"] || properties["Misto"] || properties["Location"]) || "";
-      const teamName = parseRichText(properties["Družstva"] || properties["Druzstva"] || properties["Team"]) || "Nezařazeno";
+      const title = parseTitle(findProperty(properties, ["Název", "Nazev", "Name", "Event"]) || properties["title"]);
+      const date = parseRichText(findProperty(properties, ["Datum od", "Datum", "Date", "Kdy"])) || "—";
+      const location = parseRichText(findProperty(properties, ["Místo", "Misto", "Location", "Kde"])) || "";
+
+      const teamProperty = findProperty(properties, ["Družstva", "Druzstva", "Team", "Tým", "Tym"]);
+      let teamName = "Nezařazeno";
+
+      if (teamProperty?.type === "relation") {
+        const relationIds = (teamProperty.relation ?? []).map((relation: any) => relation?.id).filter(Boolean);
+        if (relationIds.length > 0) {
+          const names = await Promise.all(relationIds.map((relationId: string) => readRelatedTitle(relationId)));
+          const resolved = names.filter(Boolean);
+          if (resolved.length > 0) teamName = resolved.join(", ");
+        }
+      }
+
+      if (teamName === "Nezařazeno") {
+        const plain = parseRichText(teamProperty);
+        if (plain) teamName = plain;
+      }
 
       return {
         id: page?.id || `notion-${index}`,
@@ -86,8 +146,10 @@ const loadEventsFromNotion = async () => {
         teamName,
         teamSlug: toSlug(teamName),
       };
-    })
-    .sort((a: any, b: any) => parseDateTs(a.date) - parseDateTs(b.date));
+    }),
+  );
+
+  return rawEvents.sort((a: any, b: any) => parseDateTs(a.date) - parseDateTs(b.date));
 };
 
 export default async function handler(req: any, res: any) {
