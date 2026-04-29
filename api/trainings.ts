@@ -154,9 +154,29 @@ const loadTrainingsFromNotion = async () => {
     return title;
   };
 
+  const parseCheckbox = (property: any): boolean | null => {
+    if (!property || typeof property !== "object") return null;
+    if (property.type === "checkbox") return Boolean(property.checkbox);
+    return null;
+  };
+
   const rawTrainings = await Promise.all(
     pages.map(async (page: any, index: number) => {
       const properties = page?.properties ?? {};
+
+      // Checkbox "Zobrazeno" — pokud pole existuje a je false, trénink se skryje
+      const visibleProp = findProperty(properties, [
+        "Zobrazeno",
+        "Zobrazit",
+        "Aktivni",
+        "Aktivní",
+        "Active",
+        "Visible",
+        "Show",
+      ]);
+      const visibleValue = parseCheckbox(visibleProp);
+      if (visibleValue === false) return null;
+
       const day = parseProperty(findProperty(properties, ["Den", "Day"])) || "";
       const time = parseTimeWindow(properties) || "";
       const hall = parseProperty(findProperty(properties, ["Místo", "Misto", "Hala", "Hall", "Location"])) || "";
@@ -213,6 +233,7 @@ const loadTrainingsFromNotion = async () => {
   );
 
   return rawTrainings
+    .filter((item): item is NonNullable<typeof item> => item !== null)
     .filter((item) => item.day || item.time || item.hall);
 };
 
