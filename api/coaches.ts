@@ -17,6 +17,8 @@ type CachedCoaches = {
     teamSlug: string;
     phone: string;
     email: string;
+    photoUrl: string;
+    age: string;
   }>;
   fetchedAt: number;
 };
@@ -54,6 +56,62 @@ const parseTitle = (property: any): string => {
   const title = property.title ?? [];
   const value = title.map((item: any) => item?.plain_text || "").join("").trim();
   return value || "";
+};
+
+const extractGoogleDriveFileId = (value: string): string => {
+  const fromFilePath = value.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (fromFilePath?.[1]) return fromFilePath[1];
+
+  const fromQuery = value.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if (fromQuery?.[1]) return fromQuery[1];
+
+  return "";
+};
+
+const normalizePhotoUrl = (value: string): string => {
+  if (!value) return "";
+  if (!value.includes("drive.google.com")) return value;
+
+  const fileId = extractGoogleDriveFileId(value);
+  if (!fileId) return value;
+  return `https://drive.google.com/uc?export=view&id=${fileId}`;
+};
+
+const parsePhotoUrl = (property: any): string => {
+  if (!property || typeof property !== "object") return "";
+
+  if (property.type === "files") {
+    const fileItem = (property.files ?? [])[0];
+    const rawUrl = fileItem?.external?.url || fileItem?.file?.url || "";
+    return normalizePhotoUrl(rawUrl);
+  }
+
+  if (property.type === "url") {
+    return normalizePhotoUrl(property.url || "");
+  }
+
+  const rich = parseRichText(property);
+  return normalizePhotoUrl(rich);
+};
+
+const parseDateOfBirth = (property: any): string => {
+  if (!property || typeof property !== "object") return "";
+  if (property.type === "date" && property.date?.start) return property.date.start;
+  const rich = parseRichText(property);
+  return rich;
+};
+
+const calculateAge = (dob: string): string => {
+  if (!dob) return "";
+  const parts = dob.includes("-") ? dob.split("-") : dob.split(".").reverse();
+  if (parts.length < 3) return "";
+  const [year, month, day] = parts.map(Number);
+  if (!year || !month || !day) return "";
+  const today = new Date();
+  let age = today.getFullYear() - year;
+  const hasBirthdayPassed = today.getMonth() + 1 > month || (today.getMonth() + 1 === month && today.getDate() >= day);
+  if (!hasBirthdayPassed) age -= 1;
+  return String(age);
 };
 
 const toSlug = (value: string) =>
@@ -129,6 +187,9 @@ const loadCoachesFromNotion = async () => {
       const position = parseRichText(findProperty(properties, ["Pozice", "Role", "Position"])) || "";
       const phone = parseRichText(findProperty(properties, ["Telefon", "Phone"])) || "";
       const email = parseRichText(findProperty(properties, ["E-mail", "Email", "Mail"])) || "";
+      const photoUrl = parsePhotoUrl(findProperty(properties, ["Fotka", "Foto", "Fotografie", "Profilovka", "Photo", "Image", "Avatar"])) || "";
+      const dobRaw = parseDateOfBirth(findProperty(properties, ["Datum narozeni", "Datum narození", "Narozeniny", "DOB", "Birthday", "Birth date", "Vek narozeni", "Věk narozeni", "Věk", "Vek"])) || "";
+      const age = calculateAge(dobRaw);
 
       const teamProperty = findProperty(properties, ["Družstvo", "Druzstvo", "Team", "Tým", "Tym"]);
       let teamName = "Nezařazeno";
@@ -162,6 +223,8 @@ const loadCoachesFromNotion = async () => {
         teamSlug,
         phone,
         email,
+        photoUrl,
+        age,
       };
     }),
   );

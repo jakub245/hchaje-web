@@ -30,6 +30,7 @@ type CoachItem = {
   teamSlug: string;
   phone: string;
   email: string;
+  photoUrl: string;
 };
 
 type ApiCoach = Partial<CoachItem>;
@@ -58,6 +59,7 @@ export default function OKlubuPage() {
             teamSlug: item.teamSlug || "",
             phone: item.phone || "",
             email: item.email || "",
+            photoUrl: item.photoUrl || "",
           }))
           .sort((a, b) => a.name.localeCompare(b.name, "cs"));
 
@@ -166,7 +168,11 @@ export default function OKlubuPage() {
             {coaches.map((coach) => (
               <div key={coach.id} className="mobile-solid-card rounded-3xl bg-[#101a10] border border-[#6EE76D]/12 hover:border-[#6EE76D]/25 transition-all p-6 flex flex-col items-center justify-center text-center min-h-[22rem]">
                 <div className="mobile-solid-chip w-24 h-24 rounded-full overflow-hidden bg-[#6EE76D]/14 border border-[#6EE76D]/20 flex items-center justify-center mb-5">
-                  <UserRound className="w-10 h-10 text-[#6EE76D]" />
+                  {coach.photoUrl ? (
+                    <ImageWithFallback src={coach.photoUrl} alt={coach.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <UserRound className="w-10 h-10 text-[#6EE76D]" />
+                  )}
                 </div>
 
                 <div className="text-white text-[18px]" style={{ fontFamily: inter }}>{coach.name}</div>

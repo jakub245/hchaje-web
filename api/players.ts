@@ -17,6 +17,7 @@ type CachedPlayers = {
     number: string;
     teamName: string;
     teamSlug: string;
+    photoUrl: string;
   }>;
   fetchedAt: number;
 };
@@ -65,6 +66,42 @@ const parseNumber = (property: any): string => {
     return parseRichText(property);
   }
   return "";
+};
+
+const extractGoogleDriveFileId = (value: string): string => {
+  const fromFilePath = value.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (fromFilePath?.[1]) return fromFilePath[1];
+
+  const fromQuery = value.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if (fromQuery?.[1]) return fromQuery[1];
+
+  return "";
+};
+
+const normalizePhotoUrl = (value: string): string => {
+  if (!value) return "";
+  if (!value.includes("drive.google.com")) return value;
+
+  const fileId = extractGoogleDriveFileId(value);
+  if (!fileId) return value;
+  return `https://drive.google.com/uc?export=view&id=${fileId}`;
+};
+
+const parsePhotoUrl = (property: any): string => {
+  if (!property || typeof property !== "object") return "";
+
+  if (property.type === "files") {
+    const fileItem = (property.files ?? [])[0];
+    const rawUrl = fileItem?.external?.url || fileItem?.file?.url || "";
+    return normalizePhotoUrl(rawUrl);
+  }
+
+  if (property.type === "url") {
+    return normalizePhotoUrl(property.url || "");
+  }
+
+  const rich = parseRichText(property);
+  return normalizePhotoUrl(rich);
 };
 
 const parseProperty = (property: any): string => {
@@ -162,6 +199,7 @@ const loadPlayersFromNotion = async () => {
       const year = parseProperty(findProperty(properties, ["Ročník", "Rocnik", "Year", "Věk", "Vek"])) || "";
       const position = parseProperty(findProperty(properties, ["Pozice", "Post", "Role", "Position"])) || "";
       const number = parseNumber(findProperty(properties, ["Číslo", "Cislo", "Číslo hráčky", "Cislo hracky", "Number", "Registrační číslo", "Registracni cislo"])) || "";
+      const photoUrl = parsePhotoUrl(findProperty(properties, ["Fotka", "Foto", "Fotografie", "Profilovka", "Photo", "Image", "Avatar"])) || "";
 
       const teamProperty = findProperty(properties, ["Družstvo", "Druzstvo", "Team", "Tým", "Tym"]);
       let teamName = "Nezařazeno";
@@ -195,6 +233,7 @@ const loadPlayersFromNotion = async () => {
         number,
         teamName,
         teamSlug,
+        photoUrl,
       };
     }),
   );

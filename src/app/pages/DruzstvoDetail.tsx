@@ -46,6 +46,7 @@ type PlayerItem = {
   number: string;
   teamName: string;
   teamSlug: string;
+  photoUrl: string;
 };
 
 type ApiPlayer = Partial<PlayerItem>;
@@ -58,6 +59,8 @@ type CoachItem = {
   teamSlug: string;
   phone: string;
   email: string;
+  photoUrl: string;
+  age: string;
 };
 
 type ApiCoach = Partial<CoachItem>;
@@ -77,6 +80,23 @@ const normalizeText = (value: string) =>
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9]/g, "");
+
+const filterToCurrentSeason = (items: TrainingItem[]): TrainingItem[] => {
+  const uniqueSections = [...new Set(items.map((t) => t.section?.trim() || ""))].filter(Boolean);
+  if (uniqueSections.length <= 1) return items;
+
+  const getMaxYear = (s: string): number => {
+    const fullYears = (s.match(/\b(20\d{2})\b/g) || []).map(Number);
+    const shortYears = (s.match(/\/(\d{2})\b/g) || []).map((m) => 2000 + parseInt(m.slice(1)));
+    const all = [...fullYears, ...shortYears];
+    return all.length ? Math.max(...all) : 0;
+  };
+
+  const currentYear = new Date().getFullYear();
+  const sorted = [...uniqueSections].sort((a, b) => getMaxYear(b) - getMaxYear(a));
+  const current = sorted.find((s) => getMaxYear(s) <= currentYear) ?? sorted[0];
+  return items.filter((t) => (t.section?.trim() || "") === current);
+};
 
 export default function DruzstvoDetail() {
   const { slug } = useParams();
@@ -330,6 +350,7 @@ export default function DruzstvoDetail() {
             number: item.number || "",
             teamName: item.teamName || "",
             teamSlug: item.teamSlug || "",
+            photoUrl: item.photoUrl || "",
           }))
           .filter((item) => {
             const itemTeamSlug = normalizeTeamSlug(item.teamSlug);
@@ -376,12 +397,18 @@ export default function DruzstvoDetail() {
             teamSlug: item.teamSlug || "",
             phone: item.phone || "",
             email: item.email || "",
+            photoUrl: item.photoUrl || "",
+            age: item.age || "",
           }))
           .filter((item) => item.teamSlug === team.slug)
           .sort((a, b) => {
-            const aIsHead = normalizeText(a.position).includes("hlavni") ? 0 : 1;
-            const bIsHead = normalizeText(b.position).includes("hlavni") ? 0 : 1;
-            return aIsHead - bIsHead;
+            const rank = (pos: string) => {
+              const n = normalizeText(pos);
+              if (n.includes("hlavni")) return 0;
+              if (n.includes("asistent")) return 1;
+              return 2;
+            };
+            return rank(a.position) - rank(b.position);
           });
 
         if (!activeRequest) return;
@@ -405,7 +432,8 @@ export default function DruzstvoDetail() {
 
   const newsSorted = [...team.news].sort((a, b) => parseCzDate(b.date) - parseCzDate(a.date));
   const apiHasTrainingSections = trainings.some((item: TrainingItem) => Boolean(item.section?.trim()));
-  const apiTrainingMap = trainings.reduce((map: Map<string, Array<{ day: string; time: string; hall: string }>>, item: TrainingItem) => {
+  const currentSeasonTrainings = apiHasTrainingSections ? filterToCurrentSeason(trainings) : trainings;
+  const apiTrainingMap = currentSeasonTrainings.reduce((map: Map<string, Array<{ day: string; time: string; hall: string }>>, item: TrainingItem) => {
     const section = item.section?.trim() || "Tréninky";
     const list = map.get(section) || [];
     list.push({
@@ -425,7 +453,7 @@ export default function DruzstvoDetail() {
   const trainingBlocks = trainingsLoaded && trainings.length > 0
     ? (apiHasTrainingSections
       ? apiTrainingBlocks
-      : [{ title: "Tréninky", items: trainings.map((item: TrainingItem) => ({ day: item.day, time: item.time, hall: item.hall })) }])
+      : [{ title: "Tréninky", items: currentSeasonTrainings.map((item: TrainingItem) => ({ day: item.day, time: item.time, hall: item.hall })) }])
     : ((team.trainingSections && team.trainingSections.length > 0)
       ? team.trainingSections
       : [{ title: "Tréninky", items: team.trainings }]);
@@ -444,7 +472,7 @@ export default function DruzstvoDetail() {
         location: event.location,
       }));
   const displayedStaff = coachesLoaded && coaches.length > 0
-    ? coaches.map((c: CoachItem) => ({ name: c.name, phone: c.phone, email: c.email }))
+    ? coaches.map((c: CoachItem) => ({ name: c.name, phone: c.phone, email: c.email, photoUrl: c.photoUrl, age: c.age, position: c.position }))
     : [];
   const displayedPlayers = playersLoaded && players.length > 0 ? players : [];
   const displayedPlayerCount = playersLoaded && players.length > 0 ? players.length : team.players.length;
@@ -736,7 +764,7 @@ export default function DruzstvoDetail() {
               </>
             ) : displayedPlayers.length > 0 ? (
               displayedPlayers.map((p) => {
-                const photo = getTeamPhoto(p.name);
+                const photo = p.photoUrl || getTeamPhoto(p.name);
                 return (
                   <div key={p.id || p.name} className="mobile-solid-card min-w-[16rem] md:min-w-[calc((100%-1rem)/2)] lg:min-w-[calc((100%-2rem)/3)] xl:min-w-[calc((100%-3rem)/4)] flex-shrink-0 h-[21rem] rounded-3xl bg-[#101a10] border border-[#6EE76D]/12 hover:border-[#6EE76D]/25 transition-all p-6 flex flex-col items-center justify-center text-center">
                     <div className="mobile-solid-chip w-24 h-24 rounded-full overflow-hidden bg-[#6EE76D]/14 border border-[#6EE76D]/20 flex items-center justify-center mb-5">
@@ -801,7 +829,11 @@ export default function DruzstvoDetail() {
                   <div key={member.name} className={`grid gap-4 md:grid-cols-[1.2fr_1fr_1.1fr] py-5 ${i !== 0 ? "border-t border-[#6EE76D]/15" : ""}`}>
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-full overflow-hidden bg-[#101a10] border border-[#6EE76D]/20 flex items-center justify-center flex-shrink-0">
-                        <User className="w-4 h-4 text-[#6EE76D]" />
+                        {member.photoUrl ? (
+                          <ImageWithFallback src={member.photoUrl} alt={member.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <User className="w-4 h-4 text-[#6EE76D]" />
+                        )}
                       </div>
                       <div>
                         <div className="text-white/45 text-sm md:hidden" style={{ fontFamily: inter }}>Jméno</div>

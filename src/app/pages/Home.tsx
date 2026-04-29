@@ -22,8 +22,8 @@ import praha11Logo from "../../imports/loga/logo-praha11.svg";
 import sprinklerGroupLogo from "../../imports/loga/logo-sprinkler.svg";
 
 const fallbackPlayerCount = TEAMS.reduce((sum, team) => sum + team.playerCount, 0);
+const fallbackCoachCount = TEAMS.reduce((sum, team) => sum + (team.coach ? 1 : 0) + (team.assistantCoach ? 1 : 0), 0);
 const totalTeams = TEAMS.length;
-const fallbackTrainingsPerWeek = TEAMS.reduce((sum, team) => sum + team.trainings.length, 0);
 
 const PARTNERS = [
   { src: kasiaLogo, alt: "Kasia - Partneři" },
@@ -116,7 +116,7 @@ const latestNews = getAllTeamNews()
 /* ══════════════ HERO ══════════════ */
 function Hero() {
   const [livePlayerCount, setLivePlayerCount] = useState<number | null>(null);
-  const [liveTrainingCount, setLiveTrainingCount] = useState<number | null>(null);
+  const [liveCoachCount, setLiveCoachCount] = useState<number | null>(null);
 
   useEffect(() => {
     fetch("/api/players")
@@ -126,10 +126,10 @@ function Hero() {
       })
       .catch(() => {});
 
-    fetch("/api/trainings")
+    fetch("/api/coaches")
       .then((r) => (r.ok ? r.json() : null))
-      .then((payload: { trainings?: Array<unknown> } | null) => {
-        if (payload?.trainings?.length) setLiveTrainingCount(payload.trainings.length);
+      .then((payload: { coaches?: Array<unknown> } | null) => {
+        if (payload?.coaches?.length) setLiveCoachCount(payload.coaches.length);
       })
       .catch(() => {});
   }, []);
@@ -137,7 +137,7 @@ function Hero() {
   const stats = [
     { value: `${livePlayerCount ?? fallbackPlayerCount}`, label: "Aktivních hráček" },
     { value: `${totalTeams}`, label: "Družstev" },
-    { value: `${liveTrainingCount ?? fallbackTrainingsPerWeek}`, label: "Tréninků týdně" },
+    { value: `${liveCoachCount ?? fallbackCoachCount}`, label: "Trenérů" },
   ];
 
   return (
