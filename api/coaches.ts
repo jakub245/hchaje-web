@@ -188,7 +188,23 @@ const loadCoachesFromNotion = async () => {
       const phone = parseRichText(findProperty(properties, ["Telefon", "Phone"])) || "";
       const email = parseRichText(findProperty(properties, ["E-mail", "Email", "Mail"])) || "";
       const photoUrl = parsePhotoUrl(findProperty(properties, ["Fotka", "Foto", "Fotografie", "Profilovka", "Photo", "Image", "Avatar"])) || "";
-      const dobRaw = parseDateOfBirth(findProperty(properties, ["Datum narozeni", "Datum narození", "Narozeniny", "DOB", "Birthday", "Birth date", "Vek narozeni", "Věk narozeni", "Věk", "Vek"])) || "";
+      const dobRaw = parseDateOfBirth(findProperty(properties, [
+        "Datum narozeni",
+        "Datum narození",
+        "Datum narozeni trenéra",
+        "Datum narození trenéra",
+        "Datum",
+        "Narození",
+        "Narozeni",
+        "Narozeniny",
+        "DOB",
+        "Birthday",
+        "Birth date",
+        "Vek narozeni",
+        "Věk narozeni",
+        "Věk",
+        "Vek",
+      ])) || "";
       const age = calculateAge(dobRaw);
 
       const teamProperty = findProperty(properties, ["Družstvo", "Druzstvo", "Team", "Tým", "Tym"]);

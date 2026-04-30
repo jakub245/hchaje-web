@@ -31,6 +31,7 @@ type CoachItem = {
   phone: string;
   email: string;
   photoUrl: string;
+  age: string;
 };
 
 type ApiCoach = Partial<CoachItem>;
@@ -60,6 +61,7 @@ export default function OKlubuPage() {
             phone: item.phone || "",
             email: item.email || "",
             photoUrl: item.photoUrl || "",
+            age: item.age || "",
           }))
           .sort((a, b) => a.name.localeCompare(b.name, "cs"));
 
@@ -176,6 +178,9 @@ export default function OKlubuPage() {
                 </div>
 
                 <div className="text-white text-[18px]" style={{ fontFamily: inter }}>{coach.name}</div>
+                {coach.age ? (
+                  <div className="text-[#6EE76D] text-sm mt-1" style={{ fontFamily: inter }}>{coach.age} let</div>
+                ) : null}
                 <div className="text-white/45 text-sm mt-2" style={{ fontFamily: inter }}>{coach.position || "—"}</div>
 
                 {coach.teamSlug && (
