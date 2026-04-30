@@ -114,6 +114,19 @@ const calculateAge = (dob: string): string => {
   return String(age);
 };
 
+const getPhotoDebug = (url: string) => {
+  const fileId = extractGoogleDriveFileId(url);
+  const isDrive = url.includes("drive.google.com");
+  return {
+    originalUrl: url,
+    isDrive,
+    fileId,
+    driveViewUrl: fileId ? `https://drive.google.com/file/d/${fileId}/view` : "",
+    driveUcUrl: fileId ? `https://drive.google.com/uc?export=view&id=${fileId}` : "",
+    driveThumbnailUrl: fileId ? `https://drive.google.com/thumbnail?id=${fileId}&sz=w1200` : "",
+  };
+};
+
 const toSlug = (value: string) =>
   value
     .toLowerCase()
@@ -254,9 +267,11 @@ export default async function handler(req: any, res: any) {
   }
 
   try {
+    const debugMode = req?.query?.debug === "1";
+    const freshMode = req?.query?.fresh === "1";
     const now = Date.now();
-    const canUseCache = cachedCoaches && now - cachedCoaches.fetchedAt < COACHES_CACHE_TTL_MS;
-    const coaches = canUseCache ? cachedCoaches.coaches : await loadCoachesFromNotion();
+    const canUseCache = !freshMode && cachedCoaches && now - cachedCoaches.fetchedAt < COACHES_CACHE_TTL_MS;
+    const coaches = canUseCache && cachedCoaches ? cachedCoaches.coaches : await loadCoachesFromNotion();
 
     if (!canUseCache) {
       cachedCoaches = {
@@ -266,7 +281,22 @@ export default async function handler(req: any, res: any) {
     }
 
     res.setHeader("Cache-Control", "s-maxage=180, stale-while-revalidate=600");
-    return res.status(200).json({ coaches, source: "notion" });
+
+    if (debugMode) {
+      const debug = coaches.map((coach) => ({
+        id: coach.id,
+        name: coach.name,
+        photo: getPhotoDebug(coach.photoUrl || ""),
+      }));
+
+      return res.status(200).json({
+        coaches,
+        source: canUseCache ? "cache" : "notion",
+        debug,
+      });
+    }
+
+    return res.status(200).json({ coaches, source: canUseCache ? "cache" : "notion" });
   } catch (error: any) {
     console.error("Coaches API error:", error);
 
