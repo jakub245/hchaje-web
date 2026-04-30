@@ -97,6 +97,57 @@ const parseTimeWindow = (properties: Record<string, any>) => {
   return from || to || "";
 };
 
+const parseBooleanLike = (property: any): boolean | null => {
+  if (!property || typeof property !== "object") return null;
+
+  if (property.type === "checkbox") return Boolean(property.checkbox);
+
+  if (property.type === "formula" && property.formula) {
+    if (property.formula.type === "boolean") return Boolean(property.formula.boolean);
+    if (property.formula.type === "number" && property.formula.number !== null && property.formula.number !== undefined) {
+      return Number(property.formula.number) !== 0;
+    }
+    if (property.formula.type === "string") {
+      const value = String(property.formula.string || "").trim().toLowerCase();
+      if (["true", "ano", "yes", "1", "on", "published", "zverejneno", "zveřejněno"].includes(value)) return true;
+      if (["false", "ne", "no", "0", "off", "draft", "hidden", "skryto"].includes(value)) return false;
+    }
+  }
+
+  if (property.type === "select" && property.select?.name) {
+    const value = String(property.select.name).trim().toLowerCase();
+    if (["ano", "yes", "true", "published", "active", "visible", "zobrazeno", "zveřejněno", "publikováno"].includes(value)) return true;
+    if (["ne", "no", "false", "draft", "hidden", "inactive", "skryto"].includes(value)) return false;
+  }
+
+  const text = parseRichText(property).trim().toLowerCase();
+  if (["ano", "yes", "true", "1", "on", "published", "active", "visible", "zobrazeno", "zveřejněno", "publikováno"].includes(text)) return true;
+  if (["ne", "no", "false", "0", "off", "draft", "hidden", "inactive", "skryto"].includes(text)) return false;
+
+  return null;
+};
+
+const resolveVisibility = (properties: Record<string, any>): boolean => {
+  const visibilityProp = findProperty(properties, [
+    "Zobrazeno",
+    "Zobrazit",
+    "Publikovano",
+    "Publikováno",
+    "Published",
+    "Publish",
+    "Aktivni",
+    "Aktivní",
+    "Visible",
+    "Show",
+  ]);
+
+  const explicitValue = parseBooleanLike(visibilityProp);
+  if (explicitValue !== null) return explicitValue;
+
+  // Pokud není explicitní sloupec viditelnosti, necháme záznam zobrazený (zpětná kompatibilita).
+  return true;
+};
+
 const loadTrainingsFromNotion = async () => {
   const notionToken = process.env.NOTION_TOKEN || FALLBACK_NOTION_TOKEN;
   const notionDatabaseId = process.env.NOTION_TRAININGS_DATABASE_ID || FALLBACK_NOTION_DATABASE_ID;
@@ -154,28 +205,10 @@ const loadTrainingsFromNotion = async () => {
     return title;
   };
 
-  const parseCheckbox = (property: any): boolean | null => {
-    if (!property || typeof property !== "object") return null;
-    if (property.type === "checkbox") return Boolean(property.checkbox);
-    return null;
-  };
-
   const rawTrainings = await Promise.all(
     pages.map(async (page: any, index: number) => {
       const properties = page?.properties ?? {};
-
-      // Checkbox "Zobrazeno" — pokud pole existuje a je false, trénink se skryje
-      const visibleProp = findProperty(properties, [
-        "Zobrazeno",
-        "Zobrazit",
-        "Aktivni",
-        "Aktivní",
-        "Active",
-        "Visible",
-        "Show",
-      ]);
-      const visibleValue = parseCheckbox(visibleProp);
-      if (visibleValue === false) return null;
+      if (!resolveVisibility(properties)) return null;
 
       const day = parseProperty(findProperty(properties, ["Den", "Day"])) || "";
       const time = parseTimeWindow(properties) || "";
@@ -243,9 +276,10 @@ export default async function handler(req: any, res: any) {
   }
 
   try {
+    const freshMode = req?.query?.fresh === "1";
     const now = Date.now();
-    const canUseCache = cachedTrainings && now - cachedTrainings.fetchedAt < TRAININGS_CACHE_TTL_MS;
-    const trainings = canUseCache ? cachedTrainings.trainings : await loadTrainingsFromNotion();
+    const canUseCache = !freshMode && cachedTrainings && now - cachedTrainings.fetchedAt < TRAININGS_CACHE_TTL_MS;
+    const trainings = canUseCache && cachedTrainings ? cachedTrainings.trainings : await loadTrainingsFromNotion();
 
     if (!canUseCache) {
       cachedTrainings = {
@@ -255,7 +289,7 @@ export default async function handler(req: any, res: any) {
     }
 
     res.setHeader("Cache-Control", "s-maxage=180, stale-while-revalidate=600");
-    return res.status(200).json({ trainings, source: "notion" });
+    return res.status(200).json({ trainings, source: canUseCache ? "cache" : "notion" });
   } catch (error: any) {
     console.error("Trainings API error:", error);
 
