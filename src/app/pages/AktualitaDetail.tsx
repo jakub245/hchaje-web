@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Link, Navigate, useLocation, useParams } from "react-router";
 import { ArrowLeft, ChevronLeft, ChevronRight, Play, X } from "lucide-react";
 import { bebas, inter, nbspShortWords } from "../components/shared";
@@ -43,6 +43,58 @@ const toSlug = (value: string) =>
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9]/g, "");
+
+const LINK_PATTERN = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|(https?:\/\/[^\s]+)/g;
+
+const renderTextWithLinks = (text: string): ReactNode[] => {
+  const nodes: ReactNode[] = [];
+  let lastIndex = 0;
+  let match: RegExpExecArray | null = null;
+
+  while ((match = LINK_PATTERN.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      nodes.push(nbspShortWords(text.slice(lastIndex, match.index)));
+    }
+
+    const markdownLabel = match[1];
+    const markdownHref = match[2];
+    const rawUrl = match[3];
+    const href = markdownHref || rawUrl;
+    const label = markdownLabel || rawUrl;
+
+    if (href && label) {
+      nodes.push(
+        <a
+          key={`${href}-${match.index}`}
+          href={href}
+          target="_blank"
+          rel="noreferrer"
+          className="text-[#6EE76D] underline underline-offset-4 hover:text-[#94EE93] transition-colors"
+        >
+          {nbspShortWords(label)}
+        </a>
+      );
+    }
+
+    lastIndex = match.index + match[0].length;
+  }
+
+  if (lastIndex < text.length) {
+    nodes.push(nbspShortWords(text.slice(lastIndex)));
+  }
+
+  return nodes;
+};
+
+const renderArticleContent = (content: string): ReactNode => {
+  const lines = content.split("\n");
+  return lines.map((line, index) => (
+    <span key={`line-${index}`}>
+      {renderTextWithLinks(line)}
+      {index < lines.length - 1 && <br />}
+    </span>
+  ));
+};
 
 const DEMO_GALLERY_IMAGES = [
   "https://images.unsplash.com/photo-1769614075229-bfc51a41aa78?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1200",
@@ -355,7 +407,7 @@ export default function AktualitaDetail() {
             </h1>
             <div className="w-20 h-1 bg-[#6EE76D] rounded-full mb-6" />
             <div className="text-white/75 leading-8 whitespace-pre-line" style={{ fontFamily: inter }}>
-              {nbspShortWords(article.content || article.excerpt || "")}
+              {renderArticleContent(article.content || article.excerpt || "")}
             </div>
 
             {article.mediaSections?.map((section, index) =>

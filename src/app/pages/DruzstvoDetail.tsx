@@ -475,6 +475,19 @@ export default function DruzstvoDetail() {
         if (!response.ok) throw new Error("Nepodařilo se načíst data z API.");
 
         const payload = (await response.json()) as { coaches?: ApiCoach[] };
+        const normalizePersonName = (value: string) =>
+          normalizeText(String(value || "")).replace(/[^a-z0-9]/g, "");
+
+        const headCoachName = normalizePersonName(team.coach || "");
+        const assistantCoachName = normalizePersonName(team.assistantCoach || "");
+
+        const rankByTeamHeader = (name: string) => {
+          const normalizedName = normalizePersonName(name);
+          if (headCoachName && normalizedName === headCoachName) return 0;
+          if (assistantCoachName && normalizedName === assistantCoachName) return 1;
+          return 2;
+        };
+
         const normalizedCoaches = (payload.coaches ?? [])
           .map((item, index) => ({
             id: item.id || `notion-coach-${index}`,
@@ -492,13 +505,20 @@ export default function DruzstvoDetail() {
           .sort((a, b) => {
             const rank = (pos: string) => {
               const n = normalizeText(pos);
+              if (n.includes("trener") || n.includes("trainer") || n === "coach") return 0;
               if (n.includes("hlavni")) return 0;
               if (n.includes("asistent")) return 1;
               return 2;
             };
 
             if (a.sortPriority !== b.sortPriority) return a.sortPriority - b.sortPriority;
-            return rank(a.position) - rank(b.position);
+            const roleRankDiff = rank(a.position) - rank(b.position);
+            if (roleRankDiff !== 0) return roleRankDiff;
+
+            const headerRankDiff = rankByTeamHeader(a.name) - rankByTeamHeader(b.name);
+            if (headerRankDiff !== 0) return headerRankDiff;
+
+            return a.name.localeCompare(b.name, "cs");
           });
 
         if (!activeRequest) return;

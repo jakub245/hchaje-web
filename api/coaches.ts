@@ -115,8 +115,16 @@ const parseNumberLike = (property: any): number | null => {
   return Number.isFinite(value) ? value : null;
 };
 
+const parseTextLike = (property: any): string => {
+  if (!property || typeof property !== "object") return "";
+  if (property.type === "select") return String(property.select?.name || "").trim();
+  if (property.type === "status") return String(property.status?.name || "").trim();
+  return parseRichText(property).trim();
+};
+
 const rankByPosition = (position: string): number => {
   const normalized = normalizeKey(position || "");
+  if (normalized.includes("trener") || normalized.includes("trainer") || normalized === "coach") return 0;
   if (normalized.includes("hlavni")) return 0;
   if (normalized.includes("asistent") || normalized.includes("assistant")) return 1;
   return 2;
@@ -136,7 +144,7 @@ const parseSortPriority = (properties: Record<string, any>, position: string): n
   const numberValue = parseNumberLike(priorityProp);
   if (numberValue !== null) return numberValue;
 
-  const textValue = parseRichText(priorityProp);
+  const textValue = parseTextLike(priorityProp);
   if (textValue) return rankByPosition(textValue);
 
   return rankByPosition(position);

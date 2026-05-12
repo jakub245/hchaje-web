@@ -367,7 +367,15 @@ const buildMediaSections = async (urls: string[]) => {
 
 const parseRichTextArray = (value: any[] = []) =>
   value
-    .map((item: any) => item?.plain_text || "")
+    .map((item: any) => {
+      const text = String(item?.plain_text || "");
+      if (!text) return "";
+
+      const href = String(item?.href || item?.text?.link?.url || "").trim();
+      if (!href) return text;
+
+      return `[${text}](${href})`;
+    })
     .join("")
     .trim();
 
