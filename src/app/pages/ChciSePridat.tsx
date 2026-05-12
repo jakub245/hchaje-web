@@ -124,14 +124,12 @@ export default function ChciSePridatPage() {
   useEffect(() => {
     if (submitState.type !== "idle" && formRef.current) {
       formRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
-      if (submitState.type === "success") {
-        const timer = setTimeout(() => {
-          setSubmitState({ type: "idle", message: "" });
-        }, 5000);
-        return () => clearTimeout(timer);
-      }
     }
   }, [submitState]);
+
+  const resetSuccessState = () => {
+    setSubmitState({ type: "idle", message: "" });
+  };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = event.target;
@@ -437,25 +435,43 @@ export default function ChciSePridatPage() {
           </div>
 
           <div className="max-w-4xl mx-auto p-6 lg:p-8 rounded-2xl bg-gradient-to-r from-[#6EE76D]/8 via-[#6EE76D]/4 to-[#6EE76D]/8 border border-[#6EE76D]/15" ref={formRef}>
-            {submitState.type !== "idle" && (
+            {submitState.type === "success" ? (
               <div
-                className={`mb-6 rounded-2xl px-4 py-4 flex items-start gap-3 text-sm transition-all ${
-                  submitState.type === "success"
-                    ? "bg-[#6EE76D]/12 text-[#9CF59B] border border-[#6EE76D]/25"
-                    : "bg-red-500/10 text-red-200 border border-red-400/20"
-                }`}
-                style={{ fontFamily: inter }}
+                role="status"
+                aria-live="polite"
+                className="rounded-2xl border border-[#6EE76D]/25 bg-[#6EE76D]/12 px-6 py-10 lg:px-10 lg:py-12 text-center"
               >
-                {submitState.type === "success" ? (
-                  <CheckCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                ) : (
-                  <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                )}
-                <span>{submitState.message}</span>
+                <div className="w-16 h-16 rounded-full bg-[#6EE76D]/20 mx-auto mb-5 flex items-center justify-center">
+                  <CheckCircle className="w-9 h-9 text-[#9CF59B]" />
+                </div>
+                <h3 className="text-3xl text-white uppercase mb-3" style={{ fontFamily: bebas }}>
+                  Zpráva odeslána
+                </h3>
+                <p className="text-white/85 max-w-xl mx-auto mb-8" style={{ fontFamily: inter }}>
+                  {submitState.message}
+                </p>
+                <button
+                  type="button"
+                  onClick={resetSuccessState}
+                  className="rounded-full px-8 py-3 bg-[#F587B9] text-[#080C08] hover:brightness-110 hover:shadow-[0_0_20px_rgba(245,135,185,0.28)] uppercase transition-all duration-300 inline-flex items-center justify-center gap-2"
+                  style={{ fontFamily: bebas, letterSpacing: "0.08em" }}
+                >
+                  Poslat další zprávu
+                </button>
               </div>
-            )}
+            ) : (
+              <>
+                {submitState.type === "error" && (
+                  <div
+                    className="mb-6 rounded-2xl px-4 py-4 flex items-start gap-3 text-sm transition-all bg-red-500/10 text-red-200 border border-red-400/20"
+                    style={{ fontFamily: inter }}
+                  >
+                    <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                    <span>{submitState.message}</span>
+                  </div>
+                )}
 
-            <form onSubmit={handleSubmit} className="space-y-0">
+                <form onSubmit={handleSubmit} className="space-y-0">
                   <input type="text" name="website" value={formData.website} onChange={handleChange} className="hidden" tabIndex={-1} autoComplete="off" />
 
                   <div className="pb-8">
@@ -572,7 +588,9 @@ export default function ChciSePridatPage() {
                     <Mail className="w-4 h-4" />
                   </button>
                 </div>
-            </form>
+                </form>
+              </>
+            )}
           </div>
 
           <div className="mt-8 lg:mt-10 text-center">
