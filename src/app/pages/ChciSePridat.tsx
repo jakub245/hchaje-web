@@ -159,7 +159,7 @@ export default function ChciSePridatPage() {
     try {
       const payload = {
         access_key: "432504e2-9b18-43c3-ade9-c183b3c77391",
-        to_email: "j.jord@seznam.cz",
+        to_email: "pripravkahchaje@gmail.com",
         subject: "Nový nábor - HC Háje",
         from_name: "HC Háje Web",
         from_email: formData.email,
