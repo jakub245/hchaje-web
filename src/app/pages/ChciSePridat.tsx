@@ -158,8 +158,8 @@ export default function ChciSePridatPage() {
       const payload = {
         access_key: "432504e2-9b18-43c3-ade9-c183b3c77391",
         to_email: "pripravkahchaje@gmail.com",
-        subject: "Nový nábor - HC Háje",
-        from_name: "HC Háje Web",
+        subject: "Chci se přidat - nový zájemce",
+        from_name: "HC Háje",
         from_email: formData.email,
         reply_to: formData.email,
         name: formData.name,
