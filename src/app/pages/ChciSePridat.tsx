@@ -159,7 +159,7 @@ export default function ChciSePridatPage() {
     try {
       const payload = {
         access_key: "432504e2-9b18-43c3-ade9-c183b3c77391",
-        to_email: "jakub@jordanidis.cz",
+        to_email: "j.jord@seznam.cz",
         subject: "Nový nábor - HC Háje",
         from_name: "HC Háje Web",
         from_email: formData.email,
@@ -186,7 +186,15 @@ export default function ChciSePridatPage() {
         body: JSON.stringify(payload),
       });
       
-      const result = await response.json();
+      const text = await response.text();
+      let result;
+      try {
+        result = JSON.parse(text);
+      } catch {
+        console.error("Web3Forms response:", text);
+        throw new Error("Neplatná odpověď od serveru. Zkontroluj Web3Forms konfiguraci.");
+      }
+      
       if (!result.success) throw new Error(result.message || "Odeslání se nepodařilo.");
       
       setFormData(INITIAL_FORM);
