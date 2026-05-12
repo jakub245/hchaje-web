@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, Building2, ChevronDown, ChevronLeft, ChevronRight, Mail, Phone, UserRound, Users } from "lucide-react";
+import { ArrowRight, Building2, ChevronDown, ChevronLeft, ChevronRight, Mail, Phone, UserRound, Users, CheckCircle, AlertCircle } from "lucide-react";
 import { Link } from "react-router";
 import {
   PageHero,
@@ -100,6 +100,7 @@ const getYoutubeEmbedUrl = (url: string) => {
 export default function ChciSePridatPage() {
   const [galleryIndex, setGalleryIndex] = useState(0);
   const videoScrollRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLDivElement>(null);
   const scrollVideos = (dir: 1 | -1) => {
     const el = videoScrollRef.current;
     if (!el) return;
@@ -119,6 +120,18 @@ export default function ChciSePridatPage() {
 
     return () => window.clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    if (submitState.type !== "idle" && formRef.current) {
+      formRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      if (submitState.type === "success") {
+        const timer = setTimeout(() => {
+          setSubmitState({ type: "idle", message: "" });
+        }, 5000);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [submitState]);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = event.target;
@@ -144,13 +157,38 @@ export default function ChciSePridatPage() {
     if (!isValidPhone(formData.phonePrefix, formData.phone)) { setSubmitState({ type: "error", message: "Zadejte prosím platné telefonní číslo bez předvolby." }); setIsSending(false); return; }
     if (formData.hasMoreChildren && !formData.secondExperience) { setSubmitState({ type: "error", message: "Vyberte prosím zkušenosti s házenou i u dalšího dítěte." }); setIsSending(false); return; }
     try {
-      const response = await fetch("/api/contact", {
+      const payload = {
+        access_key: "432504e2-9b18-43c3-ade9-c183b3c77391",
+        to_email: "jakub@jordanidis.cz",
+        subject: "Nový nábor - HC Háje",
+        from_name: "HC Háje Web",
+        from_email: formData.email,
+        reply_to: formData.email,
+        name: formData.name,
+        email: formData.email,
+        phone: `${formData.phonePrefix} ${formData.phone}`,
+        childName: formData.childName,
+        birthYear: formData.birthYear,
+        experience: formData.experience,
+        hasMoreChildren: formData.hasMoreChildren ? "Ano" : "Ne",
+        ...(formData.hasMoreChildren && {
+          secondChildName: formData.secondChildName,
+          secondBirthYear: formData.secondBirthYear,
+          secondExperience: formData.secondExperience,
+        }),
+        message: formData.message,
+        website: formData.website,
+      };
+
+      const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
+      
       const result = await response.json();
-      if (!response.ok) throw new Error(result.error || "Odeslání se nepodařilo.");
+      if (!result.success) throw new Error(result.message || "Odeslání se nepodařilo.");
+      
       setFormData(INITIAL_FORM);
       setSubmitState({ type: "success", message: "Zpráva byla úspěšně odeslána. Ozveme se vám co nejdříve." });
     } catch (error: any) {
@@ -390,13 +428,22 @@ export default function ChciSePridatPage() {
             </p>
           </div>
 
-          <div className="max-w-4xl mx-auto p-6 lg:p-8 rounded-2xl bg-gradient-to-r from-[#6EE76D]/8 via-[#6EE76D]/4 to-[#6EE76D]/8 border border-[#6EE76D]/15">
+          <div className="max-w-4xl mx-auto p-6 lg:p-8 rounded-2xl bg-gradient-to-r from-[#6EE76D]/8 via-[#6EE76D]/4 to-[#6EE76D]/8 border border-[#6EE76D]/15" ref={formRef}>
             {submitState.type !== "idle" && (
               <div
-                className={`mb-6 rounded-2xl px-4 py-3 text-sm ${submitState.type === "success" ? "bg-[#6EE76D]/12 text-[#9CF59B] border border-[#6EE76D]/25" : "bg-red-500/10 text-red-200 border border-red-400/20"}`}
+                className={`mb-6 rounded-2xl px-4 py-4 flex items-start gap-3 text-sm transition-all ${
+                  submitState.type === "success"
+                    ? "bg-[#6EE76D]/12 text-[#9CF59B] border border-[#6EE76D]/25"
+                    : "bg-red-500/10 text-red-200 border border-red-400/20"
+                }`}
                 style={{ fontFamily: inter }}
               >
-                {submitState.message}
+                {submitState.type === "success" ? (
+                  <CheckCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                ) : (
+                  <AlertCircle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                )}
+                <span>{submitState.message}</span>
               </div>
             )}
 

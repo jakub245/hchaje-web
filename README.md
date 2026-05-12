@@ -9,6 +9,29 @@
 
   Run `npm run dev` to start the development server.
 
+  ## Web3Forms - Contact Form (`/chci-se-pridat`)
+
+  The "Chci se přidat" (Recruitment) page uses Web3Forms to handle form submissions.
+
+  **Setup:**
+
+  1. Create account at https://web3forms.com
+  2. Create new form and configure:
+     - Recipient Email (where form notifications are sent)
+     - Email Subject
+     - Sender Name
+     - Leave Redirect URL empty (custom success message used)
+  3. Verify email (confirmation link will be sent)
+  4. Copy the access key (UUID)
+
+  **Environment variable:**
+
+  ```bash
+  VITE_WEB3FORMS_ACCESS_KEY=your_access_key_from_web3forms
+  ```
+
+  The form sends directly to Web3Forms API at `https://api.web3forms.com/submit` with no server required.
+
   ## Akce page data source (Notion)
 
   The `/akce` page loads events from the backend endpoint `/api/events`.
