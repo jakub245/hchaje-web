@@ -8,6 +8,7 @@ const NEWS_CACHE_TTL_MS = 1000 * 60 * 3;
 
 type NewsItem = {
   id: string;
+  slug: string;
   date: string;
   title: string;
   excerpt: string;
@@ -430,6 +431,7 @@ const loadNewsFromNotion = async () => {
       if (!resolveVisibility(properties)) return null;
 
       const titleProp = findProperty(properties, ["Název", "Nazev", "Name", "Titulek", "Aktualita", "Title"]);
+      const slugProp = findProperty(properties, ["Slug", "URL", "Permalink", "Link"]);
       const dateProp = findProperty(properties, ["Datum", "Date", "Kdy", "Publikováno", "Publish date", "Datum publikace"]);
       const teamProp = findProperty(properties, ["Družstvo", "Druzstvo", "Družstva", "Druzstva", "Team", "Kategorie", "Tým", "Tym"]);
       const excerptProp = findProperty(properties, ["Perex", "Excerpt", "Popis", "Summary", "Anotace"]);
@@ -464,6 +466,8 @@ const loadNewsFromNotion = async () => {
       const teamSlugs = teamNames.map((value) => toSlug(value));
       const date = formatDateForCz(parseDate(dateProp));
       const title = parsePlainText(titleProp) || "Aktualita";
+      const explicitSlug = toSlug(parsePlainText(slugProp));
+      const stableSlug = explicitSlug || `${toSlug(title)}-${String(page?.id || index).slice(-6).toLowerCase()}`;
       const excerpt = parsePlainText(excerptProp);
       const content = parsePlainText(contentProp) || excerpt;
       const mediaUrls = [
@@ -478,6 +482,7 @@ const loadNewsFromNotion = async () => {
 
       return {
         id: page?.id || `notion-news-${index}`,
+        slug: stableSlug,
         date,
         title,
         excerpt,

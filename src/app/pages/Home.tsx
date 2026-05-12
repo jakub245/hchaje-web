@@ -65,6 +65,27 @@ const parseCzDate = (value: string) => {
   return new Date(Number(year), Number(month) - 1, Number(day)).getTime();
 };
 
+type ApiNewsItem = {
+  id?: string;
+  slug?: string;
+  title?: string;
+  date?: string;
+  excerpt?: string;
+  content?: string;
+  teamName?: string;
+  teamNames?: string[];
+};
+
+type NewsPreview = {
+  id: string;
+  slug: string;
+  title: string;
+  date: string;
+  excerpt: string;
+  content: string;
+  teamName: string;
+};
+
 const getUpcomingEvents = () => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -109,9 +130,18 @@ const getYoutubeEmbedUrl = (url: string) => {
   }
 };
 
-const latestNews = getAllTeamNews()
+const FALLBACK_LATEST_NEWS: NewsPreview[] = getAllTeamNews()
   .sort((a, b) => parseCzDate(b.date) - parseCzDate(a.date))
-  .slice(0, 5);
+  .slice(0, 5)
+  .map((item) => ({
+    id: item.id,
+    slug: toSlug(item.title),
+    title: item.title,
+    date: item.date,
+    excerpt: item.excerpt,
+    content: item.content,
+    teamName: item.teamName,
+  }));
 
 /* ══════════════ HERO ══════════════ */
 function Hero() {
@@ -314,7 +344,48 @@ function ReelsSection() {
 
 /* ══════════════ NEWS + TRAININGS ══════════════ */
 function NewsAndTrainings() {
+  const [latestNews, setLatestNews] = useState<NewsPreview[]>(FALLBACK_LATEST_NEWS);
   const upcomingEvents = getUpcomingEvents();
+
+  useEffect(() => {
+    let isActive = true;
+
+    const loadLatestNews = async () => {
+      try {
+        const response = await fetch("/api/news");
+        if (!response.ok) throw new Error("Nepodarilo se nacist aktuality");
+
+        const payload = (await response.json()) as { news?: ApiNewsItem[] };
+        const normalized = (payload.news ?? [])
+          .map((item, index) => {
+            const fallbackTeamName = String(item.teamName || "").trim();
+            const relatedTeam = (item.teamNames ?? []).map((value) => String(value || "").trim()).find(Boolean) || "Klub";
+            return {
+              id: String(item.id || `notion-news-${index}`),
+              slug: String(item.slug || "").trim() || toSlug(String(item.title || `aktualita-${index}`)),
+              title: String(item.title || "Aktualita"),
+              date: String(item.date || "—"),
+              excerpt: String(item.excerpt || ""),
+              content: String(item.content || item.excerpt || ""),
+              teamName: fallbackTeamName || relatedTeam,
+            } satisfies NewsPreview;
+          })
+          .sort((a, b) => parseCzDate(b.date) - parseCzDate(a.date))
+          .slice(0, 5);
+
+        if (!isActive) return;
+        setLatestNews(normalized.length > 0 ? normalized : FALLBACK_LATEST_NEWS);
+      } catch {
+        if (!isActive) return;
+        setLatestNews(FALLBACK_LATEST_NEWS);
+      }
+    };
+
+    loadLatestNews();
+    return () => {
+      isActive = false;
+    };
+  }, []);
 
   return (
     <section className="reveal-on-scroll py-20 lg:py-28">
@@ -327,7 +398,7 @@ function NewsAndTrainings() {
               {latestNews.map((item) => (
                 <Link
                   key={item.id}
-                  to={`/aktuality/${toSlug(item.title)}`}
+                  to={`/aktuality/${item.slug}`}
                   state={{ article: { title: item.title, date: item.date, excerpt: item.excerpt, content: item.content }, backTo: "/aktuality" }}
                   className="mobile-solid-card group block p-4 rounded-2xl bg-[#101a10] border border-[#6EE76D]/12 hover:border-[#6EE76D]/25 transition-all"
                 >

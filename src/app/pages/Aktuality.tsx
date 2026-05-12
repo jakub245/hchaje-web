@@ -16,6 +16,7 @@ const parseCzDate = (value: string) => {
 
 type ApiNewsItem = {
   id?: string;
+  slug?: string;
   date?: string;
   title?: string;
   excerpt?: string;
@@ -32,6 +33,7 @@ type ApiNewsItem = {
 
 type DisplayNews = {
   id: string;
+  slug: string;
   date: string;
   title: string;
   excerpt?: string;
@@ -50,6 +52,7 @@ const FALLBACK_NEWS: DisplayNews[] = getAllTeamNews()
   .sort((a, b) => parseCzDate(b.date) - parseCzDate(a.date))
   .map((item) => ({
     id: item.id,
+    slug: toSlug(item.title),
     date: item.date,
     title: item.title,
     excerpt: item.excerpt,
@@ -90,6 +93,7 @@ export default function AktualityPage() {
 
             return {
               id: item.id || `notion-news-${index}`,
+              slug: item.slug || toSlug(item.title || `aktualita-${index}`),
               date: item.date || "—",
               title: item.title || "Aktualita",
               excerpt: item.excerpt || "",
@@ -166,7 +170,7 @@ export default function AktualityPage() {
                 key={item.id}
                 article={{ title: item.title, date: item.date, excerpt: item.excerpt, content: item.content, mediaSections: item.mediaSections }}
                 tag={item.teamName}
-                to={`/aktuality/${toSlug(item.title)}`}
+                to={`/aktuality/${item.slug}`}
                 backTo="/aktuality"
                 className="p-6"
               />

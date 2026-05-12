@@ -509,6 +509,8 @@ function localApiNewsProxy() {
         if (!resolveVisibility(properties)) return null
 
         const title = parsePlainText(findProperty(properties, ['Název', 'Nazev', 'Name', 'Titulek', 'Title'])) || 'Aktualita'
+        const explicitSlug = toSlug(parsePlainText(findProperty(properties, ['Slug', 'URL', 'Permalink', 'Link'])))
+        const stableSlug = explicitSlug || `${toSlug(title)}-${String(page?.id || index).slice(-6).toLowerCase()}`
         const date = formatDateForCz(parseDate(findProperty(properties, ['Datum', 'Date', 'Kdy', 'Datum publikace'])))
         const excerpt = parsePlainText(findProperty(properties, ['Perex', 'Excerpt', 'Popis', 'Summary', 'Anotace']))
         const content = parsePlainText(findProperty(properties, ['Text', 'Obsah', 'Content', 'Článek', 'Clanek', 'Detail'])) || excerpt
@@ -546,6 +548,7 @@ function localApiNewsProxy() {
 
         return {
           id: page?.id || `notion-news-${index}`,
+          slug: stableSlug,
           date,
           title,
           excerpt,

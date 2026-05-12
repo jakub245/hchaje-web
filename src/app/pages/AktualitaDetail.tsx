@@ -29,6 +29,7 @@ type Article = {
 };
 
 type ApiNewsItem = {
+  slug?: string;
   date?: string;
   title?: string;
   excerpt?: string;
@@ -270,7 +271,11 @@ export default function AktualitaDetail() {
         if (!response.ok) return;
 
         const payload = (await response.json()) as { news?: ApiNewsItem[] };
-        const matched = (payload.news ?? []).find((item) => toSlug(String(item.title || "")) === articleSlug);
+        const matched = (payload.news ?? []).find((item) => {
+          const apiSlug = String(item.slug || "").trim();
+          if (apiSlug) return apiSlug === articleSlug;
+          return toSlug(String(item.title || "")) === articleSlug;
+        });
         if (!matched || !isActive) return;
 
         setApiArticle({

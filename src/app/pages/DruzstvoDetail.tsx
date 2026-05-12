@@ -67,6 +67,7 @@ type ApiCoach = Partial<CoachItem>;
 
 type TeamNewsItem = {
   id: string;
+  slug: string;
   date: string;
   title: string;
   excerpt?: string;
@@ -369,6 +370,7 @@ export default function DruzstvoDetail() {
 
             return {
               id: item.id || `notion-news-${index}`,
+              slug: String(item.slug || "").trim() || normalizeText(item.title || `aktualita-${index}`),
               date: item.date || "—",
               title: item.title || "Aktualita",
               excerpt: item.excerpt || "",
@@ -560,7 +562,7 @@ export default function DruzstvoDetail() {
   const displayedPlayers = playersLoaded && players.length > 0 ? players : [];
   const displayedPlayerCount = playersLoaded && players.length > 0 ? players.length : team.players.length;
   const displayedNews = newsLoaded
-    ? teamNews.map((item: TeamNewsItem) => ({ title: item.title, date: item.date, excerpt: item.excerpt || item.content || "", mediaSections: item.mediaSections }))
+    ? teamNews.map((item: TeamNewsItem) => ({ slug: item.slug, title: item.title, date: item.date, excerpt: item.excerpt || item.content || "", mediaSections: item.mediaSections }))
     : newsSorted;
 
   return (
@@ -993,7 +995,7 @@ export default function DruzstvoDetail() {
               <NewsCard
                 key={i}
                 article={{ title: n.title, date: n.date, excerpt: n.excerpt, content: n.excerpt, mediaSections: n.mediaSections }}
-                to={`/aktuality/${normalizeText(n.title)}`}
+                to={`/aktuality/${("slug" in n && n.slug) ? n.slug : normalizeText(n.title)}`}
                 backTo={`/druzstva/${team.slug}#aktuality`}
                 className="basis-[18rem] md:basis-[calc((100%-1rem)/2)] xl:basis-[calc((100%-2rem)/3)] flex-shrink-0 p-6 rounded-3xl"
               />
