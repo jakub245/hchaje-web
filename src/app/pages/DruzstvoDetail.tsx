@@ -101,6 +101,28 @@ const normalizeText = (value: string) =>
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9]/g, "");
 
+const parseCzDate = (value: string) => {
+  if (!value) return Number.MAX_SAFE_INTEGER;
+  const clean = value.replace(/\s/g, "");
+
+  if (/^\d{4}-\d{2}-\d{2}/.test(clean)) {
+    return new Date(clean).getTime();
+  }
+
+  const [day, month, year] = clean.split(".").filter(Boolean);
+  if (!day || !month || !year) return Number.MAX_SAFE_INTEGER;
+
+  return new Date(Number(year), Number(month) - 1, Number(day)).getTime();
+};
+
+const getUpcomingEvents = (allEvents: EventItem[]): EventItem[] => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const todayTs = today.getTime();
+  
+  return allEvents.filter((event) => parseCzDate(event.date) >= todayTs);
+};
+
 const filterToCurrentSeason = (items: TrainingItem[]): TrainingItem[] => {
   const uniqueSections = [...new Set(items.map((t) => t.section?.trim() || ""))].filter(Boolean);
   if (uniqueSections.length <= 1) return items;
@@ -569,17 +591,19 @@ export default function DruzstvoDetail() {
 
   const trainingCount = trainingBlocks.reduce((sum, block: { title: string; items: Array<{ day: string; time: string; hall: string }> }) => sum + block.items.length, 0);
 
-  const displayedEvents = eventsLoaded
-    ? events.map((event: EventItem) => ({
-        date: event.date,
-        title: event.title,
-        location: event.location,
-      }))
-    : (team.events ?? []).map((event) => ({
-        date: event.date,
-        title: event.title,
-        location: event.location,
-      }));
+  const displayedEvents = getUpcomingEvents(
+    eventsLoaded
+      ? events.map((event: EventItem) => ({
+          date: event.date,
+          title: event.title,
+          location: event.location,
+        }))
+      : (team.events ?? []).map((event) => ({
+          date: event.date,
+          title: event.title,
+          location: event.location,
+        }))
+  );
   const displayedStaff = coachesLoaded && coaches.length > 0
     ? coaches.map((c: CoachItem) => ({ name: c.name, phone: c.phone, email: c.email, photoUrl: c.photoUrl, age: c.age, position: c.position, sortPriority: c.sortPriority }))
     : [];

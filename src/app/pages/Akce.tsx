@@ -38,6 +38,14 @@ const parseCzDate = (value: string) => {
   return new Date(Number(year), Number(month) - 1, Number(day)).getTime();
 };
 
+const getUpcomingEvents = (allEvents: EventItem[]): EventItem[] => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const todayTs = today.getTime();
+  
+  return allEvents.filter((event) => parseCzDate(event.date) >= todayTs);
+};
+
 const fallbackEvents: EventItem[] = TEAMS.flatMap((team) =>
   (team.events ?? []).map((event, index) => ({
     id: `${team.slug}-${index}-${event.date}-${event.title}`,
@@ -140,9 +148,11 @@ export default function AkcePage() {
       });
   }, [events]);
 
-  const filteredEvents = selectedTeam === "all"
-    ? events
-    : events.filter((event) => event.teamSlug === selectedTeam);
+  const filteredEvents = getUpcomingEvents(
+    selectedTeam === "all"
+      ? events
+      : events.filter((event) => event.teamSlug === selectedTeam)
+  );
 
   return (
     <>
