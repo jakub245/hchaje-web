@@ -61,7 +61,11 @@ const toSlug = (value: string) =>
     .replace(/[^a-z0-9]/g, "");
 
 const parseCzDate = (value: string) => {
-  const [day, month, year] = value.replace(/\s/g, "").split(".").filter(Boolean);
+  const clean = String(value || "").replace(/\s/g, "");
+  if (/^\d{4}-\d{2}-\d{2}/.test(clean)) return new Date(clean).getTime();
+
+  const [day, month, year] = clean.split(".").filter(Boolean);
+  if (!day || !month || !year) return Number.MAX_SAFE_INTEGER;
   return new Date(Number(year), Number(month) - 1, Number(day)).getTime();
 };
 
@@ -86,22 +90,23 @@ type NewsPreview = {
   teamName: string;
 };
 
-const getUpcomingEvents = () => {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const todayTs = today.getTime();
+type ApiEvent = {
+  id?: string;
+  date?: string;
+  title?: string;
+  location?: string;
+  teamName?: string;
+  teamSlug?: string;
+};
 
-  return TEAMS.flatMap((team) =>
-    (team.events ?? []).map((event) => ({
-      ...event,
-      team: team.name,
-      slug: team.slug,
-      sortValue: parseCzDate(event.date),
-    })),
-  )
-    .filter((event) => event.sortValue >= todayTs)
-    .sort((a, b) => a.sortValue - b.sortValue)
-    .slice(0, 5);
+type HomeEvent = {
+  id: string;
+  date: string;
+  title: string;
+  location: string;
+  teamName: string;
+  teamSlug: string;
+  sortValue: number;
 };
 
 const getYoutubeEmbedUrl = (url: string) => {
@@ -333,10 +338,51 @@ function ReelsSection() {
 function NewsAndTrainings() {
   const [latestNews, setLatestNews] = useState<NewsPreview[]>([]);
   const [newsLoading, setNewsLoading] = useState(true);
-  const upcomingEvents = getUpcomingEvents();
+  const [upcomingEvents, setUpcomingEvents] = useState<HomeEvent[]>([]);
+  const [eventsLoading, setEventsLoading] = useState(true);
 
   useEffect(() => {
     let isActive = true;
+
+    const loadUpcomingEvents = async () => {
+      setEventsLoading(true);
+      try {
+        const response = await fetch("/api/events");
+        if (!response.ok) throw new Error("Nepodarilo se nacist akce");
+
+        const payload = (await response.json()) as { events?: ApiEvent[] };
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const todayTs = today.getTime();
+
+        const normalized = (payload.events ?? [])
+          .map((item, index) => {
+            const date = String(item.date || "—");
+            const sortValue = parseCzDate(date);
+            return {
+              id: String(item.id || `event-${index}`),
+              date,
+              title: String(item.title || "Akce"),
+              location: String(item.location || ""),
+              teamName: String(item.teamName || "Nezařazeno"),
+              teamSlug: String(item.teamSlug || "").trim(),
+              sortValue,
+            } satisfies HomeEvent;
+          })
+          .filter((event) => event.sortValue >= todayTs)
+          .sort((a, b) => a.sortValue - b.sortValue)
+          .slice(0, 5);
+
+        if (!isActive) return;
+        setUpcomingEvents(normalized);
+      } catch {
+        if (!isActive) return;
+        setUpcomingEvents([]);
+      } finally {
+        if (!isActive) return;
+        setEventsLoading(false);
+      }
+    };
 
     const loadLatestNews = async () => {
       setNewsLoading(true);
@@ -374,6 +420,7 @@ function NewsAndTrainings() {
     };
 
     loadLatestNews();
+    loadUpcomingEvents();
     return () => {
       isActive = false;
     };
@@ -444,29 +491,48 @@ function NewsAndTrainings() {
           <div>
             <SectionLabel>Akce</SectionLabel>
             <h2 className="text-3xl lg:text-4xl text-white uppercase mb-8" style={{ fontFamily: bebas }}>Nejbližší akce</h2>
-            <div className="space-y-3">
-              {upcomingEvents.map((event, i) => (
-                <Link
-                  key={event.slug + event.date + event.title + i}
-                  to={`/druzstva/${event.slug}`}
-                  className="mobile-solid-card flex items-center gap-4 p-4 rounded-2xl bg-[#101a10] border border-[#6EE76D]/12 hover:border-[#6EE76D]/25 transition-all group"
-                >
-                  <div className="mobile-solid-chip w-10 h-10 rounded-full bg-[#6EE76D]/14 flex items-center justify-center flex-shrink-0">
-                    <Calendar className="w-5 h-5 text-[#6EE76D]" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <span className="text-white" style={{ fontFamily: inter }}>{event.title}</span>
-                    <div className="flex flex-wrap items-center gap-3 text-sm text-white/35 mt-0.5">
-                      <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5 text-[#6EE76D]" /> {event.date}</span>
-                      <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5 text-[#6EE76D]" /> {event.location}</span>
-                      <span className="px-2.5 py-0.5 rounded-full bg-[#F587B9]/12 text-[#FFC2DD] text-[11px] tracking-[0.1em]" style={{ fontFamily: bebas }}>{event.team}</span>
+            {eventsLoading ? (
+              <div className="space-y-3">
+                {[...Array(5)].map((_, i) => (
+                  <div key={`home-events-skeleton-${i}`} className="mobile-solid-card flex items-center gap-4 p-4 rounded-2xl bg-[#101a10] border border-[#6EE76D]/12 animate-pulse">
+                    <div className="w-10 h-10 rounded-full bg-[#6EE76D]/10 flex-shrink-0" />
+                    <div className="flex-1 min-w-0">
+                      <div className="h-4 bg-[#6EE76D]/10 rounded w-4/5 mb-2" />
+                      <div className="h-3 bg-[#6EE76D]/10 rounded w-1/2" />
                     </div>
+                    <div className="w-5 h-5 rounded bg-[#6EE76D]/10" />
                   </div>
-                  <ArrowRight className="w-5 h-5 text-[#8F988F] group-hover:text-[#6EE76D] group-hover:translate-x-0.5 transition-all flex-shrink-0" />
-                </Link>
-              ))}
-            </div>
-            <Btn variant="secondary" to="/druzstva" className="mt-6">Všechny akce družstev</Btn>
+                ))}
+              </div>
+            ) : upcomingEvents.length > 0 ? (
+              <div className="space-y-3">
+                {upcomingEvents.map((event) => (
+                  <Link
+                    key={event.id}
+                    to={event.teamSlug ? `/druzstva/${event.teamSlug}` : "/akce"}
+                    className="mobile-solid-card flex items-center gap-4 p-4 rounded-2xl bg-[#101a10] border border-[#6EE76D]/12 hover:border-[#6EE76D]/25 transition-all group"
+                  >
+                    <div className="mobile-solid-chip w-10 h-10 rounded-full bg-[#6EE76D]/14 flex items-center justify-center flex-shrink-0">
+                      <Calendar className="w-5 h-5 text-[#6EE76D]" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <span className="text-white" style={{ fontFamily: inter }}>{event.title}</span>
+                      <div className="flex flex-wrap items-center gap-3 text-sm text-white/35 mt-0.5">
+                        <span className="flex items-center gap-1"><Calendar className="w-3.5 h-3.5 text-[#6EE76D]" /> {event.date}</span>
+                        <span className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5 text-[#6EE76D]" /> {event.location}</span>
+                        <span className="px-2.5 py-0.5 rounded-full bg-[#F587B9]/12 text-[#FFC2DD] text-[11px] tracking-[0.1em]" style={{ fontFamily: bebas }}>{event.teamName}</span>
+                      </div>
+                    </div>
+                    <ArrowRight className="w-5 h-5 text-[#8F988F] group-hover:text-[#6EE76D] group-hover:translate-x-0.5 transition-all flex-shrink-0" />
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-3xl border border-[#6EE76D]/8 bg-[#0e160e] p-6 text-white/70" style={{ fontFamily: inter }}>
+                Nejbližší akce zatím nejsou k dispozici.
+              </div>
+            )}
+            <Btn variant="secondary" to="/akce" className="mt-6">Všechny akce</Btn>
           </div>
         </div>
       </div>

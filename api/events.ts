@@ -3,8 +3,6 @@ const NOTION_VERSION = "2022-06-28";
 
 declare const process: any;
 
-const FALLBACK_NOTION_TOKEN = "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";
-const FALLBACK_NOTION_DATABASE_ID = "350c5ef377c78092a67cd5e8b3869bb8";
 const EVENTS_CACHE_TTL_MS = 1000 * 60 * 3;
 
 type CachedEvents = {
@@ -62,6 +60,20 @@ const toSlug = (value: string) =>
     .replace(/[^a-z0-9]/g, "-")
     .replace(/-+/g, "-")
     .replace(/^-|-$/g, "");
+
+const resolveCanonicalTeamSlug = (teamName: string) => {
+  const key = normalizeKey(teamName);
+
+  if (key.includes("zen")) return "zeny";
+  if (key.includes("starsidorosten")) return "starsi-dorostenky";
+  if (key.includes("mladsidorosten")) return "mladsi-dorostenky";
+  if (key.includes("starsi") && key.includes("zak")) return "starsi-zakyne";
+  if (key.includes("mladsi") && key.includes("zak")) return "mladsi-zakyne";
+  if (key.includes("mini") && key.includes("zak")) return "mini-zakyne";
+  if (key.includes("priprav")) return "pripravka";
+
+  return toSlug(teamName);
+};
 
 const parseDateTs = (value: string) => {
   const clean = value.replace(/\s/g, "");
@@ -123,8 +135,16 @@ const resolveVisibility = (properties: Record<string, any>): boolean => {
 };
 
 const loadEventsFromNotion = async () => {
-  const notionToken = process.env.NOTION_TOKEN || FALLBACK_NOTION_TOKEN;
-  const notionDatabaseId = process.env.NOTION_DATABASE_ID || FALLBACK_NOTION_DATABASE_ID;
+  const notionToken = process.env.NOTION_TOKEN;
+  const notionDatabaseId = process.env.NOTION_DATABASE_ID;
+
+  if (!notionToken) {
+    throw new Error("Missing NOTION_TOKEN environment variable.");
+  }
+
+  if (!notionDatabaseId) {
+    throw new Error("Missing NOTION_DATABASE_ID environment variable.");
+  }
 
   const pages: any[] = [];
   let hasMore = true;
@@ -210,7 +230,7 @@ const loadEventsFromNotion = async () => {
         title,
         location,
         teamName,
-        teamSlug: toSlug(teamName),
+        teamSlug: resolveCanonicalTeamSlug(teamName),
       };
     }),
   );

@@ -19,8 +19,15 @@ function figmaAssetResolver() {
 function localApiEventsProxy() {
   const notionApiBase = 'https://api.notion.com/v1'
   const notionVersion = '2022-06-28'
-  const notionToken = process.env.NOTION_TOKEN || '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'
-  const notionDatabaseId = process.env.NOTION_DATABASE_ID || '350c5ef377c78092a67cd5e8b3869bb8'
+  const notionToken = process.env.NOTION_TOKEN
+  const notionDatabaseId = process.env.NOTION_DATABASE_ID
+
+  const normalizeKey = (value: string) =>
+    value
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]/g, '')
 
   const parseTitle = (properties: any) => {
     const title = properties?.['Název']?.title || properties?.['Nazev']?.title || properties?.['Name']?.title || properties?.['title']?.title
@@ -41,7 +48,25 @@ function localApiEventsProxy() {
       .replace(/-+/g, '-')
       .replace(/^-|-$/g, '')
 
+  const resolveCanonicalTeamSlug = (teamName: string) => {
+    const key = normalizeKey(teamName)
+
+    if (key.includes('zen')) return 'zeny'
+    if (key.includes('starsidorosten')) return 'starsi-dorostenky'
+    if (key.includes('mladsidorosten')) return 'mladsi-dorostenky'
+    if (key.includes('starsi') && key.includes('zak')) return 'starsi-zakyne'
+    if (key.includes('mladsi') && key.includes('zak')) return 'mladsi-zakyne'
+    if (key.includes('mini') && key.includes('zak')) return 'mini-zakyne'
+    if (key.includes('priprav')) return 'pripravka'
+
+    return toSlug(teamName)
+  }
+
   const loadEvents = async () => {
+    if (!notionToken || !notionDatabaseId) {
+      throw new Error('Missing NOTION_TOKEN or NOTION_DATABASE_ID for /api/events local proxy')
+    }
+
     let hasMore = true
     let nextCursor: string | null = null
     const pages: any[] = []
@@ -92,14 +117,14 @@ function localApiEventsProxy() {
     return Promise.all(
       pages.map(async (page: any) => {
         const properties = page?.properties ?? {}
-        const date = parseRichText(properties?.['Datum'] || properties?.['Date'] || properties?.['date'])
+        const date = parseRichText(properties?.['Datum od'] || properties?.['Datum'] || properties?.['Date'] || properties?.['date'])
         const title = parseTitle(properties)
         const location = parseRichText(properties?.['Místo'] || properties?.['Misto'] || properties?.['Location'] || properties?.['location'])
 
         let teamName = 'Nezařazeno'
         let teamSlug = ''
 
-        const teamRelation = properties?.['Družstvo']?.relation || properties?.['Druzstvo']?.relation || properties?.['Team']?.relation || properties?.['team']?.relation || []
+        const teamRelation = properties?.['Družstva']?.relation || properties?.['Druzstva']?.relation || properties?.['Družstvo']?.relation || properties?.['Druzstvo']?.relation || properties?.['Team']?.relation || properties?.['team']?.relation || []
         if (Array.isArray(teamRelation) && teamRelation.length > 0) {
           const resolvedNames = await Promise.all(teamRelation.map((relation: any) => readRelatedTitle(relation?.id)))
           const resolved = resolvedNames.filter(Boolean)
@@ -115,7 +140,7 @@ function localApiEventsProxy() {
           title,
           location,
           teamName,
-          teamSlug: toSlug(teamName),
+          teamSlug: resolveCanonicalTeamSlug(teamName),
         }
       }),
     )

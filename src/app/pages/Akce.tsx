@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router";
 import { Calendar, MapPin } from "lucide-react";
 import { CtaStrip, PageHero, bebas, inter, nbspShortWords } from "../components/shared";
-import { TEAMS } from "../data/teams";
 
 type EventItem = {
   id: string;
@@ -46,19 +45,6 @@ const getUpcomingEvents = (allEvents: EventItem[]): EventItem[] => {
   return allEvents.filter((event) => parseCzDate(event.date) >= todayTs);
 };
 
-const fallbackEvents: EventItem[] = TEAMS.flatMap((team) =>
-  (team.events ?? []).map((event, index) => ({
-    id: `${team.slug}-${index}-${event.date}-${event.title}`,
-    date: event.date,
-    title: event.title,
-    location: event.location,
-    teamSlug: team.slug,
-    teamName: team.name,
-  })),
-).sort((a, b) => parseCzDate(a.date) - parseCzDate(b.date));
-
-const teamSlugSet = new Set(TEAMS.map((team) => team.slug));
-const teamNameToSlug = new Map(TEAMS.map((team) => [normalizeText(team.name), team.slug] as const));
 const teamOrder = new Map([
   ["pripravka", 0],
   ["mini-zakyne", 1],
@@ -71,9 +57,8 @@ const teamOrder = new Map([
 
 export default function AkcePage() {
   const [selectedTeam, setSelectedTeam] = useState("all");
-  const [events, setEvents] = useState<EventItem[]>(fallbackEvents);
+  const [events, setEvents] = useState<EventItem[]>([]);
   const [eventsLoading, setEventsLoading] = useState(true);
-  const [source, setSource] = useState<"notion" | "fallback">("fallback");
 
   useEffect(() => {
     let active = true;
@@ -89,8 +74,7 @@ export default function AkcePage() {
           .map((item, index) => {
             const teamName = (item.teamName ?? "Nezařazeno").trim();
             const directSlug = (item.teamSlug ?? "").trim();
-            const mappedSlug = teamNameToSlug.get(normalizeText(teamName));
-            const teamSlug = teamSlugSet.has(directSlug) ? directSlug : mappedSlug ?? directSlug ?? "";
+            const teamSlug = directSlug || normalizeText(teamName);
 
             return {
               id: item.id || `notion-${index}`,
@@ -106,19 +90,12 @@ export default function AkcePage() {
 
         if (!active) return;
 
-        if (normalized.length > 0) {
-          setEvents(normalized);
-          setSource("notion");
-        } else {
-          setEvents(fallbackEvents);
-          setSource("fallback");
-        }
+        setEvents(normalized);
 
         setEventsLoading(false);
       } catch {
         if (!active) return;
-        setEvents(fallbackEvents);
-        setSource("fallback");
+        setEvents([]);
         setEventsLoading(false);
       }
     };
@@ -208,12 +185,6 @@ export default function AkcePage() {
                 <div className="w-4 h-4 rounded-full bg-[#6EE76D] animate-pulse" />
                 <p className="text-[#6EE76D] text-sm" style={{ fontFamily: inter }}>Načítám aktuální data...</p>
               </div>
-            )}
-
-            {source === "fallback" && !eventsLoading && (
-              <p className="mt-4 text-white/45 text-sm" style={{ fontFamily: inter }}>
-                {nbspShortWords("Aktuálně se zobrazují záložní data z webu. Po připojení Notion databáze se načtou živé akce.")}
-              </p>
             )}
           </div>
 

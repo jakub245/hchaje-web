@@ -146,7 +146,6 @@ export default function DruzstvoDetail() {
   const [active, setActive] = useState("prehled");
   const [events, setEvents] = useState<EventItem[]>([]);
   const [eventsLoading, setEventsLoading] = useState(true);
-  const [eventsLoaded, setEventsLoaded] = useState(false);
   const [trainings, setTrainings] = useState<TrainingItem[]>([]);
   const [trainingsLoading, setTrainingsLoading] = useState(true);
   const [trainingsLoaded, setTrainingsLoaded] = useState(false);
@@ -185,11 +184,6 @@ export default function DruzstvoDetail() {
   }, [team]);
 
   if (!team) return <Navigate to="/druzstva" replace />;
-
-  const parseCzDate = (date: string) => {
-    const [day, month, year] = date.split(".").map((value) => parseInt(value.trim(), 10));
-    return new Date(year, month - 1, day).getTime();
-  };
 
   const scrollTo = (id: string) => {
     sectionRefs.current[id]?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -296,12 +290,10 @@ export default function DruzstvoDetail() {
         if (!activeRequest) return;
         setEvents(normalizedEvents);
         setEventsLoading(false);
-        setEventsLoaded(true);
       } catch {
         if (!activeRequest) return;
         setEvents([]);
         setEventsLoading(false);
-        setEventsLoaded(true);
       }
     };
 
@@ -592,17 +584,11 @@ export default function DruzstvoDetail() {
   const trainingCount = trainingBlocks.reduce((sum, block: { title: string; items: Array<{ day: string; time: string; hall: string }> }) => sum + block.items.length, 0);
 
   const displayedEvents = getUpcomingEvents(
-    eventsLoaded
-      ? events.map((event: EventItem) => ({
-          date: event.date,
-          title: event.title,
-          location: event.location,
-        }))
-      : (team.events ?? []).map((event) => ({
-          date: event.date,
-          title: event.title,
-          location: event.location,
-        }))
+    events.map((event: EventItem) => ({
+      date: event.date,
+      title: event.title,
+      location: event.location,
+    }))
   );
   const displayedStaff = coachesLoaded && coaches.length > 0
     ? coaches.map((c: CoachItem) => ({ name: c.name, phone: c.phone, email: c.email, photoUrl: c.photoUrl, age: c.age, position: c.position, sortPriority: c.sortPriority }))
