@@ -451,6 +451,80 @@ function localApiNewsProxy() {
     }
   }
 
+  const parseRichTextArray = (value: any[] = []) =>
+    value
+      .map((item: any) => item?.plain_text || '')
+      .join('')
+      .trim()
+
+  const extractTextFromBlock = (block: any): string => {
+    const type = block?.type
+    if (!type) return ''
+
+    const data = block?.[type]
+    if (!data || typeof data !== 'object') return ''
+
+    if (Array.isArray(data.rich_text)) {
+      return parseRichTextArray(data.rich_text)
+    }
+
+    if (type === 'table_row' && Array.isArray(data.cells)) {
+      return data.cells
+        .map((cell: any[]) => parseRichTextArray(Array.isArray(cell) ? cell : []))
+        .filter(Boolean)
+        .join(' | ')
+    }
+
+    if (type === 'equation' && typeof data.expression === 'string') {
+      return data.expression.trim()
+    }
+
+    return ''
+  }
+
+  const readBlockChildrenText = async (
+    blockId: string,
+    depth = 0,
+  ): Promise<string[]> => {
+    if (!blockId || depth > 2) return []
+
+    const lines: string[] = []
+    let hasMore = true
+    let nextCursor: string | null = null
+
+    while (hasMore) {
+      const query = new URLSearchParams({ page_size: '100' })
+      if (nextCursor) query.set('start_cursor', nextCursor)
+
+      const response = await fetch(`${notionApiBase}/blocks/${blockId}/children?${query.toString()}`, {
+        headers: {
+          Authorization: `Bearer ${notionToken}`,
+          'Notion-Version': notionVersion,
+        },
+      })
+
+      if (!response.ok) break
+
+      const data = await response.json()
+      const blocks = data?.results ?? []
+
+      for (const block of blocks) {
+        const line = extractTextFromBlock(block)
+        if (line) lines.push(line)
+
+        if (block?.has_children && block?.id) {
+          const childLines = await readBlockChildrenText(block.id, depth + 1)
+          lines.push(...childLines)
+        }
+      }
+
+      hasMore = Boolean(data?.has_more)
+      nextCursor = data?.next_cursor ?? null
+    }
+
+    return lines
+  }
+
   const loadNews = async () => {
     let hasMore = true
     let nextCursor: string | null = null
@@ -479,6 +553,17 @@ function localApiNewsProxy() {
     }
 
     const relatedTitleCache = new Map<string, string>()
+    const pageContentCache = new Map<string, string>()
+
+    const readPageContent = async (pageId: string) => {
+      if (pageContentCache.has(pageId)) return pageContentCache.get(pageId) || ''
+
+      const lines = await readBlockChildrenText(pageId)
+      const text = lines.join('\n\n').trim()
+      pageContentCache.set(pageId, text)
+      return text
+    }
+
     const readRelatedTitle = async (pageId: string) => {
       if (relatedTitleCache.has(pageId)) return relatedTitleCache.get(pageId) || ''
       const response = await fetch(`${notionApiBase}/pages/${pageId}`, {
@@ -509,7 +594,9 @@ function localApiNewsProxy() {
         const stableSlug = explicitSlug || `${toSlug(title)}-${String(page?.id || index).slice(-6).toLowerCase()}`
         const date = formatDateForCz(parseDate(findProperty(properties, ['Datum', 'Date', 'Kdy', 'Datum publikace'])))
         const excerpt = parsePlainText(findProperty(properties, ['Perex', 'Excerpt', 'Popis', 'Summary', 'Anotace']))
-        const content = parsePlainText(findProperty(properties, ['Text', 'Obsah', 'Content', 'Článek', 'Clanek', 'Detail'])) || excerpt
+        const propertyContent = parsePlainText(findProperty(properties, ['Text', 'Obsah', 'Content', 'Článek', 'Clanek', 'Detail']))
+        const blockContent = await readPageContent(page?.id || '')
+        const content = propertyContent || blockContent || excerpt
         const photoUrlProp = findProperty(properties, ['Foto URL', 'Foto', 'Photo URL', 'Image URL', 'Obrázek URL', 'Obrazek URL'])
         const mediaProp = findProperty(properties, ['Média', 'Media', 'Media URL', 'Media URLs', 'Galerie', 'Gallery', 'Soubory', 'Files'])
         const videoProp = findProperty(properties, ['Video', 'Video URL', 'Videa', 'Videos', 'YouTube'])
@@ -628,6 +715,46 @@ function localApiCoachesProxy() {
     return value || ''
   }
 
+  const parseNumberLike = (property: any): number | null => {
+    if (!property || typeof property !== 'object') return null
+
+    if (property.type === 'number' && typeof property.number === 'number') return property.number
+    if (property.type === 'formula' && property.formula?.type === 'number' && typeof property.formula.number === 'number') {
+      return property.formula.number
+    }
+
+    const text = parseRichText(property).trim()
+    const value = Number(text.replace(',', '.'))
+    return Number.isFinite(value) ? value : null
+  }
+
+  const rankByPosition = (position: string): number => {
+    const normalized = normalizeKey(position || '')
+    if (normalized.includes('hlavni')) return 0
+    if (normalized.includes('asistent') || normalized.includes('assistant')) return 1
+    return 2
+  }
+
+  const parseSortPriority = (properties: Record<string, any>, position: string): number => {
+    const priorityProp = findProperty(properties, [
+      'Důležitost',
+      'Dulezitost',
+      'Priorita',
+      'Priority',
+      'Pořadí',
+      'Poradi',
+      'Order',
+    ])
+
+    const numberValue = parseNumberLike(priorityProp)
+    if (numberValue !== null) return numberValue
+
+    const textValue = parseRichText(priorityProp)
+    if (textValue) return rankByPosition(textValue)
+
+    return rankByPosition(position)
+  }
+
   const toSlug = (value: string) =>
     value
       .toLowerCase()
@@ -693,6 +820,7 @@ function localApiCoachesProxy() {
         const properties = page?.properties ?? {}
         const name = parseTitle(findProperty(properties, ['Jméno', 'Jmeno', 'Name']) || properties.title)
         const position = parseRichText(findProperty(properties, ['Pozice', 'Role', 'Position'])) || ''
+        const sortPriority = parseSortPriority(properties, position)
         const phone = parseRichText(findProperty(properties, ['Telefon', 'Phone'])) || ''
         const email = parseRichText(findProperty(properties, ['E-mail', 'Email', 'Mail'])) || ''
 
@@ -725,6 +853,7 @@ function localApiCoachesProxy() {
           id: page?.id || `notion-coach-${index}`,
           name,
           position,
+          sortPriority,
           teamName,
           teamSlug,
           phone,

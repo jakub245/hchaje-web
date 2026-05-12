@@ -365,6 +365,81 @@ const buildMediaSections = async (urls: string[]) => {
   };
 };
 
+const parseRichTextArray = (value: any[] = []) =>
+  value
+    .map((item: any) => item?.plain_text || "")
+    .join("")
+    .trim();
+
+const extractTextFromBlock = (block: any): string => {
+  const type = block?.type;
+  if (!type) return "";
+
+  const data = block?.[type];
+  if (!data || typeof data !== "object") return "";
+
+  if (Array.isArray(data.rich_text)) {
+    return parseRichTextArray(data.rich_text);
+  }
+
+  if (type === "table_row" && Array.isArray(data.cells)) {
+    return data.cells
+      .map((cell: any[]) => parseRichTextArray(Array.isArray(cell) ? cell : []))
+      .filter(Boolean)
+      .join(" | ");
+  }
+
+  if (type === "equation" && typeof data.expression === "string") {
+    return data.expression.trim();
+  }
+
+  return "";
+};
+
+const readBlockChildrenText = async (
+  blockId: string,
+  notionToken: string,
+  depth = 0,
+): Promise<string[]> => {
+  if (!blockId || depth > 2) return [];
+
+  const lines: string[] = [];
+  let hasMore = true;
+  let nextCursor: string | null = null;
+
+  while (hasMore) {
+    const query = new URLSearchParams({ page_size: "100" });
+    if (nextCursor) query.set("start_cursor", nextCursor);
+
+    const response = await fetch(`${NOTION_API_BASE}/blocks/${blockId}/children?${query.toString()}`, {
+      headers: {
+        Authorization: `Bearer ${notionToken}`,
+        "Notion-Version": NOTION_VERSION,
+      },
+    });
+
+    if (!response.ok) break;
+
+    const data = await response.json();
+    const blocks = data?.results ?? [];
+
+    for (const block of blocks) {
+      const line = extractTextFromBlock(block);
+      if (line) lines.push(line);
+
+      if (block?.has_children && block?.id) {
+        const childLines = await readBlockChildrenText(block.id, notionToken, depth + 1);
+        lines.push(...childLines);
+      }
+    }
+
+    hasMore = Boolean(data?.has_more);
+    nextCursor = data?.next_cursor ?? null;
+  }
+
+  return lines;
+};
+
 const loadNewsFromNotion = async () => {
   const notionToken = process.env.NOTION_TOKEN || FALLBACK_NOTION_TOKEN;
   const notionDatabaseId = process.env.NOTION_NEWS_DATABASE_ID || FALLBACK_NEWS_DATABASE_ID;
@@ -399,6 +474,17 @@ const loadNewsFromNotion = async () => {
   }
 
   const relatedTitleCache = new Map<string, string>();
+  const pageContentCache = new Map<string, string>();
+
+  const readPageContent = async (pageId: string) => {
+    if (pageContentCache.has(pageId)) return pageContentCache.get(pageId) || "";
+
+    const lines = await readBlockChildrenText(pageId, notionToken);
+    const text = lines.join("\n\n").trim();
+    pageContentCache.set(pageId, text);
+    return text;
+  };
+
   const readRelatedTitle = async (pageId: string) => {
     if (relatedTitleCache.has(pageId)) return relatedTitleCache.get(pageId) || "";
 
@@ -466,7 +552,9 @@ const loadNewsFromNotion = async () => {
       const explicitSlug = toSlug(parsePlainText(slugProp));
       const stableSlug = explicitSlug || `${toSlug(title)}-${String(page?.id || index).slice(-6).toLowerCase()}`;
       const excerpt = parsePlainText(excerptProp);
-      const content = parsePlainText(contentProp) || excerpt;
+      const propertyContent = parsePlainText(contentProp);
+      const blockContent = await readPageContent(page?.id || "");
+      const content = propertyContent || blockContent || excerpt;
       const mediaUrls = [
         ...parseUrlsFromProperty(photoUrlProp),
         ...parseUrlsFromProperty(mediaProp),

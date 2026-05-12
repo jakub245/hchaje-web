@@ -304,9 +304,11 @@ export default function AktualitaDetail() {
     (item) => item.slug === articleSlug || (state?.article?.title && item.slug === toSlug(state.article.title))
   );
 
-  const fallbackArticle = apiArticle ?? detailedFallbackArticle ?? sharedFallbackArticle;
+  const fallbackArticle = detailedFallbackArticle ?? sharedFallbackArticle;
 
-  const article = state?.article
+  const article = apiArticle
+    ? apiArticle
+    : state?.article
     ? {
         ...fallbackArticle,
         ...state.article,

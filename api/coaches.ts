@@ -13,6 +13,7 @@ type CachedCoaches = {
     id: string;
     name: string;
     position: string;
+    sortPriority: number;
     teamName: string;
     teamSlug: string;
     phone: string;
@@ -99,6 +100,46 @@ const parseDateOfBirth = (property: any): string => {
   if (property.type === "date" && property.date?.start) return property.date.start;
   const rich = parseRichText(property);
   return rich;
+};
+
+const parseNumberLike = (property: any): number | null => {
+  if (!property || typeof property !== "object") return null;
+
+  if (property.type === "number" && typeof property.number === "number") return property.number;
+  if (property.type === "formula" && property.formula?.type === "number" && typeof property.formula.number === "number") {
+    return property.formula.number;
+  }
+
+  const text = parseRichText(property).trim();
+  const value = Number(text.replace(",", "."));
+  return Number.isFinite(value) ? value : null;
+};
+
+const rankByPosition = (position: string): number => {
+  const normalized = normalizeKey(position || "");
+  if (normalized.includes("hlavni")) return 0;
+  if (normalized.includes("asistent") || normalized.includes("assistant")) return 1;
+  return 2;
+};
+
+const parseSortPriority = (properties: Record<string, any>, position: string): number => {
+  const priorityProp = findProperty(properties, [
+    "Důležitost",
+    "Dulezitost",
+    "Priorita",
+    "Priority",
+    "Pořadí",
+    "Poradi",
+    "Order",
+  ]);
+
+  const numberValue = parseNumberLike(priorityProp);
+  if (numberValue !== null) return numberValue;
+
+  const textValue = parseRichText(priorityProp);
+  if (textValue) return rankByPosition(textValue);
+
+  return rankByPosition(position);
 };
 
 const calculateAge = (dob: string): string => {
@@ -249,6 +290,7 @@ const loadCoachesFromNotion = async () => {
       if (!resolveVisibility(properties)) return null;
       const name = parseTitle(findProperty(properties, ["Jméno", "Jmeno", "Name"]) || properties["title"]);
       const position = parseRichText(findProperty(properties, ["Pozice", "Role", "Position"])) || "";
+      const sortPriority = parseSortPriority(properties, position);
       const phone = parseRichText(findProperty(properties, ["Telefon", "Phone"])) || "";
       const email = parseRichText(findProperty(properties, ["E-mail", "Email", "Mail"])) || "";
       const photoUrl = parsePhotoUrl(findProperty(properties, ["Fotka", "Foto", "Fotografie", "Profilovka", "Photo", "Image", "Avatar"])) || "";
@@ -299,6 +341,7 @@ const loadCoachesFromNotion = async () => {
         id: page?.id || `notion-coach-${index}`,
         name,
         position,
+        sortPriority,
         teamName,
         teamSlug,
         phone,

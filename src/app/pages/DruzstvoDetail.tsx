@@ -55,6 +55,7 @@ type CoachItem = {
   id: string;
   name: string;
   position: string;
+  sortPriority: number;
   teamName: string;
   teamSlug: string;
   phone: string;
@@ -479,6 +480,7 @@ export default function DruzstvoDetail() {
             id: item.id || `notion-coach-${index}`,
             name: item.name || "",
             position: item.position || "",
+            sortPriority: Number(item.sortPriority ?? Number.MAX_SAFE_INTEGER),
             teamName: item.teamName || "",
             teamSlug: item.teamSlug || "",
             phone: item.phone || "",
@@ -494,6 +496,8 @@ export default function DruzstvoDetail() {
               if (n.includes("asistent")) return 1;
               return 2;
             };
+
+            if (a.sortPriority !== b.sortPriority) return a.sortPriority - b.sortPriority;
             return rank(a.position) - rank(b.position);
           });
 
@@ -557,7 +561,7 @@ export default function DruzstvoDetail() {
         location: event.location,
       }));
   const displayedStaff = coachesLoaded && coaches.length > 0
-    ? coaches.map((c: CoachItem) => ({ name: c.name, phone: c.phone, email: c.email, photoUrl: c.photoUrl, age: c.age, position: c.position }))
+    ? coaches.map((c: CoachItem) => ({ name: c.name, phone: c.phone, email: c.email, photoUrl: c.photoUrl, age: c.age, position: c.position, sortPriority: c.sortPriority }))
     : [];
   const displayedPlayers = playersLoaded && players.length > 0 ? players : [];
   const displayedPlayerCount = playersLoaded && players.length > 0 ? players.length : team.players.length;
@@ -972,22 +976,24 @@ export default function DruzstvoDetail() {
               <span className="text-[#6EE76D] text-sm tracking-[0.2em] uppercase mb-3 block" style={{ fontFamily: bebas }}>Novinky</span>
               <h2 className="text-3xl lg:text-4xl text-white uppercase" style={{ fontFamily: bebas }}>Aktuality</h2>
             </div>
-            <div className="flex gap-2">
-              <button
-                onClick={() => scrollNews(-1)}
-                className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#0e160e]/90 border border-[#6EE76D]/15 text-white/70 hover:text-white transition"
-                aria-label="Posunout aktuality doleva"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-              <button
-                onClick={() => scrollNews(1)}
-                className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#0e160e]/90 border border-[#6EE76D]/15 text-white/70 hover:text-white transition"
-                aria-label="Posunout aktuality doprava"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
-            </div>
+            {displayedNews.length > 3 && (
+              <div className="flex gap-2">
+                <button
+                  onClick={() => scrollNews(-1)}
+                  className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#0e160e]/90 border border-[#6EE76D]/15 text-white/70 hover:text-white transition"
+                  aria-label="Posunout aktuality doleva"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={() => scrollNews(1)}
+                  className="inline-flex h-11 w-11 items-center justify-center rounded-full bg-[#0e160e]/90 border border-[#6EE76D]/15 text-white/70 hover:text-white transition"
+                  aria-label="Posunout aktuality doprava"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </div>
+            )}
           </div>
 
           {displayedNews.length > 0 ? (
