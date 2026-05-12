@@ -155,7 +155,7 @@ function localApiNewsProxy() {
   const notionApiBase = 'https://api.notion.com/v1'
   const notionVersion = '2022-06-28'
   const notionToken = process.env.NOTION_TOKEN || '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'
-  const notionNewsDatabaseId = process.env.NOTION_NEWS_DATABASE_ID || process.env.NOTION_DATABASE_ID || '350c5ef377c78092a67cd5e8b3869bb8'
+  const notionNewsDatabaseId = process.env.NOTION_NEWS_DATABASE_ID || ''
 
   const normalizeKey = (value: string) =>
     value
@@ -452,6 +452,10 @@ function localApiNewsProxy() {
   }
 
   const loadNews = async () => {
+    if (!notionNewsDatabaseId) {
+      throw new Error('Missing NOTION_NEWS_DATABASE_ID. Local /api/news proxy does not fallback to NOTION_DATABASE_ID to avoid mixing with Events.')
+    }
+
     let hasMore = true
     let nextCursor: string | null = null
     const pages: any[] = []

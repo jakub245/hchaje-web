@@ -20,6 +20,13 @@
 
   ## Aktuality media (Google Drive folders)
 
+  Required environment variable for `/api/news`:
+
+  - `NOTION_NEWS_DATABASE_ID`
+
+  This must point to the Aktuality database.
+  The news endpoint intentionally does not fallback to `NOTION_DATABASE_ID`, so news and events are never mixed.
+
   The `/api/news` endpoint can automatically expand Google Drive folder links and map files into the article media layout (gallery + videos).
 
   Optional environment variable:
