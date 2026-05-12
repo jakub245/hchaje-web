@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { PageHero, CtaStrip, NewsCard, bebas, inter } from "../components/shared";
-import { getAllTeamNews } from "../data/teams";
 
 const toSlug = (value: string) =>
   value
@@ -48,25 +47,9 @@ type DisplayNews = {
   >;
 };
 
-const FALLBACK_NEWS: DisplayNews[] = getAllTeamNews()
-  .sort((a, b) => parseCzDate(b.date) - parseCzDate(a.date))
-  .map((item) => ({
-    id: item.id,
-    slug: toSlug(item.title),
-    date: item.date,
-    title: item.title,
-    excerpt: item.excerpt,
-    content: item.content,
-    teamName: item.teamName,
-    teamNames: [item.teamName],
-    teamSlug: item.teamSlug,
-    teamSlugs: [item.teamSlug],
-    mediaSections: [],
-  }));
-
 export default function AktualityPage() {
   const [selectedTeam, setSelectedTeam] = useState("Všechny aktuality");
-  const [news, setNews] = useState<DisplayNews[]>(FALLBACK_NEWS);
+  const [news, setNews] = useState<DisplayNews[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -108,10 +91,10 @@ export default function AktualityPage() {
           .sort((a, b) => parseCzDate(b.date) - parseCzDate(a.date));
 
         if (!isActive) return;
-        setNews(normalizedNews.length > 0 ? normalizedNews : FALLBACK_NEWS);
+        setNews(normalizedNews);
       } catch {
         if (!isActive) return;
-        setNews(FALLBACK_NEWS);
+        setNews([]);
       } finally {
         if (!isActive) return;
         setLoading(false);
@@ -138,44 +121,76 @@ export default function AktualityPage() {
       <section className="reveal-on-scroll pb-20 lg:pb-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-10">
-            <div className="flex items-center gap-2 text-white/80 mb-4" style={{ fontFamily: bebas }}>
-              Filtrovat podle družstva
-            </div>
-            <div className="flex flex-wrap gap-3">
-              {teamOptions.map((team) => {
-                const isActive = selectedTeam === team;
-                return (
-                  <button
-                    key={team}
-                    onClick={() => setSelectedTeam(team)}
-                    className={`rounded-full border px-4 py-2 text-sm transition-all ${isActive ? "border-[#F587B9] bg-[#F587B9]/12 text-white shadow-[0_0_18px_rgba(245,135,185,0.12)]" : "border-white/10 text-white/70 hover:border-[#F587B9]/40 hover:text-white"}`}
-                    style={{ fontFamily: inter }}
-                  >
-                    {team}
-                  </button>
-                );
-              })}
-            </div>
+            {loading ? (
+              <div className="flex flex-wrap gap-3">
+                {[...Array(5)].map((_, i) => (
+                  <div key={`skeleton-filter-${i}`} className={`h-9 rounded-full bg-[#6EE76D]/10 animate-pulse ${i === 0 ? "w-40" : i === 1 ? "w-20" : i === 2 ? "w-28" : i === 3 ? "w-24" : "w-32"}`} />
+                ))}
+              </div>
+            ) : (
+              <>
+                <div className="flex items-center gap-2 text-white/80 mb-4" style={{ fontFamily: bebas }}>
+                  Filtrovat podle družstva
+                </div>
+                <div className="flex flex-wrap gap-3">
+                  {teamOptions.map((team) => {
+                    const isActive = selectedTeam === team;
+                    return (
+                      <button
+                        key={team}
+                        onClick={() => setSelectedTeam(team)}
+                        className={`rounded-full border px-4 py-2 text-sm transition-all ${isActive ? "border-[#F587B9] bg-[#F587B9]/12 text-white shadow-[0_0_18px_rgba(245,135,185,0.12)]" : "border-white/10 text-white/70 hover:border-[#F587B9]/40 hover:text-white"}`}
+                        style={{ fontFamily: inter }}
+                      >
+                        {team}
+                      </button>
+                    );
+                  })}
+                </div>
+              </>
+            )}
+
+            {loading && (
+              <div className="rounded-2xl bg-[#6EE76D]/5 border border-[#6EE76D]/20 px-4 py-3 mt-4 flex items-center gap-3">
+                <div className="w-4 h-4 rounded-full bg-[#6EE76D] animate-pulse" />
+                <p className="text-[#6EE76D] text-sm" style={{ fontFamily: inter }}>Načítám aktuální data...</p>
+              </div>
+            )}
           </div>
 
-          {loading && (
-            <p className="text-white/45 text-sm mb-6" style={{ fontFamily: inter }}>
-              Načítám aktuality z Notionu...
-            </p>
+          {loading ? (
+            <div className="grid md:grid-cols-2 gap-6">
+              {[...Array(6)].map((_, i) => (
+                <div key={`skeleton-news-${i}`} className="rounded-2xl border border-[#6EE76D]/12 bg-[#101a10] p-6 animate-pulse">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="h-4 w-24 rounded bg-[#6EE76D]/10" />
+                    <div className="h-6 w-16 rounded-full bg-[#6EE76D]/10" />
+                  </div>
+                  <div className="h-5 w-4/5 rounded bg-[#6EE76D]/10 mb-3" />
+                  <div className="h-4 w-full rounded bg-[#6EE76D]/10 mb-2" />
+                  <div className="h-4 w-5/6 rounded bg-[#6EE76D]/10 mb-5" />
+                  <div className="h-4 w-28 rounded bg-[#6EE76D]/10" />
+                </div>
+              ))}
+            </div>
+          ) : filteredNews.length ? (
+            <div className="grid md:grid-cols-2 gap-6">
+              {filteredNews.map((item) => (
+                <NewsCard
+                  key={item.id}
+                  article={{ title: item.title, date: item.date, excerpt: item.excerpt, content: item.content, mediaSections: item.mediaSections }}
+                  tag={item.teamName}
+                  to={`/aktuality/${item.slug}`}
+                  backTo="/aktuality"
+                  className="p-6"
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="rounded-3xl border border-[#6EE76D]/8 bg-[#0e160e] p-8 text-white/70" style={{ fontFamily: inter }}>
+              Aktuality zatím nejsou k dispozici.
+            </div>
           )}
-
-          <div className="grid md:grid-cols-2 gap-6">
-            {filteredNews.map((item) => (
-              <NewsCard
-                key={item.id}
-                article={{ title: item.title, date: item.date, excerpt: item.excerpt, content: item.content, mediaSections: item.mediaSections }}
-                tag={item.teamName}
-                to={`/aktuality/${item.slug}`}
-                backTo="/aktuality"
-                className="p-6"
-              />
-            ))}
-          </div>
         </div>
       </section>
 
