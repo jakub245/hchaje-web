@@ -135,6 +135,56 @@ const toSlug = (value: string) =>
     .replace(/-+/g, "-")
     .replace(/^-|-$/g, "");
 
+const parseBooleanLike = (property: any): boolean | null => {
+  if (!property || typeof property !== "object") return null;
+
+  if (property.type === "checkbox") return Boolean(property.checkbox);
+
+  if (property.type === "formula" && property.formula) {
+    if (property.formula.type === "boolean") return Boolean(property.formula.boolean);
+    if (property.formula.type === "number" && property.formula.number !== null && property.formula.number !== undefined) {
+      return Number(property.formula.number) !== 0;
+    }
+    if (property.formula.type === "string") {
+      const value = String(property.formula.string || "").trim().toLowerCase();
+      if (["true", "ano", "yes", "1", "on", "published", "zverejneno", "zveřejněno", "publikováno", "publikovano"].includes(value)) return true;
+      if (["false", "ne", "no", "0", "off", "draft", "hidden", "skryto"].includes(value)) return false;
+    }
+  }
+
+  if (property.type === "select" && property.select?.name) {
+    const value = String(property.select.name).trim().toLowerCase();
+    if (["ano", "yes", "true", "published", "active", "visible", "zobrazeno", "zveřejněno", "publikováno"].includes(value)) return true;
+    if (["ne", "no", "false", "draft", "hidden", "inactive", "skryto"].includes(value)) return false;
+  }
+
+  const text = parseRichText(property).trim().toLowerCase();
+  if (["ano", "yes", "true", "1", "on", "published", "active", "visible", "zobrazeno", "zveřejněno", "publikováno"].includes(text)) return true;
+  if (["ne", "no", "false", "0", "off", "draft", "hidden", "inactive", "skryto"].includes(text)) return false;
+
+  return null;
+};
+
+const resolveVisibility = (properties: Record<string, any>): boolean => {
+  const visibilityProp = findProperty(properties, [
+    "Zobrazeno",
+    "Zobrazit",
+    "Publikovano",
+    "Publikováno",
+    "Published",
+    "Publish",
+    "Aktivni",
+    "Aktivní",
+    "Visible",
+    "Show",
+  ]);
+
+  const explicitValue = parseBooleanLike(visibilityProp);
+  if (explicitValue !== null) return explicitValue;
+
+  return true;
+};
+
 const loadPlayersFromNotion = async () => {
   const notionToken = process.env.NOTION_TOKEN || FALLBACK_NOTION_TOKEN;
   const notionDatabaseId = process.env.NOTION_PLAYERS_DATABASE_ID || FALLBACK_NOTION_DATABASE_ID;
@@ -195,6 +245,7 @@ const loadPlayersFromNotion = async () => {
   const rawPlayers = await Promise.all(
     pages.map(async (page: any, index: number) => {
       const properties = page?.properties ?? {};
+      if (!resolveVisibility(properties)) return null;
       const name = parseTitle(findProperty(properties, ["Jméno", "Jmeno", "Name"]) || properties.title);
       const year = parseProperty(findProperty(properties, ["Ročník", "Rocnik", "Year", "Věk", "Vek"])) || "";
       const position = parseProperty(findProperty(properties, ["Pozice", "Post", "Role", "Position"])) || "";
@@ -239,6 +290,7 @@ const loadPlayersFromNotion = async () => {
   );
 
   return rawPlayers
+    .filter((player): player is NonNullable<typeof player> => player !== null)
     .filter((player) => player.name)
     .sort((a, b) => a.name.localeCompare(b.name, "cs"));
 };
@@ -249,9 +301,10 @@ export default async function handler(req: any, res: any) {
   }
 
   try {
+    const freshMode = req?.query?.fresh === "1";
     const now = Date.now();
-    const canUseCache = cachedPlayers && now - cachedPlayers.fetchedAt < PLAYERS_CACHE_TTL_MS;
-    const players = canUseCache ? cachedPlayers.players : await loadPlayersFromNotion();
+    const canUseCache = !freshMode && cachedPlayers && now - cachedPlayers.fetchedAt < PLAYERS_CACHE_TTL_MS;
+    const players = canUseCache && cachedPlayers ? cachedPlayers.players : await loadPlayersFromNotion();
 
     if (!canUseCache) {
       cachedPlayers = {
@@ -261,7 +314,7 @@ export default async function handler(req: any, res: any) {
     }
 
     res.setHeader("Cache-Control", "s-maxage=180, stale-while-revalidate=600");
-    return res.status(200).json({ players, source: "notion" });
+    return res.status(200).json({ players, source: canUseCache ? "cache" : "notion" });
   } catch (error: any) {
     console.error("Players API error:", error);
 

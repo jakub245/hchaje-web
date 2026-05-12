@@ -127,6 +127,56 @@ const getPhotoDebug = (url: string) => {
   };
 };
 
+const parseBooleanLike = (property: any): boolean | null => {
+  if (!property || typeof property !== "object") return null;
+
+  if (property.type === "checkbox") return Boolean(property.checkbox);
+
+  if (property.type === "formula" && property.formula) {
+    if (property.formula.type === "boolean") return Boolean(property.formula.boolean);
+    if (property.formula.type === "number" && property.formula.number !== null && property.formula.number !== undefined) {
+      return Number(property.formula.number) !== 0;
+    }
+    if (property.formula.type === "string") {
+      const value = String(property.formula.string || "").trim().toLowerCase();
+      if (["true", "ano", "yes", "1", "on", "published", "zverejneno", "zveřejněno", "publikováno", "publikovano"].includes(value)) return true;
+      if (["false", "ne", "no", "0", "off", "draft", "hidden", "skryto"].includes(value)) return false;
+    }
+  }
+
+  if (property.type === "select" && property.select?.name) {
+    const value = String(property.select.name).trim().toLowerCase();
+    if (["ano", "yes", "true", "published", "active", "visible", "zobrazeno", "zveřejněno", "publikováno"].includes(value)) return true;
+    if (["ne", "no", "false", "draft", "hidden", "inactive", "skryto"].includes(value)) return false;
+  }
+
+  const text = parseRichText(property).trim().toLowerCase();
+  if (["ano", "yes", "true", "1", "on", "published", "active", "visible", "zobrazeno", "zveřejněno", "publikováno"].includes(text)) return true;
+  if (["ne", "no", "false", "0", "off", "draft", "hidden", "inactive", "skryto"].includes(text)) return false;
+
+  return null;
+};
+
+const resolveVisibility = (properties: Record<string, any>): boolean => {
+  const visibilityProp = findProperty(properties, [
+    "Zobrazeno",
+    "Zobrazit",
+    "Publikovano",
+    "Publikováno",
+    "Published",
+    "Publish",
+    "Aktivni",
+    "Aktivní",
+    "Visible",
+    "Show",
+  ]);
+
+  const explicitValue = parseBooleanLike(visibilityProp);
+  if (explicitValue !== null) return explicitValue;
+
+  return true;
+};
+
 const toSlug = (value: string) =>
   value
     .toLowerCase()
@@ -196,6 +246,7 @@ const loadCoachesFromNotion = async () => {
   const rawCoaches = await Promise.all(
     pages.map(async (page: any, index: number) => {
       const properties = page?.properties ?? {};
+      if (!resolveVisibility(properties)) return null;
       const name = parseTitle(findProperty(properties, ["Jméno", "Jmeno", "Name"]) || properties["title"]);
       const position = parseRichText(findProperty(properties, ["Pozice", "Role", "Position"])) || "";
       const phone = parseRichText(findProperty(properties, ["Telefon", "Phone"])) || "";
@@ -258,7 +309,7 @@ const loadCoachesFromNotion = async () => {
     }),
   );
 
-  return rawCoaches;
+  return rawCoaches.filter((coach): coach is NonNullable<typeof coach> => coach !== null);
 };
 
 export default async function handler(req: any, res: any) {
