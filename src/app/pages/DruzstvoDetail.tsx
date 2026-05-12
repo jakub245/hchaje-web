@@ -990,17 +990,23 @@ export default function DruzstvoDetail() {
             </div>
           </div>
 
-          <div ref={newsScrollRef} className="flex gap-4 overflow-x-auto pb-1 scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {displayedNews.map((n, i) => (
-              <NewsCard
-                key={i}
-                article={{ title: n.title, date: n.date, excerpt: n.excerpt, content: n.excerpt, mediaSections: n.mediaSections }}
-                to={`/aktuality/${("slug" in n && n.slug) ? n.slug : normalizeText(n.title)}`}
-                backTo={`/druzstva/${team.slug}#aktuality`}
-                className="basis-[18rem] md:basis-[calc((100%-1rem)/2)] xl:basis-[calc((100%-2rem)/3)] flex-shrink-0 p-6 rounded-3xl"
-              />
-            ))}
-          </div>
+          {displayedNews.length > 0 ? (
+            <div ref={newsScrollRef} className="flex gap-4 overflow-x-auto pb-1 scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              {displayedNews.map((n, i) => (
+                <NewsCard
+                  key={i}
+                  article={{ title: n.title, date: n.date, excerpt: n.excerpt, content: n.excerpt, mediaSections: n.mediaSections }}
+                  to={`/aktuality/${("slug" in n && n.slug) ? n.slug : normalizeText(n.title)}`}
+                  backTo={`/druzstva/${team.slug}#aktuality`}
+                  className="basis-[18rem] md:basis-[calc((100%-1rem)/2)] xl:basis-[calc((100%-2rem)/3)] flex-shrink-0 p-6 rounded-3xl"
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="rounded-3xl border border-[#6EE76D]/8 bg-[#0e160e] p-8 text-white/70" style={{ fontFamily: inter }}>
+              Aktuality zatím nejsou k dispozici.
+            </div>
+          )}
         </div>
       </section>
 

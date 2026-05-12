@@ -4,6 +4,7 @@ const NOTION_VERSION = "2022-06-28";
 declare const process: any;
 
 const FALLBACK_NOTION_TOKEN = "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";
+const FALLBACK_NEWS_DATABASE_ID = "344c5ef377c780c4b188d58520070c3c";
 const NEWS_CACHE_TTL_MS = 1000 * 60 * 3;
 
 type NewsItem = {
@@ -366,11 +367,7 @@ const buildMediaSections = async (urls: string[]) => {
 
 const loadNewsFromNotion = async () => {
   const notionToken = process.env.NOTION_TOKEN || FALLBACK_NOTION_TOKEN;
-  const notionDatabaseId = process.env.NOTION_NEWS_DATABASE_ID || "";
-
-  if (!notionDatabaseId) {
-    throw new Error("Missing NOTION_NEWS_DATABASE_ID. News endpoint will not fallback to NOTION_DATABASE_ID to avoid mixing data with Events.");
-  }
+  const notionDatabaseId = process.env.NOTION_NEWS_DATABASE_ID || FALLBACK_NEWS_DATABASE_ID;
 
   const pages: any[] = [];
   let hasMore = true;

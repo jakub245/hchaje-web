@@ -6,7 +6,7 @@ import {
 } from "lucide-react";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { Btn, SectionLabel, CtaStrip, bebas, inter, nbspShortWords } from "../components/shared";
-import { TEAMS, getAllTeamNews } from "../data/teams";
+import { TEAMS } from "../data/teams";
 import heroBackground from "../../imports/HCH_Homepage-foto.png";
 import carouselHch02 from "../../imports/foto/carousel hp/HCH_02.jpg";
 import carouselHch03 from "../../imports/foto/carousel hp/HCH_03.jpg";
@@ -129,19 +129,6 @@ const getYoutubeEmbedUrl = (url: string) => {
     return url;
   }
 };
-
-const FALLBACK_LATEST_NEWS: NewsPreview[] = getAllTeamNews()
-  .sort((a, b) => parseCzDate(b.date) - parseCzDate(a.date))
-  .slice(0, 5)
-  .map((item) => ({
-    id: item.id,
-    slug: toSlug(item.title),
-    title: item.title,
-    date: item.date,
-    excerpt: item.excerpt,
-    content: item.content,
-    teamName: item.teamName,
-  }));
 
 /* ══════════════ HERO ══════════════ */
 function Hero() {
@@ -344,13 +331,15 @@ function ReelsSection() {
 
 /* ══════════════ NEWS + TRAININGS ══════════════ */
 function NewsAndTrainings() {
-  const [latestNews, setLatestNews] = useState<NewsPreview[]>(FALLBACK_LATEST_NEWS);
+  const [latestNews, setLatestNews] = useState<NewsPreview[]>([]);
+  const [newsLoading, setNewsLoading] = useState(true);
   const upcomingEvents = getUpcomingEvents();
 
   useEffect(() => {
     let isActive = true;
 
     const loadLatestNews = async () => {
+      setNewsLoading(true);
       try {
         const response = await fetch("/api/news");
         if (!response.ok) throw new Error("Nepodarilo se nacist aktuality");
@@ -374,10 +363,13 @@ function NewsAndTrainings() {
           .slice(0, 5);
 
         if (!isActive) return;
-        setLatestNews(normalized.length > 0 ? normalized : FALLBACK_LATEST_NEWS);
+        setLatestNews(normalized);
       } catch {
         if (!isActive) return;
-        setLatestNews(FALLBACK_LATEST_NEWS);
+        setLatestNews([]);
+      } finally {
+        if (!isActive) return;
+        setNewsLoading(false);
       }
     };
 
@@ -394,37 +386,58 @@ function NewsAndTrainings() {
           <div>
             <SectionLabel>Novinky</SectionLabel>
             <h2 className="text-3xl lg:text-4xl text-white uppercase mb-8" style={{ fontFamily: bebas }}>Aktuality</h2>
-            <div className="space-y-3">
-              {latestNews.map((item) => (
-                <Link
-                  key={item.id}
-                  to={`/aktuality/${item.slug}`}
-                  state={{ article: { title: item.title, date: item.date, excerpt: item.excerpt, content: item.content }, backTo: "/aktuality" }}
-                  className="mobile-solid-card group block p-4 rounded-2xl bg-[#101a10] border border-[#6EE76D]/12 hover:border-[#6EE76D]/25 transition-all"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="mobile-solid-chip w-10 h-10 rounded-full bg-[#6EE76D]/14 flex items-center justify-center flex-shrink-0">
-                      <Calendar className="w-5 h-5 text-[#6EE76D]" />
-                    </div>
-
-                    <div className="flex-1 min-w-0">
-                      <h3
-                        className="text-white text-[16px] leading-tight"
-                        style={{ fontFamily: inter, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}
-                      >
-                        {item.title}
-                      </h3>
-                      <div className="flex flex-wrap items-center gap-3 text-sm text-white/35 mt-1.5">
-                        <span className="inline-flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5 text-[#6EE76D]" /> {item.date}</span>
-                        <span className="px-3.5 py-1 rounded-full bg-[#F587B9]/12 text-[#FFC2DD] text-[12px] tracking-[0.12em]" style={{ fontFamily: bebas }}>{item.teamName}</span>
+            {newsLoading ? (
+              <div className="space-y-3">
+                {[...Array(5)].map((_, i) => (
+                  <div key={`home-news-skeleton-${i}`} className="mobile-solid-card p-4 rounded-2xl bg-[#101a10] border border-[#6EE76D]/12 animate-pulse">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-full bg-[#6EE76D]/10 flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <div className="h-4 bg-[#6EE76D]/10 rounded w-4/5 mb-2" />
+                        <div className="h-3 bg-[#6EE76D]/10 rounded w-1/2" />
                       </div>
+                      <div className="w-5 h-5 rounded bg-[#6EE76D]/10" />
                     </div>
-
-                    <ArrowRight className="w-5 h-5 text-[#8F988F] group-hover:text-[#6EE76D] group-hover:translate-x-0.5 transition-all flex-shrink-0" />
                   </div>
-                </Link>
-              ))}
-            </div>
+                ))}
+              </div>
+            ) : latestNews.length > 0 ? (
+              <div className="space-y-3">
+                {latestNews.map((item) => (
+                  <Link
+                    key={item.id}
+                    to={`/aktuality/${item.slug}`}
+                    state={{ article: { title: item.title, date: item.date, excerpt: item.excerpt, content: item.content }, backTo: "/aktuality" }}
+                    className="mobile-solid-card group block p-4 rounded-2xl bg-[#101a10] border border-[#6EE76D]/12 hover:border-[#6EE76D]/25 transition-all"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="mobile-solid-chip w-10 h-10 rounded-full bg-[#6EE76D]/14 flex items-center justify-center flex-shrink-0">
+                        <Calendar className="w-5 h-5 text-[#6EE76D]" />
+                      </div>
+
+                      <div className="flex-1 min-w-0">
+                        <h3
+                          className="text-white text-[16px] leading-tight"
+                          style={{ fontFamily: inter, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}
+                        >
+                          {item.title}
+                        </h3>
+                        <div className="flex flex-wrap items-center gap-3 text-sm text-white/35 mt-1.5">
+                          <span className="inline-flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5 text-[#6EE76D]" /> {item.date}</span>
+                          <span className="px-3.5 py-1 rounded-full bg-[#F587B9]/12 text-[#FFC2DD] text-[12px] tracking-[0.12em]" style={{ fontFamily: bebas }}>{item.teamName}</span>
+                        </div>
+                      </div>
+
+                      <ArrowRight className="w-5 h-5 text-[#8F988F] group-hover:text-[#6EE76D] group-hover:translate-x-0.5 transition-all flex-shrink-0" />
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <div className="rounded-3xl border border-[#6EE76D]/8 bg-[#0e160e] p-6 text-white/70" style={{ fontFamily: inter }}>
+                Aktuality zatím nejsou k dispozici.
+              </div>
+            )}
             <Btn variant="secondary" to="/aktuality" className="mt-6">Všechny aktuality</Btn>
           </div>
 
