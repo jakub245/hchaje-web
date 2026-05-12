@@ -65,6 +65,24 @@ type CoachItem = {
 
 type ApiCoach = Partial<CoachItem>;
 
+type TeamNewsItem = {
+  id: string;
+  date: string;
+  title: string;
+  excerpt?: string;
+  content?: string;
+  mediaSections?: Array<
+    | { type: "gallery"; title: string; images: string[]; caption?: string }
+    | { type: "video"; title: string; embedUrl?: string; videoUrl?: string; caption?: string }
+  >;
+  teamName: string;
+  teamSlug: string;
+  teamNames: string[];
+  teamSlugs: string[];
+};
+
+type ApiNewsItem = Partial<TeamNewsItem>;
+
 const SECTIONS = [
   { id: "prehled", label: "Přehled" },
   { id: "treninky", label: "Tréninky" },
@@ -114,6 +132,8 @@ export default function DruzstvoDetail() {
   const [coaches, setCoaches] = useState<CoachItem[]>([]);
   const [coachesLoading, setCoachesLoading] = useState(true);
   const [coachesLoaded, setCoachesLoaded] = useState(false);
+  const [teamNews, setTeamNews] = useState<TeamNewsItem[]>([]);
+  const [newsLoaded, setNewsLoaded] = useState(false);
   const sectionRefs = useRef<Record<string, HTMLElement | null>>({});
   const playersScrollRef = useRef<HTMLDivElement | null>(null);
   const newsScrollRef = useRef<HTMLDivElement | null>(null);
@@ -325,6 +345,70 @@ export default function DruzstvoDetail() {
   useEffect(() => {
     let activeRequest = true;
 
+    const loadTeamNews = async () => {
+      try {
+        const response = await fetch("/api/news");
+        if (!response.ok) throw new Error("Nepodařilo se načíst data z API.");
+
+        const payload = (await response.json()) as { news?: ApiNewsItem[] };
+        const normalizedTeamSlug = normalizeText(team.slug);
+
+        const normalizedNews = (payload.news ?? [])
+          .map((item, index) => {
+            const teamNames = (item.teamNames ?? [])
+              .map((value) => String(value || "").trim())
+              .filter(Boolean);
+            const teamSlugs = (item.teamSlugs ?? [])
+              .map((value) => normalizeText(String(value || "").trim()))
+              .filter(Boolean);
+            const fallbackTeamName = String(item.teamName || "").trim() || "Klub";
+            const resolvedTeamNames = teamNames.length > 0 ? teamNames : [fallbackTeamName];
+            const resolvedTeamSlugs = teamSlugs.length > 0
+              ? teamSlugs
+              : resolvedTeamNames.map((value) => normalizeText(value));
+
+            return {
+              id: item.id || `notion-news-${index}`,
+              date: item.date || "—",
+              title: item.title || "Aktualita",
+              excerpt: item.excerpt || "",
+              content: item.content || item.excerpt || "",
+              mediaSections: item.mediaSections ?? [],
+              teamName: fallbackTeamName,
+              teamSlug: normalizeText(item.teamSlug || "") || resolvedTeamSlugs[0] || "klub",
+              teamNames: resolvedTeamNames,
+              teamSlugs: resolvedTeamSlugs,
+            } satisfies TeamNewsItem;
+          })
+          .filter((item) => {
+            const hasClubOnlyTag = item.teamSlugs.includes("klub") || item.teamNames.some((name) => normalizeText(name) === "klub");
+            if (hasClubOnlyTag && item.teamSlugs.length === 1) return false;
+
+            return item.teamSlugs.includes(normalizedTeamSlug)
+              || item.teamNames.some((name) => normalizeText(name) === normalizeText(team.name));
+          })
+          .sort((a, b) => parseCzDate(b.date) - parseCzDate(a.date));
+
+        if (!activeRequest) return;
+        setTeamNews(normalizedNews);
+        setNewsLoaded(true);
+      } catch {
+        if (!activeRequest) return;
+        setTeamNews([]);
+        setNewsLoaded(true);
+      }
+    };
+
+    loadTeamNews();
+
+    return () => {
+      activeRequest = false;
+    };
+  }, [team.name, team.slug]);
+
+  useEffect(() => {
+    let activeRequest = true;
+
     const normalizeTeamSlug = (value: string) =>
       value
         .toLowerCase()
@@ -475,7 +559,9 @@ export default function DruzstvoDetail() {
     : [];
   const displayedPlayers = playersLoaded && players.length > 0 ? players : [];
   const displayedPlayerCount = playersLoaded && players.length > 0 ? players.length : team.players.length;
-  const displayedNews = newsSorted;
+  const displayedNews = newsLoaded
+    ? teamNews.map((item: TeamNewsItem) => ({ title: item.title, date: item.date, excerpt: item.excerpt || item.content || "", mediaSections: item.mediaSections }))
+    : newsSorted;
 
   return (
     <>
@@ -906,7 +992,7 @@ export default function DruzstvoDetail() {
             {displayedNews.map((n, i) => (
               <NewsCard
                 key={i}
-                article={{ title: n.title, date: n.date, excerpt: n.excerpt, content: n.excerpt }}
+                article={{ title: n.title, date: n.date, excerpt: n.excerpt, content: n.excerpt, mediaSections: n.mediaSections }}
                 to={`/aktuality/${normalizeText(n.title)}`}
                 backTo={`/druzstva/${team.slug}#aktuality`}
                 className="basis-[18rem] md:basis-[calc((100%-1rem)/2)] xl:basis-[calc((100%-2rem)/3)] flex-shrink-0 p-6 rounded-3xl"

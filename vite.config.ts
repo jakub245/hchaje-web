@@ -151,6 +151,445 @@ function localApiEventsProxy() {
   }
 }
 
+function localApiNewsProxy() {
+  const notionApiBase = 'https://api.notion.com/v1'
+  const notionVersion = '2022-06-28'
+  const notionToken = process.env.NOTION_TOKEN || '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'
+  const notionNewsDatabaseId = process.env.NOTION_NEWS_DATABASE_ID || process.env.NOTION_DATABASE_ID || '350c5ef377c78092a67cd5e8b3869bb8'
+
+  const normalizeKey = (value: string) =>
+    value
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]/g, '')
+
+  const findProperty = (properties: Record<string, any>, names: string[]) => {
+    const map = new Map(Object.entries(properties).map(([key, value]) => [normalizeKey(key), value] as const))
+    for (const name of names) {
+      const hit = map.get(normalizeKey(name))
+      if (hit) return hit
+    }
+    return undefined
+  }
+
+  const toSlug = (value: string) =>
+    value
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '')
+
+  const parsePlainText = (property: any): string => {
+    if (!property || typeof property !== 'object') return ''
+
+    if (property.type === 'title') {
+      const rich = property.title ?? []
+      return rich.map((item: any) => item?.plain_text || '').join('').trim()
+    }
+
+    if (property.type === 'rich_text') {
+      const rich = property.rich_text ?? []
+      return rich.map((item: any) => item?.plain_text || '').join('').trim()
+    }
+
+    if (property.type === 'select') return property.select?.name || ''
+    if (property.type === 'url') return property.url || ''
+    if (property.type === 'multi_select') {
+      return (property.multi_select ?? []).map((item: any) => item?.name || '').filter(Boolean).join(', ')
+    }
+
+    return ''
+  }
+
+  const parseBooleanLike = (property: any): boolean | null => {
+    if (!property || typeof property !== 'object') return null
+    if (property.type === 'checkbox') return Boolean(property.checkbox)
+    if (property.type === 'select' && property.select?.name) {
+      const value = String(property.select.name).trim().toLowerCase()
+      if (['ano', 'yes', 'true', 'published', 'visible', '1'].includes(value)) return true
+      if (['ne', 'no', 'false', 'draft', 'hidden', '0'].includes(value)) return false
+    }
+    const text = parsePlainText(property).trim().toLowerCase()
+    if (['ano', 'yes', 'true', 'published', 'visible', '1'].includes(text)) return true
+    if (['ne', 'no', 'false', 'draft', 'hidden', '0'].includes(text)) return false
+    return null
+  }
+
+  const resolveVisibility = (properties: Record<string, any>): boolean => {
+    const visibilityProp = findProperty(properties, [
+      'Zobrazeno',
+      'Zobrazit',
+      'Publikovano',
+      'Publikováno',
+      'Published',
+      'Publish',
+      'Visible',
+    ])
+
+    const explicit = parseBooleanLike(visibilityProp)
+    if (explicit !== null) return explicit
+    return true
+  }
+
+  const parseDateTs = (value: string) => {
+    const clean = String(value || '').replace(/\s/g, '')
+    if (/^\d{4}-\d{2}-\d{2}/.test(clean)) return new Date(clean).getTime()
+    const [day, month, year] = clean.split('.').filter(Boolean)
+    if (!day || !month || !year) return Number.MIN_SAFE_INTEGER
+    return new Date(Number(year), Number(month) - 1, Number(day)).getTime()
+  }
+
+  const formatDateForCz = (value: string) => {
+    if (!value) return ''
+    if (/^\d{4}-\d{2}-\d{2}/.test(value)) {
+      const [year, month, day] = value.slice(0, 10).split('-')
+      return `${day}. ${month}. ${year}`
+    }
+    return value
+  }
+
+  const parseDate = (property: any): string => {
+    if (!property || typeof property !== 'object') return ''
+    if (property.type === 'date') return property.date?.start || ''
+    return parsePlainText(property)
+  }
+
+  const extractGoogleDriveFileId = (value: string): string => {
+    const fromFilePath = value.match(/\/file\/d\/([a-zA-Z0-9_-]+)/)
+    if (fromFilePath?.[1]) return fromFilePath[1]
+
+    const fromQuery = value.match(/[?&]id=([a-zA-Z0-9_-]+)/)
+    if (fromQuery?.[1]) return fromQuery[1]
+
+    return ''
+  }
+
+  const normalizeDriveFileUrl = (value: string): string => {
+    if (!value || !value.includes('drive.google.com')) return value
+    const fileId = extractGoogleDriveFileId(value)
+    if (!fileId) return value
+    return `https://drive.google.com/uc?export=view&id=${fileId}`
+  }
+
+  const extractGoogleDriveFolderId = (value: string): string => {
+    const fromFolderPath = value.match(/\/folders\/([a-zA-Z0-9_-]+)/)
+    if (fromFolderPath?.[1]) return fromFolderPath[1]
+
+    const fromOpenQuery = value.match(/[?&]id=([a-zA-Z0-9_-]+)/)
+    if (fromOpenQuery?.[1] && value.includes('drive/folders')) return fromOpenQuery[1]
+
+    return ''
+  }
+
+  const isDriveFolderUrl = (value: string) => value.includes('drive.google.com') && (value.includes('/folders/') || value.includes('drive/folders'))
+
+  const extractUrlsFromText = (value: string): string[] => {
+    if (!value) return []
+    const matches = value.match(/https?:\/\/[^\s,;]+/g) ?? []
+    return matches.map((url) => url.trim())
+  }
+
+  const parseUrlsFromProperty = (property: any): string[] => {
+    if (!property || typeof property !== 'object') return []
+
+    if (property.type === 'files') {
+      return (property.files ?? [])
+        .map((item: any) => item?.external?.url || item?.file?.url || '')
+        .filter(Boolean)
+    }
+
+    if (property.type === 'url') {
+      return property.url ? [property.url] : []
+    }
+
+    const text = parsePlainText(property)
+    if (!text) return []
+
+    const directUrls = extractUrlsFromText(text)
+    if (directUrls.length > 0) return directUrls
+
+    return text
+      .split(/[\n,;]+/)
+      .map((value) => value.trim())
+      .filter((value) => /^https?:\/\//i.test(value))
+  }
+
+  const isYouTubeUrl = (value: string) => /youtube\.com|youtu\.be/i.test(value)
+  const isVimeoUrl = (value: string) => /vimeo\.com/i.test(value)
+  const isImageUrl = (value: string) => /\.(jpg|jpeg|png|webp|gif|avif)(\?|#|$)/i.test(value) || /googleusercontent\.com|drive\.google\.com/i.test(value)
+  const isVideoFileUrl = (value: string) => /\.(mp4|mov|webm|m4v)(\?|#|$)/i.test(value)
+
+  const toEmbedVideoUrl = (value: string): string => {
+    try {
+      const parsed = new URL(value)
+      const host = parsed.hostname.toLowerCase()
+
+      if (host.includes('youtu.be')) {
+        const id = parsed.pathname.replace('/', '').trim()
+        return id ? `https://www.youtube.com/embed/${id}` : value
+      }
+
+      if (host.includes('youtube.com')) {
+        if (parsed.pathname.includes('/shorts/')) {
+          const id = parsed.pathname.split('/shorts/')[1]?.split('/')[0]
+          return id ? `https://www.youtube.com/embed/${id}` : value
+        }
+
+        const id = parsed.searchParams.get('v')
+        return id ? `https://www.youtube.com/embed/${id}` : value
+      }
+
+      if (host.includes('vimeo.com')) {
+        const id = parsed.pathname.split('/').filter(Boolean).pop()
+        return id ? `https://player.vimeo.com/video/${id}` : value
+      }
+
+      return value
+    } catch {
+      return value
+    }
+  }
+
+  const expandGoogleDriveFolderUrls = async (folderUrls: string[]): Promise<{ images: string[]; videos: string[] }> => {
+    const googleDriveApiKey = process.env.GOOGLE_DRIVE_API_KEY || ''
+    if (!googleDriveApiKey || folderUrls.length === 0) return { images: [], videos: [] }
+
+    const imageUrls: string[] = []
+    const videoUrls: string[] = []
+
+    for (const folderUrl of folderUrls) {
+      const folderId = extractGoogleDriveFolderId(folderUrl)
+      if (!folderId) continue
+
+      const query = encodeURIComponent(`'${folderId}' in parents and trashed=false`)
+      const url = `https://www.googleapis.com/drive/v3/files?q=${query}&fields=files(id,mimeType)&pageSize=200&key=${googleDriveApiKey}`
+
+      try {
+        const response = await fetch(url)
+        if (!response.ok) continue
+
+        const data = await response.json()
+        const files = data?.files ?? []
+        for (const file of files) {
+          const fileId = String(file?.id || '')
+          const mimeType = String(file?.mimeType || '')
+          if (!fileId) continue
+
+          if (mimeType.startsWith('image/')) {
+            imageUrls.push(`https://drive.google.com/uc?export=view&id=${fileId}`)
+            continue
+          }
+
+          if (mimeType.startsWith('video/')) {
+            videoUrls.push(`https://drive.google.com/file/d/${fileId}/preview`)
+          }
+        }
+      } catch {
+      }
+    }
+
+    return { images: imageUrls, videos: videoUrls }
+  }
+
+  const buildMediaSections = async (urls: string[]) => {
+    const uniqueUrls = Array.from(new Set(urls.map((value) => value.trim()).filter(Boolean)))
+    const folderUrls = uniqueUrls.filter((value) => isDriveFolderUrl(value))
+    const directUrls = uniqueUrls.filter((value) => !isDriveFolderUrl(value))
+    const expanded = await expandGoogleDriveFolderUrls(folderUrls)
+
+    const imageUrls: string[] = []
+    const videoEntries: Array<{ embedUrl?: string; videoUrl?: string }> = []
+
+    for (const rawUrl of directUrls) {
+      if (isYouTubeUrl(rawUrl) || isVimeoUrl(rawUrl)) {
+        videoEntries.push({ embedUrl: toEmbedVideoUrl(rawUrl) })
+        continue
+      }
+
+      if (isVideoFileUrl(rawUrl)) {
+        videoEntries.push({ videoUrl: rawUrl })
+        continue
+      }
+
+      if (isImageUrl(rawUrl)) {
+        imageUrls.push(normalizeDriveFileUrl(rawUrl))
+      }
+    }
+
+    imageUrls.push(...expanded.images)
+    videoEntries.push(...expanded.videos.map((embedUrl) => ({ embedUrl })))
+
+    const uniqImages = Array.from(new Set(imageUrls))
+    const sections: Array<
+      | { type: 'gallery'; title: string; images: string[]; caption?: string }
+      | { type: 'video'; title: string; embedUrl?: string; videoUrl?: string; caption?: string }
+    > = []
+
+    if (uniqImages.length > 0) {
+      sections.push({
+        type: 'gallery',
+        title: uniqImages.length === 1 ? 'Fotografie' : 'Fotogalerie',
+        images: uniqImages,
+      })
+    }
+
+    videoEntries.forEach((video, index) => {
+      sections.push({
+        type: 'video',
+        title: videoEntries.length > 1 ? `Video ${index + 1}` : 'Video',
+        ...(video.embedUrl ? { embedUrl: video.embedUrl } : {}),
+        ...(video.videoUrl ? { videoUrl: video.videoUrl } : {}),
+      })
+    })
+
+    return {
+      mediaSections: sections,
+      firstImageUrl: uniqImages[0] || '',
+    }
+  }
+
+  const loadNews = async () => {
+    let hasMore = true
+    let nextCursor: string | null = null
+    const pages: any[] = []
+
+    while (hasMore) {
+      const response = await fetch(`${notionApiBase}/databases/${notionNewsDatabaseId}/query`, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${notionToken}`,
+          'Notion-Version': notionVersion,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          page_size: 100,
+          ...(nextCursor ? { start_cursor: nextCursor } : {}),
+        }),
+      })
+
+      if (!response.ok) throw new Error('Failed to query Notion news database')
+
+      const data = await response.json()
+      pages.push(...(data.results ?? []))
+      hasMore = Boolean(data.has_more)
+      nextCursor = data.next_cursor ?? null
+    }
+
+    const relatedTitleCache = new Map<string, string>()
+    const readRelatedTitle = async (pageId: string) => {
+      if (relatedTitleCache.has(pageId)) return relatedTitleCache.get(pageId) || ''
+      const response = await fetch(`${notionApiBase}/pages/${pageId}`, {
+        headers: {
+          Authorization: `Bearer ${notionToken}`,
+          'Notion-Version': notionVersion,
+        },
+      })
+      if (!response.ok) {
+        relatedTitleCache.set(pageId, '')
+        return ''
+      }
+      const data = await response.json()
+      const properties = data?.properties ?? {}
+      const titleProperty = Object.values(properties).find((property: any) => property?.type === 'title')
+      const title = parsePlainText(titleProperty as any)
+      relatedTitleCache.set(pageId, title)
+      return title
+    }
+
+    const news = await Promise.all(
+      pages.map(async (page: any, index: number) => {
+        const properties = page?.properties ?? {}
+        if (!resolveVisibility(properties)) return null
+
+        const title = parsePlainText(findProperty(properties, ['Název', 'Nazev', 'Name', 'Titulek', 'Title'])) || 'Aktualita'
+        const date = formatDateForCz(parseDate(findProperty(properties, ['Datum', 'Date', 'Kdy', 'Datum publikace'])))
+        const excerpt = parsePlainText(findProperty(properties, ['Perex', 'Excerpt', 'Popis', 'Summary', 'Anotace']))
+        const content = parsePlainText(findProperty(properties, ['Text', 'Obsah', 'Content', 'Článek', 'Clanek', 'Detail'])) || excerpt
+        const photoUrlProp = findProperty(properties, ['Foto URL', 'Foto', 'Photo URL', 'Image URL', 'Obrázek URL', 'Obrazek URL'])
+        const mediaProp = findProperty(properties, ['Média', 'Media', 'Media URL', 'Media URLs', 'Galerie', 'Gallery', 'Soubory', 'Files'])
+        const videoProp = findProperty(properties, ['Video', 'Video URL', 'Videa', 'Videos', 'YouTube'])
+        const folderProp = findProperty(properties, ['Složka', 'Slozka', 'Folder', 'Folder URL', 'Drive folder', 'Google Drive folder'])
+
+        const mediaUrls = [
+          ...parseUrlsFromProperty(photoUrlProp),
+          ...parseUrlsFromProperty(mediaProp),
+          ...parseUrlsFromProperty(videoProp),
+          ...parseUrlsFromProperty(folderProp),
+          ...extractUrlsFromText(content),
+        ]
+        const mediaData = await buildMediaSections(mediaUrls)
+        const photoUrl = mediaData.firstImageUrl || normalizeDriveFileUrl(parsePlainText(photoUrlProp))
+
+        const teamProp = findProperty(properties, ['Družstvo', 'Druzstvo', 'Družstva', 'Druzstva', 'Team', 'Kategorie', 'Tým', 'Tym'])
+        let teamNames: string[] = []
+
+        if (teamProp?.type === 'relation') {
+          const relationIds = (teamProp.relation ?? []).map((relation: any) => relation?.id).filter(Boolean)
+          const resolvedNames = await Promise.all(relationIds.map((relationId: string) => readRelatedTitle(relationId)))
+          teamNames = resolvedNames.map((value) => value.trim()).filter(Boolean)
+        }
+
+        if (teamNames.length === 0) {
+          const plain = parsePlainText(teamProp)
+          teamNames = plain.split(',').map((value) => value.trim()).filter(Boolean)
+        }
+
+        if (teamNames.length === 0) teamNames = ['Klub']
+        const teamSlugs = teamNames.map((value) => toSlug(value))
+
+        return {
+          id: page?.id || `notion-news-${index}`,
+          date,
+          title,
+          excerpt,
+          content,
+          photoUrl,
+          teamName: teamNames.join(', '),
+          teamSlug: teamSlugs[0] || 'klub',
+          teamNames,
+          teamSlugs,
+          mediaSections: mediaData.mediaSections,
+        }
+      }),
+    )
+
+    return news
+      .filter((item): item is NonNullable<typeof item> => item !== null)
+      .sort((a, b) => parseDateTs(b.date) - parseDateTs(a.date))
+  }
+
+  const handleRequest = async (req: any, res: any, next: any) => {
+    if (req.method !== 'GET') {
+      next()
+      return
+    }
+
+    try {
+      const news = await loadNews()
+      res.setHeader('Content-Type', 'application/json')
+      res.statusCode = 200
+      res.end(JSON.stringify({ news, source: 'notion-dev-proxy' }))
+    } catch (error) {
+      res.setHeader('Content-Type', 'application/json')
+      res.statusCode = 500
+      res.end(JSON.stringify({
+        error: 'Aktuality se nepodařilo načíst z Notion v lokálním proxy režimu.',
+        detail: error instanceof Error ? error.message : 'Unknown error',
+      }))
+    }
+  }
+
+  return {
+    name: 'local-api-news-proxy',
+    configureServer(server) {
+      server.middlewares.use('/api/news', handleRequest)
+    },
+  }
+}
+
 function localApiCoachesProxy() {
   const notionApiBase = 'https://api.notion.com/v1'
   const notionVersion = '2022-06-28'
@@ -741,6 +1180,7 @@ export default defineConfig({
   plugins: [
     figmaAssetResolver(),
     localApiEventsProxy(),
+    localApiNewsProxy(),
     localApiCoachesProxy(),
     localApiPlayersProxy(),
     localApiTrainingsProxy(),

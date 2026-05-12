@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, Navigate, useLocation, useParams } from "react-router";
 import { ArrowLeft, ChevronLeft, ChevronRight, Play, X } from "lucide-react";
 import { bebas, inter, nbspShortWords } from "../components/shared";
 import { getAllTeamNews } from "../data/teams";
+import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 
 type MediaGallerySection = {
   type: "gallery";
@@ -14,13 +15,22 @@ type MediaGallerySection = {
 type MediaVideoSection = {
   type: "video";
   title: string;
-  embedUrl: string;
+  embedUrl?: string;
+  videoUrl?: string;
   caption?: string;
 };
 
 type Article = {
   title: string;
   date: string;
+  excerpt?: string;
+  content?: string;
+  mediaSections?: Array<MediaGallerySection | MediaVideoSection>;
+};
+
+type ApiNewsItem = {
+  date?: string;
+  title?: string;
   excerpt?: string;
   content?: string;
   mediaSections?: Array<MediaGallerySection | MediaVideoSection>;
@@ -153,7 +163,7 @@ function GalleryBlock({
               onClick={() => onOpen(section.images, originalIndex)}
               className="group relative overflow-hidden rounded-2xl border border-[#6EE76D]/12 bg-[#0d160d] aspect-[4/3]"
             >
-              <img src={image} alt={section.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" />
+              <ImageWithFallback src={image} alt={section.title} className="w-full h-full object-cover group-hover:scale-[1.02] transition-transform duration-300" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
               <div className="absolute right-3 bottom-3 text-white/85 text-xs px-2 py-1 rounded-full bg-black/35" style={{ fontFamily: inter }}>
                 Zvětšit
@@ -208,19 +218,30 @@ function GalleryBlock({
 }
 
 function VideoBlock({ section }: { section: MediaVideoSection }) {
+  const hasEmbed = Boolean(section.embedUrl);
+  const hasDirectVideo = Boolean(section.videoUrl);
+
   return (
     <div className="mt-10">
       <h3 className="text-white text-xl uppercase mb-3" style={{ fontFamily: bebas }}>
         {section.title}
       </h3>
       <div className="relative rounded-2xl overflow-hidden border border-[#6EE76D]/12 aspect-video bg-black">
-        <iframe
-          src={section.embedUrl}
-          title={section.title}
-          className="absolute inset-0 w-full h-full"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          allowFullScreen
-        />
+        {hasEmbed ? (
+          <iframe
+            src={section.embedUrl}
+            title={section.title}
+            className="absolute inset-0 w-full h-full"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+          />
+        ) : hasDirectVideo ? (
+          <video className="absolute inset-0 w-full h-full" controls playsInline preload="metadata" src={section.videoUrl} />
+        ) : (
+          <div className="absolute inset-0 flex items-center justify-center text-white/60" style={{ fontFamily: inter }}>
+            Video není dostupné.
+          </div>
+        )}
       </div>
       {section.caption && (
         <p className="text-white/45 text-sm mt-3" style={{ fontFamily: inter }}>
@@ -236,6 +257,39 @@ export default function AktualitaDetail() {
   const location = useLocation();
   const state = location.state as { article?: Article; backTo?: string } | undefined;
   const [lightbox, setLightbox] = useState<{ images: string[]; index: number } | null>(null);
+  const [apiArticle, setApiArticle] = useState<Article | null>(null);
+
+  useEffect(() => {
+    let isActive = true;
+
+    const loadArticleFromApi = async () => {
+      if (!articleSlug) return;
+
+      try {
+        const response = await fetch("/api/news");
+        if (!response.ok) return;
+
+        const payload = (await response.json()) as { news?: ApiNewsItem[] };
+        const matched = (payload.news ?? []).find((item) => toSlug(String(item.title || "")) === articleSlug);
+        if (!matched || !isActive) return;
+
+        setApiArticle({
+          title: matched.title || "Aktualita",
+          date: matched.date || "—",
+          excerpt: matched.excerpt || "",
+          content: matched.content || matched.excerpt || "",
+          mediaSections: matched.mediaSections,
+        });
+      } catch {
+      }
+    };
+
+    loadArticleFromApi();
+
+    return () => {
+      isActive = false;
+    };
+  }, [articleSlug]);
 
   const detailedFallbackArticle = FALLBACK_ARTICLES.find(
     (item) => item.slug === articleSlug || (state?.article?.title && item.slug === toSlug(state.article.title))
@@ -245,7 +299,7 @@ export default function AktualitaDetail() {
     (item) => item.slug === articleSlug || (state?.article?.title && item.slug === toSlug(state.article.title))
   );
 
-  const fallbackArticle = detailedFallbackArticle ?? sharedFallbackArticle;
+  const fallbackArticle = apiArticle ?? detailedFallbackArticle ?? sharedFallbackArticle;
 
   const article = state?.article
     ? {
@@ -321,7 +375,7 @@ export default function AktualitaDetail() {
 
           <div className="w-full max-w-5xl">
             <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-[#050805]">
-              <img
+              <ImageWithFallback
                 src={lightbox.images[lightbox.index]}
                 alt="Zvětšený náhled"
                 className="w-full max-h-[72vh] object-contain bg-black"
@@ -356,7 +410,7 @@ export default function AktualitaDetail() {
                     onClick={() => setLightbox((prev) => (prev ? { ...prev, index } : prev))}
                     className={`w-16 h-16 rounded-xl overflow-hidden border ${lightbox.index === index ? "border-[#6EE76D]" : "border-white/10"}`}
                   >
-                    <img src={image} alt={`Náhled ${index + 1}`} className="w-full h-full object-cover" />
+                    <ImageWithFallback src={image} alt={`Náhled ${index + 1}`} className="w-full h-full object-cover" />
                   </button>
                 ))}
               </div>

@@ -93,7 +93,16 @@ export function NewsCard({
   backTo,
   className = "",
 }: {
-  article: { title: string; date: string; excerpt?: string; content?: string };
+  article: {
+    title: string;
+    date: string;
+    excerpt?: string;
+    content?: string;
+    mediaSections?: Array<
+      | { type: "gallery"; title: string; images: string[]; caption?: string }
+      | { type: "video"; title: string; embedUrl?: string; videoUrl?: string; caption?: string }
+    >;
+  };
   tag?: string;
   to?: string;
   backTo?: string;

@@ -18,5 +18,26 @@
   - `NOTION_TOKEN`
   - `NOTION_DATABASE_ID`
 
+  ## Aktuality media (Google Drive folders)
+
+  The `/api/news` endpoint can automatically expand Google Drive folder links and map files into the article media layout (gallery + videos).
+
+  Optional environment variable:
+
+  - `GOOGLE_DRIVE_API_KEY`
+
+  Notes:
+
+  - Without `GOOGLE_DRIVE_API_KEY`, direct media URLs still work (single image/video links), but folder links are not expanded.
+  - For folder expansion, shared folder content must be accessible (e.g., "Anyone with the link" viewer access).
+  - This key is read in both production API (`api/news.ts`) and local dev proxy (`vite.config.ts`).
+
+  Local usage example:
+
+  ```bash
+  export GOOGLE_DRIVE_API_KEY=your_key_here
+  npm run dev
+  ```
+
   If Notion is unavailable, the frontend automatically falls back to events from local team data.
   
