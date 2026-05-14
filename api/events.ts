@@ -41,10 +41,16 @@ const findProperty = (properties: Record<string, any>, names: string[]) => {
 
 const parseRichText = (property: any): string => {
   if (!property || typeof property !== "object") return "";
+
   if (property.type === "title") {
     const rich = property.title ?? [];
     return rich.map((item: any) => item?.plain_text || "").join("").trim();
   }
+
+  if (property.type === "date") {
+    return property.date?.start || "";
+  }
+
   const rich = property.rich_text ?? [];
   return rich.map((item: any) => item?.plain_text || "").join("").trim();
 };
