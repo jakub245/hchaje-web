@@ -5,7 +5,7 @@ declare const process: any;
 
 const FALLBACK_NOTION_TOKEN = "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";
 const FALLBACK_NOTION_DATABASE_ID = "350c5ef377c78092a67cd5e8b3869bb8";
-const EVENTS_CACHE_TTL_MS = 1000 * 60 * 3;
+const EVENTS_CACHE_TTL_MS = 1000 * 60; // Reduced to 1 minute
 
 type CachedEvents = {
   events: Array<{

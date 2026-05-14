@@ -5,7 +5,7 @@ declare const process: any;
 
 const FALLBACK_NOTION_TOKEN = "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";
 const FALLBACK_NOTION_DATABASE_ID = "350c5ef377c780f697d7eae5d0688831";
-const TRAININGS_CACHE_TTL_MS = 1000 * 60 * 3;
+const TRAININGS_CACHE_TTL_MS = 1000 * 60; // Reduced to 1 minute
 
 type TrainingItem = {
   id: string;

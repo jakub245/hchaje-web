@@ -6,7 +6,7 @@ declare const process: any;
 const FALLBACK_NOTION_TOKEN = "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";
 const FALLBACK_NOTION_DATABASE_ID = "350c5ef377c780dc942cf8b85ee0366e";
 
-const COACHES_CACHE_TTL_MS = 1000 * 60 * 3;
+const COACHES_CACHE_TTL_MS = 1000 * 60; // Reduced to 1 minute
 
 type CachedCoaches = {
   coaches: Array<{

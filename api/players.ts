@@ -6,7 +6,7 @@ declare const process: any;
 const FALLBACK_NOTION_TOKEN = "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";
 const FALLBACK_NOTION_DATABASE_ID = "350c5ef377c780e7a67be50f9152fe33";
 
-const PLAYERS_CACHE_TTL_MS = 1000 * 60 * 3;
+const PLAYERS_CACHE_TTL_MS = 1000 * 60; // Reduced to 1 minute
 
 type CachedPlayers = {
   players: Array<{

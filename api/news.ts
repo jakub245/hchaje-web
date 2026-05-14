@@ -5,7 +5,7 @@ declare const process: any;
 
 const FALLBACK_NOTION_TOKEN = "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";
 const FALLBACK_NEWS_DATABASE_ID = "344c5ef377c780c4b188d58520070c3c";
-const NEWS_CACHE_TTL_MS = 1000 * 60 * 3;
+const NEWS_CACHE_TTL_MS = 1000 * 60; // Reduced to 1 minute
 
 type NewsItem = {
   id: string;
