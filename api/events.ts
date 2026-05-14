@@ -44,15 +44,20 @@ const parseRichText = (property: any): string => {
 
   if (property.type === "title") {
     const rich = property.title ?? [];
-    return rich.map((item: any) => item?.plain_text || "").join("").trim();
+    return rich.map((item: any) => item?.plain_text || "").join(" ").trim();
   }
 
   if (property.type === "date") {
-    return property.date?.start || "";
+    const startDate = property.date?.start || "";
+    const endDate = property.date?.end || "";
+    if (startDate && endDate) {
+      return `${startDate} - ${endDate}`;
+    }
+    return startDate || endDate;
   }
 
   const rich = property.rich_text ?? [];
-  return rich.map((item: any) => item?.plain_text || "").join("").trim();
+  return rich.map((item: any) => item?.plain_text || "").join(" ").trim();
 };
 
 const parseTitle = (property: any): string => {
