@@ -49,6 +49,8 @@ type PlayerItem = {
   number: string;
   teamName: string;
   teamSlug: string;
+  teamNames?: string[];
+  teamSlugs?: string[];
   photoUrl: string;
 };
 
@@ -258,12 +260,12 @@ export default function DruzstvoDetail() {
     const normalizedName = playerTokens.join("");
     const reversedName = [...playerTokens].reverse().join("");
 
-    const candidates = Object.entries(teamPlayerPhotos)
-      .filter(([path]) => normalizeText(path).includes(currentTeamSlug))
+    const allCandidates = Object.entries(teamPlayerPhotos)
       .map(([path, url]) => {
         const fileName = path.split("/").pop()?.replace(/\.(jpg|jpeg|png)$/i, "") || "";
         const tokens = toNameTokens(fileName);
         return {
+          path,
           baseName: normalizeText(fileName),
           tokens,
           tokenJoin: tokens.join(""),
@@ -272,36 +274,42 @@ export default function DruzstvoDetail() {
         };
       });
 
-    // Pokus 1: Přesná shoda - normalizované jméno
-    const exactMatch = candidates.find(
-      (candidate) =>
-        candidate.baseName === normalizedName ||
-        candidate.baseName === reversedName ||
-        candidate.tokenJoin === normalizedName ||
-        candidate.tokenJoinReversed === normalizedName
-    );
-    if (exactMatch) return exactMatch.url;
+    const teamCandidates = allCandidates.filter((candidate) => normalizeText(candidate.path).includes(currentTeamSlug));
 
-    // Pokus 2: Všechny tokeny se nacházejí v kandidátovi
-    const allTokensMatch = candidates.find((candidate) =>
-      playerTokens.every(token => candidate.tokenJoin.includes(token))
-    );
-    if (allTokensMatch) return allTokensMatch.url;
+    const findBestMatch = (candidates: typeof allCandidates) => {
+      // Pokus 1: Přesná shoda - normalizované jméno
+      const exactMatch = candidates.find(
+        (candidate) =>
+          candidate.baseName === normalizedName ||
+          candidate.baseName === reversedName ||
+          candidate.tokenJoin === normalizedName ||
+          candidate.tokenJoinReversed === normalizedName
+      );
+      if (exactMatch) return exactMatch.url;
 
-    // Pokus 3: Příjmení (první token) + jakýkoliv další token
-    const surname = playerTokens[0] || "";
-    const surnameMatches = candidates.filter((candidate) => 
-      candidate.tokenJoin.includes(surname) && candidate.tokens.length >= 1
-    );
-    if (surnameMatches.length === 1) return surnameMatches[0].url;
+      // Pokus 2: Všechny tokeny se nacházejí v kandidátovi
+      const allTokensMatch = candidates.find((candidate) =>
+        playerTokens.every(token => candidate.tokenJoin.includes(token))
+      );
+      if (allTokensMatch) return allTokensMatch.url;
 
-    // Pokus 4: Jakýkoliv token se v kandidátovi vyskytuje
-    const anyTokenMatch = candidates.find((candidate) =>
-      playerTokens.some(token => candidate.tokenJoin.includes(token) && token.length > 3)
-    );
-    if (anyTokenMatch) return anyTokenMatch.url;
+      // Pokus 3: Příjmení (první token) + jakýkoliv další token
+      const surname = playerTokens[0] || "";
+      const surnameMatches = candidates.filter((candidate) =>
+        candidate.tokenJoin.includes(surname) && candidate.tokens.length >= 1
+      );
+      if (surnameMatches.length === 1) return surnameMatches[0].url;
 
-    return "";
+      // Pokus 4: Jakýkoliv token se v kandidátovi vyskytuje
+      const anyTokenMatch = candidates.find((candidate) =>
+        playerTokens.some(token => candidate.tokenJoin.includes(token) && token.length > 3)
+      );
+      if (anyTokenMatch) return anyTokenMatch.url;
+
+      return "";
+    };
+
+    return findBestMatch(teamCandidates) || findBestMatch(allCandidates);
   };
 
   useEffect(() => {
@@ -520,12 +528,19 @@ export default function DruzstvoDetail() {
             number: item.number || "",
             teamName: item.teamName || "",
             teamSlug: item.teamSlug || "",
+            teamNames: (item.teamNames ?? []).map((value) => String(value || "")).filter(Boolean),
+            teamSlugs: (item.teamSlugs ?? []).map((value) => String(value || "")).filter(Boolean),
             photoUrl: item.photoUrl || "",
           }))
           .filter((item) => {
             const itemTeamSlug = normalizeTeamSlug(item.teamSlug);
             const itemTeamName = normalizeTeamSlug(item.teamName);
-            return itemTeamSlug === team.slug || itemTeamName === team.slug;
+            const itemTeamSlugs = (item.teamSlugs ?? []).map(normalizeTeamSlug).filter(Boolean);
+            const itemTeamNames = (item.teamNames ?? []).map(normalizeTeamSlug).filter(Boolean);
+            return itemTeamSlug === team.slug
+              || itemTeamName === team.slug
+              || itemTeamSlugs.includes(team.slug)
+              || itemTeamNames.includes(team.slug);
           })
           .sort((a, b) => a.name.localeCompare(b.name, "cs"));
 

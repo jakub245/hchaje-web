@@ -6,6 +6,16 @@ declare const process: any;
 const FALLBACK_NOTION_TOKEN = "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";
 const FALLBACK_NOTION_DATABASE_ID = "350c5ef377c780e7a67be50f9152fe33";
 
+const TEAM_RELATION_ID_FALLBACKS: Record<string, string> = {
+  "34fc5ef3-77c7-8004-80d6-e612c6bfe13c": "Ženy",
+  "34fc5ef3-77c7-8016-b874-c183af150bed": "Starší žákyně",
+  "34fc5ef3-77c7-8043-a650-da788c7a6af3": "Mini žákyně",
+  "34fc5ef3-77c7-8047-868d-fddcf75eeab6": "Mladší dorostenky",
+  "34fc5ef3-77c7-805a-933a-d59276d6113f": "Přípravka",
+  "34fc5ef3-77c7-8068-938d-e5216e062d1a": "Starší dorostenky",
+  "34fc5ef3-77c7-80ea-a91f-db3ee248dc25": "Mladší žákyně",
+};
+
 const PLAYERS_CACHE_TTL_MS = 1000 * 60; // Reduced to 1 minute
 
 type CachedPlayers = {
@@ -17,6 +27,8 @@ type CachedPlayers = {
     number: string;
     teamName: string;
     teamSlug: string;
+    teamNames?: string[];
+    teamSlugs?: string[];
     photoUrl: string;
   }>;
   fetchedAt: number;
@@ -255,13 +267,23 @@ const loadPlayersFromNotion = async () => {
       const teamProperty = findProperty(properties, ["Družstvo", "Druzstvo", "Team", "Tým", "Tym"]);
       let teamName = "Nezařazeno";
       let teamSlug = "";
+      let teamNames: string[] = [];
+      let teamSlugs: string[] = [];
 
       if (teamProperty?.type === "relation") {
         const relationIds = (teamProperty.relation ?? []).map((relation: any) => relation?.id).filter(Boolean);
         if (relationIds.length > 0) {
-          const resolvedNames = await Promise.all(relationIds.map((relationId: string) => readRelatedTitle(relationId)));
+          const resolvedNames = await Promise.all(
+            relationIds.map(async (relationId: string) => {
+              const resolvedName = await readRelatedTitle(relationId);
+              if (resolvedName) return resolvedName;
+              return TEAM_RELATION_ID_FALLBACKS[relationId] || "";
+            }),
+          );
           const resolved = resolvedNames.filter(Boolean);
           if (resolved.length > 0) {
+            teamNames = resolved;
+            teamSlugs = resolved.map((value) => toSlug(value)).filter(Boolean);
             teamName = resolved[0];
             teamSlug = toSlug(teamName);
           }
@@ -273,8 +295,13 @@ const loadPlayersFromNotion = async () => {
         if (plain) {
           teamName = plain;
           teamSlug = toSlug(teamName);
+          teamNames = [teamName];
+          teamSlugs = teamSlug ? [teamSlug] : [];
         }
       }
+
+      const resolvedTeamNames = teamNames.length > 0 ? teamNames : [];
+      const resolvedTeamSlugs = teamSlugs.length > 0 ? teamSlugs : [];
 
       return {
         id: page?.id || `notion-player-${index}`,
@@ -284,6 +311,8 @@ const loadPlayersFromNotion = async () => {
         number,
         teamName,
         teamSlug,
+        teamNames: resolvedTeamNames,
+        teamSlugs: resolvedTeamSlugs,
         photoUrl,
       };
     }),
