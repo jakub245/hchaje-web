@@ -114,7 +114,7 @@ const TEAM_DATA: Team[] = [
     slug: "starsi-zakyne", name: "Starší žákyně", shortName: "St. žákyně",
     desc: "Soutěžní tým 12-14 let.",
     longDesc: "Kategorie starších žákyň navazuje na získané základy a rozvíjí herní dovednosti do větší variability a jistoty i pod tlakem soupeře. Hráčky si osvojují základy pozičního útoku, spolupráci v menších skupinách i specifické role na hřišti, přičemž se učí lépe využívat prostor a rozhodovat se v reálných herních situacích. Důraz je kladen také na samostatnost, zodpovědnost za vlastní výkon a pochopení širších souvislostí hry i regenerace.",
-    img: resolveTeamHero("starsi-zakyne", "Starší žákyně", "https://images.unsplash.com/photo-1769614075229-bfc51a41aa78?w=800"),
+    img: "imports/foto/druzstva/starsi zakyne/textura (1).png",
     coach: "Milan Ernest", assistantCoach: "Pavla Martin",
     playerCount: 16, ageRange: "12-14 let",
     trainings: [
