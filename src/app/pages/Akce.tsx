@@ -8,6 +8,7 @@ type EventItem = {
   date: string;
   dateFrom?: string;
   dateTo?: string;
+  dateNote?: string;
   title: string;
   location: string;
   teamSlug: string;
@@ -44,7 +45,8 @@ const parseCzDate = (value: string) => {
   const dateStr = firstDateMatch ? firstDateMatch[1] : clean;
 
   if (/^\d{4}-\d{2}-\d{2}/.test(dateStr)) {
-    return new Date(dateStr).getTime();
+    const ts = new Date(dateStr).getTime();
+    return Number.isFinite(ts) ? ts : Number.MAX_SAFE_INTEGER;
   }
 
   const parts = dateStr.split(".").filter(Boolean);
@@ -53,15 +55,30 @@ const parseCzDate = (value: string) => {
 
   // Use current year if not provided
   const year = yearStr ? Number(yearStr) : new Date().getFullYear();
-  return new Date(year, Number(month) - 1, Number(day)).getTime();
+  const ts = new Date(year, Number(month) - 1, Number(day)).getTime();
+  return Number.isFinite(ts) ? ts : Number.MAX_SAFE_INTEGER;
+};
+
+const getEventSortTs = (event: EventItem) => {
+  const source = event.dateFrom?.trim() || event.date?.trim() || event.dateTo?.trim() || "";
+  return parseCzDate(source);
 };
 
 const getUpcomingEvents = (allEvents: EventItem[]): EventItem[] => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const todayTs = today.getTime();
-  
-  return allEvents.filter((event) => parseCzDate(event.date) >= todayTs);
+
+  const isFreeTextOnly = (event: EventItem) =>
+    Boolean(event.dateNote?.trim()) && !event.dateFrom?.trim() && !event.dateTo?.trim();
+
+  const freeTextEvents = allEvents.filter(isFreeTextOnly);
+  const datedEvents = allEvents
+    .filter((event) => !isFreeTextOnly(event))
+    .filter((event) => getEventSortTs(event) >= todayTs)
+    .sort((a, b) => getEventSortTs(a) - getEventSortTs(b));
+
+  return [...freeTextEvents, ...datedEvents];
 };
 
 const teamOrder = new Map([
@@ -119,6 +136,7 @@ export default function AkcePage() {
               date: displayDate,
               dateFrom: item.dateFrom,
               dateTo: item.dateTo,
+              dateNote: note,
               title: item.title || "Akce",
               location: item.location || "",
               teamSlug,
@@ -126,7 +144,7 @@ export default function AkcePage() {
             };
           })
           .filter((item) => item.title)
-          .sort((a, b) => parseCzDate(a.date) - parseCzDate(b.date));
+          .sort((a, b) => getEventSortTs(a) - getEventSortTs(b));
 
         if (!active) return;
 

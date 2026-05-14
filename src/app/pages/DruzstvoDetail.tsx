@@ -123,7 +123,8 @@ const parseCzDate = (value: string) => {
   const dateStr = firstDateMatch ? firstDateMatch[1] : clean;
 
   if (/^\d{4}-\d{2}-\d{2}/.test(dateStr)) {
-    return new Date(dateStr).getTime();
+    const ts = new Date(dateStr).getTime();
+    return Number.isFinite(ts) ? ts : Number.MAX_SAFE_INTEGER;
   }
 
   const parts = dateStr.split(".").filter(Boolean);
@@ -132,7 +133,13 @@ const parseCzDate = (value: string) => {
 
   // Use current year if not provided
   const year = yearStr ? Number(yearStr) : new Date().getFullYear();
-  return new Date(year, Number(month) - 1, Number(day)).getTime();
+  const ts = new Date(year, Number(month) - 1, Number(day)).getTime();
+  return Number.isFinite(ts) ? ts : Number.MAX_SAFE_INTEGER;
+};
+
+const getEventSortTs = (event: EventItem) => {
+  const source = event.dateFrom?.trim() || event.date?.trim() || event.dateTo?.trim() || "";
+  return parseCzDate(source);
 };
 
 const getUpcomingEvents = (allEvents: EventItem[]): EventItem[] => {
@@ -140,18 +147,18 @@ const getUpcomingEvents = (allEvents: EventItem[]): EventItem[] => {
   today.setHours(0, 0, 0, 0);
   const todayTs = today.getTime();
 
-  // Akce s volným textem v date (dateNote) - zobrazit vždy nahoře
-  const freeTextEvents = allEvents.filter(
-    (event) => event.dateNote && !(event.dateFrom || event.dateTo || (event.date && /^\d{4}-\d{2}-\d{2}/.test(event.date)))
-  );
-  // Ostatní akce podle data
-  const datedEvents = allEvents.filter(
-    (event) => !freeTextEvents.includes(event) && parseCzDate(event.date) >= todayTs
-  );
-  // Vrátit nejdřív freeTextEvents, pak ostatní podle data
+  const isFreeTextOnly = (event: EventItem) =>
+    Boolean(event.dateNote?.trim()) && !event.dateFrom?.trim() && !event.dateTo?.trim();
+
+  const freeTextEvents = allEvents.filter(isFreeTextOnly);
+  const datedEvents = allEvents
+    .filter((event) => !isFreeTextOnly(event))
+    .filter((event) => getEventSortTs(event) >= todayTs)
+    .sort((a, b) => getEventSortTs(a) - getEventSortTs(b));
+
   return [
     ...freeTextEvents,
-    ...datedEvents.sort((a, b) => parseCzDate(a.date) - parseCzDate(b.date)),
+    ...datedEvents,
   ];
 };
 
@@ -357,7 +364,7 @@ export default function DruzstvoDetail() {
             const normalizedTeamName = normalizeText(item.teamName);
             return item.teamSlug === team.slug || normalizedTeamName.includes(normalizeText(team.name));
           })
-          .sort((a, b) => parseCzDate(a.date) - parseCzDate(b.date));
+          .sort((a, b) => getEventSortTs(a) - getEventSortTs(b));
 
         if (!activeRequest) return;
         setEvents(normalizedEvents);
@@ -655,13 +662,7 @@ export default function DruzstvoDetail() {
 
   const trainingCount = trainingBlocks.reduce((sum, block: { title: string; items: Array<{ day: string; time: string; hall: string }> }) => sum + block.items.length, 0);
 
-  const displayedEvents = getUpcomingEvents(
-    events.map((event: EventItem) => ({
-      date: event.date,
-      title: event.title,
-      location: event.location,
-    }))
-  );
+  const displayedEvents = getUpcomingEvents(events);
   const displayedStaff = coachesLoaded && coaches.length > 0
     ? coaches.map((c: CoachItem) => ({ name: c.name, phone: c.phone, email: c.email, photoUrl: c.photoUrl, age: c.age, position: c.position, sortPriority: c.sortPriority }))
     : [];
