@@ -18,6 +18,8 @@ import { getTeamBySlug, TEAMS } from "../data/teams";
 type EventItem = {
   id: string;
   date: string;
+  dateFrom?: string;
+  dateTo?: string;
   title: string;
   location: string;
   teamSlug: string;
@@ -138,6 +140,24 @@ const filterToCurrentSeason = (items: TrainingItem[]): TrainingItem[] => {
   const sorted = [...uniqueSections].sort((a, b) => getMaxYear(b) - getMaxYear(a));
   const current = sorted.find((s) => getMaxYear(s) <= currentYear) ?? sorted[0];
   return items.filter((t) => (t.section?.trim() || "") === current);
+};
+
+const DAY_ORDER: Record<string, number> = {
+  "Pondělí": 0,
+  "Úterý": 1,
+  "Středa": 2,
+  "Čtvrtek": 3,
+  "Pátek": 4,
+  "Sobota": 5,
+  "Neděle": 6,
+};
+
+const sortTrainingsByDay = (items: Array<{ day: string; time: string; hall: string }>): Array<{ day: string; time: string; hall: string }> => {
+  return [...items].sort((a, b) => {
+    const aOrder = DAY_ORDER[a.day] ?? Number.MAX_SAFE_INTEGER;
+    const bOrder = DAY_ORDER[b.day] ?? Number.MAX_SAFE_INTEGER;
+    return aOrder - bOrder;
+  });
 };
 
 export default function DruzstvoDetail() {
@@ -271,10 +291,26 @@ export default function DruzstvoDetail() {
           .map((item, index) => {
             const teamName = (item.teamName ?? "Nezařazeno").trim();
             const teamSlug = (item.teamSlug ?? "").trim();
+            
+            // Format date range if both from and to are present
+            let displayDate = item.date || "—";
+            if ((item.dateFrom?.trim() || item.dateTo?.trim()) && (item.dateFrom || item.dateTo)) {
+              const from = item.dateFrom?.trim() || "";
+              const to = item.dateTo?.trim() || "";
+              if (from && to && from !== to) {
+                displayDate = `${from} – ${to}`;
+              } else if (from) {
+                displayDate = from;
+              } else if (to) {
+                displayDate = to;
+              }
+            }
 
             return {
               id: item.id || `notion-${index}`,
-              date: item.date || "—",
+              date: displayDate,
+              dateFrom: item.dateFrom,
+              dateTo: item.dateTo,
               title: item.title || "Akce",
               location: item.location || "",
               teamSlug,
@@ -570,16 +606,16 @@ export default function DruzstvoDetail() {
 
   const apiTrainingBlocks = [...apiTrainingMap.entries()].map((entry) => {
     const [title, items] = entry as [string, Array<{ day: string; time: string; hall: string }>];
-    return { title, items };
+    return { title, items: sortTrainingsByDay(items) };
   });
 
   const trainingBlocks = trainingsLoaded && trainings.length > 0
     ? (apiHasTrainingSections
       ? apiTrainingBlocks
-      : [{ title: "Tréninky", items: trainings.map((item: TrainingItem) => ({ day: item.day, time: item.time, hall: item.hall })) }])
+      : [{ title: "Tréninky", items: sortTrainingsByDay(trainings.map((item: TrainingItem) => ({ day: item.day, time: item.time, hall: item.hall }))) }])
     : ((team.trainingSections && team.trainingSections.length > 0)
-      ? team.trainingSections
-      : [{ title: "Tréninky", items: team.trainings }]);
+      ? team.trainingSections.map(section => ({ ...section, items: sortTrainingsByDay(section.items) }))
+      : [{ title: "Tréninky", items: sortTrainingsByDay(team.trainings) }]);
 
   const trainingCount = trainingBlocks.reduce((sum, block: { title: string; items: Array<{ day: string; time: string; hall: string }> }) => sum + block.items.length, 0);
 
@@ -647,7 +683,6 @@ export default function DruzstvoDetail() {
             <div>
               <span className="text-[#6EE76D] text-sm tracking-[0.2em] uppercase mb-3 block" style={{ fontFamily: bebas }}>O družstvu</span>
               <h2 className="text-3xl lg:text-4xl text-white uppercase mb-6" style={{ fontFamily: bebas }}>{team.name}</h2>
-              <p className="text-white/50 text-lg mb-6" style={{ fontFamily: inter }}>{nbspShortWords(team.longDesc)}</p>
 
               <div className="grid grid-cols-2 gap-4 mb-8">
                 <div className="mobile-solid-card p-4 rounded-2xl bg-[#101a10] border border-[#6EE76D]/12">

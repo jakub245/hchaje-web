@@ -11,6 +11,8 @@ type CachedEvents = {
   events: Array<{
     id: string;
     date: string;
+    dateFrom?: string;
+    dateTo?: string;
     title: string;
     location: string;
     teamName: string;
@@ -199,6 +201,8 @@ const loadEventsFromNotion = async () => {
       if (!resolveVisibility(properties)) return null;
       const title = parseTitle(findProperty(properties, ["Název", "Nazev", "Name", "Event"]) || properties["title"]);
       const date = parseRichText(findProperty(properties, ["Datum od", "Datum", "Date", "Kdy"])) || "—";
+      const dateFrom = parseRichText(findProperty(properties, ["Datum od", "Datum od", "Date from", "Začátek"])) || "";
+      const dateTo = parseRichText(findProperty(properties, ["Datum do", "Date to", "Konec"])) || "";
       const location = parseRichText(findProperty(properties, ["Místo", "Misto", "Location", "Kde"])) || "";
 
       const teamProperty = findProperty(properties, ["Družstva", "Druzstva", "Team", "Tým", "Tym"]);
@@ -221,6 +225,8 @@ const loadEventsFromNotion = async () => {
       return {
         id: page?.id || `notion-${index}`,
         date,
+        dateFrom,
+        dateTo,
         title,
         location,
         teamName,

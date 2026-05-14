@@ -137,7 +137,7 @@ const TEAM_DATA: Team[] = [
   {
     slug: "mladsi-zakyne", name: "Mladší žákyně", shortName: "Ml. žákyně",
     desc: "Dívky 10–12 let rozvíjející herní dovednosti.",
-    longDesc: "Stavíme především na budování pozitivního vztahu k házené jako pravidelné a radostné součásti života. Hráčky si rozvíjejí útočné dovednosti, základní herní návyky a postupně objevují různé role na hřišti, přičemž důraz je kladen na vlastní pokrok a odvahu zkoušet nové věci. Důležitou součástí je také porozumění hře jako celku – střídání jednotlivých fází a spolupráce v týmu, kde má přednost radost ze hry před samotným výsledkem.",
+    longDesc: "Kategorie mladších žákyň se zaměřuje na všestranný rozvoj herních dovedností, pohybové gramotnosti a porozumění základním herním principům.\n\nVelký důraz klademe na týmovou spolupráci, zdravou soutěživost a přirozenou motivaci neustále se zlepšovat. Součástí našeho přístupu je také rozvoj disciplíny, herního myšlení a schopnosti zvládat zápasové situace s maximálním nasazením.\n\nNaším cílem je vytvářet prostředí, ve kterém hráčky rostou nejen sportovně, ale i osobnostně, učí se odpovědnosti vůči týmu a získávají pozitivní vztah ke sportu i zdravému pohybu.",
     img: resolveTeamHero("mladsi-zakyne", "Mladší žákyně", "https://images.unsplash.com/photo-1575367728985-8cb72541609a?w=800"),
     coach: "Jůlia Dvořáková", assistantCoach: "Petr Novák",
     playerCount: 20, ageRange: "10–12 let",

@@ -6,6 +6,8 @@ import { CtaStrip, PageHero, bebas, inter, nbspShortWords } from "../components/
 type EventItem = {
   id: string;
   date: string;
+  dateFrom?: string;
+  dateTo?: string;
   title: string;
   location: string;
   teamSlug: string;
@@ -75,10 +77,26 @@ export default function AkcePage() {
             const teamName = (item.teamName ?? "Nezařazeno").trim();
             const directSlug = (item.teamSlug ?? "").trim();
             const teamSlug = directSlug || normalizeText(teamName);
+            
+            // Format date range if both from and to are present
+            let displayDate = item.date || "—";
+            if ((item.dateFrom?.trim() || item.dateTo?.trim()) && (item.dateFrom || item.dateTo)) {
+              const from = item.dateFrom?.trim() || "";
+              const to = item.dateTo?.trim() || "";
+              if (from && to && from !== to) {
+                displayDate = `${from} – ${to}`;
+              } else if (from) {
+                displayDate = from;
+              } else if (to) {
+                displayDate = to;
+              }
+            }
 
             return {
               id: item.id || `notion-${index}`,
-              date: item.date || "—",
+              date: displayDate,
+              dateFrom: item.dateFrom,
+              dateTo: item.dateTo,
               title: item.title || "Akce",
               location: item.location || "",
               teamSlug,
