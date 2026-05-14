@@ -18,7 +18,7 @@ const TEAM_HERO_ALIASES: Record<string, string[]> = {
   "pripravka": ["pripravka"],
   "mini-zakyne": ["minizakyne", "mini2025"],
   "mladsi-zakyne": ["mladsizakyne"],
-  "starsi-zakyne": ["starsizakyne"],
+  "starsi-zakyne": ["starsizakyne", "starsizacky"],
   "mladsi-dorostenky": ["mladsidorost", "mladsidorostenky"],
   "starsi-dorostenky": ["starsidorost", "starsidorostenky"],
   "zeny": ["zeny"],
@@ -114,7 +114,7 @@ const TEAM_DATA: Team[] = [
     slug: "starsi-zakyne", name: "Starší žákyně", shortName: "St. žákyně",
     desc: "Soutěžní tým 12-14 let.",
     longDesc: "Kategorie starších žákyň navazuje na získané základy a rozvíjí herní dovednosti do větší variability a jistoty i pod tlakem soupeře. Hráčky si osvojují základy pozičního útoku, spolupráci v menších skupinách i specifické role na hřišti, přičemž se učí lépe využívat prostor a rozhodovat se v reálných herních situacích. Důraz je kladen také na samostatnost, zodpovědnost za vlastní výkon a pochopení širších souvislostí hry i regenerace.",
-    img: "imports/foto/druzstva/starsi zakyne/textura (1).png",
+    img: resolveTeamHero("starsi-zakyne", "Starší žákyně", "imports/foto/druzstva/starsi zakyne/textura (1).png"),
     coach: "Milan Ernest", assistantCoach: "Pavla Martin",
     playerCount: 16, ageRange: "12-14 let",
     trainings: [
