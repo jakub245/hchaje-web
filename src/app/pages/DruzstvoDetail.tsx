@@ -139,8 +139,20 @@ const getUpcomingEvents = (allEvents: EventItem[]): EventItem[] => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const todayTs = today.getTime();
-  
-  return allEvents.filter((event) => parseCzDate(event.date) >= todayTs);
+
+  // Akce s volným textem v date (dateNote) - zobrazit vždy nahoře
+  const freeTextEvents = allEvents.filter(
+    (event) => event.dateNote && !(event.dateFrom || event.dateTo || (event.date && /^\d{4}-\d{2}-\d{2}/.test(event.date)))
+  );
+  // Ostatní akce podle data
+  const datedEvents = allEvents.filter(
+    (event) => !freeTextEvents.includes(event) && parseCzDate(event.date) >= todayTs
+  );
+  // Vrátit nejdřív freeTextEvents, pak ostatní podle data
+  return [
+    ...freeTextEvents,
+    ...datedEvents.sort((a, b) => parseCzDate(a.date) - parseCzDate(b.date)),
+  ];
 };
 
 const filterToCurrentSeason = (items: TrainingItem[]): TrainingItem[] => {
