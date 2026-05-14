@@ -29,14 +29,21 @@ const parseCzDate = (value: string) => {
   if (!value) return Number.MAX_SAFE_INTEGER;
   const clean = value.replace(/\s/g, "");
 
-  if (/^\d{4}-\d{2}-\d{2}/.test(clean)) {
-    return new Date(clean).getTime();
+  // Extract first date if it's a range (e.g., "2.5.–3.5.2026" -> "2.5.")
+  const firstDateMatch = clean.match(/^(\d{1,2}\.\d{1,2}\.(?:\d{4})?)/);
+  const dateStr = firstDateMatch ? firstDateMatch[1] : clean;
+
+  if (/^\d{4}-\d{2}-\d{2}/.test(dateStr)) {
+    return new Date(dateStr).getTime();
   }
 
-  const [day, month, year] = clean.split(".").filter(Boolean);
-  if (!day || !month || !year) return Number.MAX_SAFE_INTEGER;
+  const parts = dateStr.split(".").filter(Boolean);
+  const [day, month, yearStr] = parts;
+  if (!day || !month) return Number.MAX_SAFE_INTEGER;
 
-  return new Date(Number(year), Number(month) - 1, Number(day)).getTime();
+  // Use current year if not provided
+  const year = yearStr ? Number(yearStr) : new Date().getFullYear();
+  return new Date(year, Number(month) - 1, Number(day)).getTime();
 };
 
 const getUpcomingEvents = (allEvents: EventItem[]): EventItem[] => {
