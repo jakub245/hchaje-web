@@ -756,9 +756,6 @@ export default function DruzstvoDetail() {
             <div className="space-y-10">
               {trainingBlocks.map((block) => (
                 <div key={block.title}>
-                  {(block.title !== "Tréninky" || trainingBlocks.length > 1) && (
-                    <h3 className="text-xl text-white/45 mb-4 normal-case" style={{ fontFamily: inter }}>{block.title}</h3>
-                  )}
                   <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                     {block.items.map((item, itemIndex) => (
                       <div key={`${item.day}-${item.time}-${item.hall}-${itemIndex}`} className="mobile-solid-card rounded-3xl border border-[#6EE76D]/12 bg-[#101a10] p-6">
