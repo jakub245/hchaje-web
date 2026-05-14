@@ -847,7 +847,7 @@ export default function DruzstvoDetail() {
 
               <div>
                 {displayedEvents.map((event, i) => (
-                  <div key={i} className={`grid gap-3 md:grid-cols-[1fr_1.4fr_1fr] py-5 ${i !== 0 ? "border-t border-[#6EE76D]/15" : ""}`}>
+                  <div key={i} className={`grid gap-3 md:grid-cols-[1fr_1.4fr_1fr] md:items-center py-5 ${i !== 0 ? "border-t border-[#6EE76D]/15" : ""}`}>
                     <div className="flex items-center gap-3">
                       <div className="mobile-solid-chip w-10 h-10 rounded-2xl bg-[#6EE76D]/14 flex items-center justify-center flex-shrink-0">
                         <Calendar className="w-4 h-4 text-[#6EE76D]" />
@@ -877,8 +877,8 @@ export default function DruzstvoDetail() {
                       <div className="text-white text-base whitespace-pre-line" style={{ fontFamily: inter }}>{nbspShortWords(event.title)}</div>
                     </div>
 
-                    <div className="hidden md:flex items-start gap-2">
-                      <MapPin className="w-4 h-4 text-[#6EE76D] mt-1 flex-shrink-0" />
+                    <div className="hidden md:flex items-center gap-2">
+                      <MapPin className="w-4 h-4 text-[#6EE76D] flex-shrink-0" />
                       <div className="text-white whitespace-pre-line" style={{ fontFamily: inter }}>{nbspShortWords(event.location)}</div>
                     </div>
                   </div>

@@ -267,7 +267,7 @@ export default function AkcePage() {
 
               <div>
                 {filteredEvents.map((event, i) => (
-                  <div key={event.id} className={`grid gap-3 md:grid-cols-[1fr_1.2fr_1.2fr_1fr] py-5 ${i !== 0 ? "border-t border-[#6EE76D]/15" : ""}`}>
+                  <div key={event.id} className={`grid gap-3 md:grid-cols-[1fr_1.2fr_1.2fr_1fr] md:items-center py-5 ${i !== 0 ? "border-t border-[#6EE76D]/15" : ""}`}>
                     <div className="flex items-center gap-3">
                       <div className="mobile-solid-chip w-10 h-10 rounded-2xl bg-[#6EE76D]/14 flex items-center justify-center flex-shrink-0">
                         <Calendar className="w-4 h-4 text-[#6EE76D]" />
@@ -278,12 +278,12 @@ export default function AkcePage() {
                       </div>
                     </div>
 
-                    <div className="pl-[3.25rem] md:pl-0">
+                    <div className="pl-[3.25rem] md:hidden">
                       <div className="text-sm md:hidden mb-1" style={{ fontFamily: inter, color: "rgb(255 255 255 / 0.46)" }}>Akce</div>
                       <div className="text-base whitespace-pre-line" style={{ fontFamily: inter, color: "#FFFFFF", fontWeight: 600 }}>{nbspShortWords(event.title)}</div>
                     </div>
 
-                    <div className="pl-[3.25rem] md:pl-0">
+                    <div className="pl-[3.25rem] md:hidden">
                       <div className="text-sm md:hidden mb-1" style={{ fontFamily: inter, color: "rgb(255 255 255 / 0.46)" }}>Družstvo</div>
                       <div className="text-base whitespace-pre-line" style={{ fontFamily: inter, color: "#FFFFFF", fontWeight: 600 }}>
                         {event.teamSlug ? (
@@ -296,12 +296,33 @@ export default function AkcePage() {
                       </div>
                     </div>
 
-                    <div className="pl-[3.25rem] md:pl-0 flex items-start gap-2">
-                      <MapPin className="w-4 h-4 text-[#6EE76D] mt-1 flex-shrink-0" />
+                    <div className="pl-[3.25rem] md:hidden flex items-start gap-2">
+                      <MapPin className="w-4 h-4 text-[#6EE76D] mt-1 md:mt-0 flex-shrink-0" />
                       <div>
                         <div className="text-sm md:hidden mb-1" style={{ fontFamily: inter, color: "rgb(255 255 255 / 0.46)" }}>Místo</div>
                         <div className="text-base whitespace-pre-line" style={{ fontFamily: inter, color: "#FFFFFF", fontWeight: 600 }}>{nbspShortWords(event.location || "—")}</div>
                       </div>
+                    </div>
+
+                    <div className="hidden md:flex items-center">
+                      <div className="text-base whitespace-pre-line" style={{ fontFamily: inter, color: "#FFFFFF", fontWeight: 600 }}>{nbspShortWords(event.title)}</div>
+                    </div>
+
+                    <div className="hidden md:flex items-center">
+                      <div className="text-base whitespace-pre-line" style={{ fontFamily: inter, color: "#FFFFFF", fontWeight: 600 }}>
+                        {event.teamSlug ? (
+                          <Link to={`/druzstva/${event.teamSlug}`} className="hover:text-[#6EE76D] hover:underline transition-colors">
+                            {event.teamName}
+                          </Link>
+                        ) : (
+                          event.teamName
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="hidden md:flex items-center gap-2">
+                      <MapPin className="w-4 h-4 text-[#6EE76D] flex-shrink-0" />
+                      <div className="text-base whitespace-pre-line" style={{ fontFamily: inter, color: "#FFFFFF", fontWeight: 600 }}>{nbspShortWords(event.location || "—")}</div>
                     </div>
                   </div>
                 ))}
