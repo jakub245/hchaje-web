@@ -13,6 +13,7 @@ type CachedEvents = {
     date: string;
     dateFrom?: string;
     dateTo?: string;
+    dateNote?: string;
     title: string;
     location: string;
     teamName: string;
@@ -214,6 +215,7 @@ const loadEventsFromNotion = async () => {
       const date = parseRichText(findProperty(properties, ["Datum od", "Datum", "Date", "Kdy"])) || "—";
       const dateFrom = parseRichText(findProperty(properties, ["Datum od", "Datum od", "Date from", "Začátek"])) || "";
       const dateTo = parseRichText(findProperty(properties, ["Datum do", "Date to", "Konec"])) || "";
+      const dateNote = parseRichText(findProperty(properties, ["Datum poznámka", "Datum poznamka", "Date note", "Date Note"])) || "";
       const location = parseRichText(findProperty(properties, ["Místo", "Misto", "Location", "Kde"])) || "";
 
       const teamProperty = findProperty(properties, ["Družstva", "Druzstva", "Team", "Tým", "Tym"]);
@@ -238,6 +240,7 @@ const loadEventsFromNotion = async () => {
         date,
         dateFrom,
         dateTo,
+        dateNote,
         title,
         location,
         teamName,

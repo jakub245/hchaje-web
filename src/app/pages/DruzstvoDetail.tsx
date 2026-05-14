@@ -20,6 +20,7 @@ type EventItem = {
   date: string;
   dateFrom?: string;
   dateTo?: string;
+  dateNote?: string;
   title: string;
   location: string;
   teamSlug: string;
@@ -95,6 +96,16 @@ const SECTIONS = [
   { id: "treneri", label: "Trenéři" },
   { id: "aktuality", label: "Aktuality" },
 ];
+
+const formatIsoDate = (iso: string) => {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString("cs-CZ", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+};
 
 const normalizeText = (value: string) =>
   value
@@ -299,18 +310,23 @@ export default function DruzstvoDetail() {
             const teamName = (item.teamName ?? "Nezařazeno").trim();
             const teamSlug = (item.teamSlug ?? "").trim();
             
-            // Format date range if both from and to are present
-            let displayDate = item.date || "—";
-            if ((item.dateFrom?.trim() || item.dateTo?.trim()) && (item.dateFrom || item.dateTo)) {
-              const from = item.dateFrom?.trim() || "";
-              const to = item.dateTo?.trim() || "";
-              if (from && to && from !== to) {
-                displayDate = `${from} – ${to}`;
-              } else if (from) {
-                displayDate = from;
-              } else if (to) {
-                displayDate = to;
-              }
+            const from = item.dateFrom?.trim() || "";
+            const to = item.dateTo?.trim() || "";
+            const note = item.dateNote?.trim() || "";
+
+            let displayDate: string;
+            if (note) {
+              displayDate = note;
+            } else if (from && to && from !== to) {
+              displayDate = `${formatIsoDate(from)} – ${formatIsoDate(to)}`;
+            } else if (from) {
+              displayDate = formatIsoDate(from);
+            } else if (to) {
+              displayDate = formatIsoDate(to);
+            } else if (item.date?.trim()) {
+              displayDate = formatIsoDate(item.date.trim());
+            } else {
+              displayDate = "Brzy upřesníme";
             }
 
             return {
@@ -318,6 +334,7 @@ export default function DruzstvoDetail() {
               date: displayDate,
               dateFrom: item.dateFrom,
               dateTo: item.dateTo,
+              dateNote: item.dateNote,
               title: item.title || "Akce",
               location: item.location || "",
               teamSlug,
