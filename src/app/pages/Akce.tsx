@@ -16,6 +16,16 @@ type EventItem = {
 
 type ApiEvent = Partial<EventItem>;
 
+const formatIsoDate = (iso: string) => {
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return iso;
+  return d.toLocaleDateString("cs-CZ", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+};
+
 const normalizeText = (value: string) =>
   value
     .toLowerCase()
@@ -85,18 +95,23 @@ export default function AkcePage() {
             const directSlug = (item.teamSlug ?? "").trim();
             const teamSlug = directSlug || normalizeText(teamName);
             
-            // Format date range if both from and to are present
-            let displayDate = item.date || "—";
-            if ((item.dateFrom?.trim() || item.dateTo?.trim()) && (item.dateFrom || item.dateTo)) {
-              const from = item.dateFrom?.trim() || "";
-              const to = item.dateTo?.trim() || "";
-              if (from && to && from !== to) {
-                displayDate = `${from} – ${to}`;
-              } else if (from) {
-                displayDate = from;
-              } else if (to) {
-                displayDate = to;
-              }
+            const from = item.dateFrom?.trim() || "";
+            const to = item.dateTo?.trim() || "";
+            const note = (item as any).dateNote?.trim() || "";
+
+            let displayDate: string;
+            if (note) {
+              displayDate = note;
+            } else if (from && to && from !== to) {
+              displayDate = `${formatIsoDate(from)} – ${formatIsoDate(to)}`;
+            } else if (from) {
+              displayDate = formatIsoDate(from);
+            } else if (to) {
+              displayDate = formatIsoDate(to);
+            } else if (item.date?.trim() && item.date.trim() !== "—") {
+              displayDate = formatIsoDate(item.date.trim());
+            } else {
+              displayDate = "Brzy upřesníme";
             }
 
             return {

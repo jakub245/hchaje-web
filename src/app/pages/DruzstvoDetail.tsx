@@ -323,7 +323,7 @@ export default function DruzstvoDetail() {
               displayDate = formatIsoDate(from);
             } else if (to) {
               displayDate = formatIsoDate(to);
-            } else if (item.date?.trim()) {
+            } else if (item.date?.trim() && item.date.trim() !== "—") {
               displayDate = formatIsoDate(item.date.trim());
             } else {
               displayDate = "Brzy upřesníme";
