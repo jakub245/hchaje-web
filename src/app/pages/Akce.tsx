@@ -69,16 +69,9 @@ const getUpcomingEvents = (allEvents: EventItem[]): EventItem[] => {
   today.setHours(0, 0, 0, 0);
   const todayTs = today.getTime();
 
-  const isFreeTextOnly = (event: EventItem) =>
-    Boolean(event.dateNote?.trim()) && !event.dateFrom?.trim() && !event.dateTo?.trim();
-
-  const freeTextEvents = allEvents.filter(isFreeTextOnly);
-  const datedEvents = allEvents
-    .filter((event) => !isFreeTextOnly(event))
+  return allEvents
     .filter((event) => getEventSortTs(event) >= todayTs)
     .sort((a, b) => getEventSortTs(a) - getEventSortTs(b));
-
-  return [...freeTextEvents, ...datedEvents];
 };
 
 const teamOrder = new Map([
