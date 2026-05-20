@@ -196,7 +196,7 @@ function Hero() {
           </p>
 
           <div className="flex flex-wrap gap-4">
-            <Btn variant="primary" to="/nabor">
+            <Btn variant="primary" to="/nabor#kontaktni-formular">
               Chci zkusit trénink <ArrowRight className="w-4 h-4" />
             </Btn>
             <Btn variant="secondary" to="/o-klubu">Více o klubu</Btn>

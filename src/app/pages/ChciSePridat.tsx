@@ -595,7 +595,7 @@ export default function ChciSePridatPage() {
 
           <div className="mt-8 lg:mt-10 text-center">
             <h3 className="text-2xl lg:text-3xl text-white uppercase mb-5" style={{ fontFamily: bebas }}>Ozvěte se na přímo</h3>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-4">
+            <div className="flex flex-wrap justify-center gap-x-8 gap-y-4">
               {[
                 { icon: Phone, name: "Petr Paulín", value: "792 336 535" },
                 { icon: Phone, name: "Václav Škarda", value: "606 330 998" },
@@ -603,15 +603,15 @@ export default function ChciSePridatPage() {
               ].map((contact) => (
                 <div
                   key={contact.name}
-                  className="px-1"
+                  className="px-1 w-full sm:w-[260px]"
                 >
                   <div className="w-8 h-8 rounded-full bg-[#6EE76D]/10 flex items-center justify-center mx-auto mb-2">
                     <contact.icon className="w-4 h-4 text-[#6EE76D]" />
                   </div>
-                  <p className="text-white text-base leading-tight text-center mb-1" style={{ fontFamily: inter }}>{contact.name}</p>
+                  <p className="text-[#9CF59B] text-lg leading-tight text-center mb-1 uppercase tracking-[0.06em]" style={{ fontFamily: bebas }}>{contact.name}</p>
                   <p
-                    className={`text-base leading-tight text-center transition-colors ${contact.name === "E-mail" ? "text-white hover:text-[#6EE76D] hover:underline decoration-[#6EE76D]" : "text-white"}`}
-                    style={{ fontFamily: inter }}
+                    className={`text-lg leading-tight text-center transition-colors font-medium ${contact.name === "E-mail" ? "text-[#FFD3E8] hover:text-[#F587B9] hover:underline decoration-[#F587B9]" : "text-[#E8FBE8]"}`}
+                    style={{ fontFamily: inter, letterSpacing: "0.01em" }}
                   >
                     {contact.value}
                   </p>

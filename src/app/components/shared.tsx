@@ -194,7 +194,7 @@ export function Navbar() {
               </Link>
             ))}
             <Link
-              to="/nabor"
+              to="/nabor#kontaktni-formular"
               className="rounded-full px-6 py-2 bg-[#F587B9] text-[#080C08] hover:brightness-110 hover:shadow-[0_0_20px_rgba(245,135,185,0.28)] uppercase transition-all duration-300 inline-flex items-center gap-2"
               style={navTextStyle}
             >
@@ -228,7 +228,7 @@ export function Navbar() {
                 </Link>
               ))}
             </div>
-            <Btn variant="primary" to="/nabor" className="mt-6 w-full justify-center py-4">
+            <Btn variant="primary" to="/nabor#kontaktni-formular" className="mt-6 w-full justify-center py-4">
               Chci se přidat
             </Btn>
           </div>
@@ -321,7 +321,7 @@ export function CtaStrip() {
           Ať už jsi zkušená hráčka nebo teprve začínáš — u nás si najdeš svoje místo.
           Přijď se podívat na trénink a poznej náš tým!
         </p>
-        <Btn variant="primary" to="/nabor" className="px-10 py-4">
+        <Btn variant="primary" to="/nabor#kontaktni-formular" className="px-10 py-4">
           Chci zkusit trénink <ArrowRight className="w-5 h-5" />
         </Btn>
       </div>
