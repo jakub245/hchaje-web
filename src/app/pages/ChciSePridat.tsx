@@ -214,11 +214,11 @@ export default function ChciSePridatPage() {
   };
 
   return (
-    <>
-      <PageHero title="Nábor" subtitle="Přijď si vyzkoušet házenou v HC Háje." />
-
-      {/* Intro */}
-      <section className="reveal-on-scroll pb-16 lg:pb-24">
+                  <a
+                    href={contact.name === "E-mail" ? `mailto:${contact.value}` : `tel:${contact.value.replace(/\s+/g, "")}`}
+                    className={`text-base leading-tight text-center transition-colors font-medium ${contact.name === "E-mail" ? "text-white hover:text-[#6EE76D] hover:underline decoration-[#6EE76D]" : "text-white"}`}
+                    style={{ fontFamily: inter }}
+                  >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
