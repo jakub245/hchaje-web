@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Target, Heart, Award, Users, Building2, UserRound, ArrowRight, X } from "lucide-react";
+import { Target, Heart, Award, Users, Building2, UserRound, ArrowRight, ChevronDown } from "lucide-react";
 import { PageHero, Btn, CtaStrip, SectionLabel, bebas, inter, CONTACT_EMAIL, nbspShortWords } from "../components/shared";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { TEAMS } from "../data/teams";
@@ -51,7 +51,7 @@ export default function OKlubuPage() {
   const [coaches, setCoaches] = useState<CoachItem[]>([]);
   const [coachesLoading, setCoachesLoading] = useState(true);
   const [coachesLoaded, setCoachesLoaded] = useState(false);
-  const [storyOpen, setStoryOpen] = useState(false);
+  const [storyExpanded, setStoryExpanded] = useState(false);
 
   useEffect(() => {
     let activeRequest = true;
@@ -118,13 +118,27 @@ export default function OKlubuPage() {
 
               <button
                 type="button"
-                onClick={() => setStoryOpen(true)}
-                className="inline-flex items-center gap-2 rounded-full px-8 py-3 bg-[#F587B9] text-[#080C08] hover:brightness-110 hover:shadow-[0_0_20px_rgba(245,135,185,0.28)] uppercase transition-all duration-300 mb-8"
-                style={{ fontFamily: bebas, letterSpacing: "0.08em" }}
+                onClick={() => setStoryExpanded((prev) => !prev)}
+                className="inline-flex items-center gap-2 text-[#6EE76D] hover:text-[#9CF59B] transition-colors mb-8"
+                style={{ fontFamily: inter }}
+                aria-expanded={storyExpanded}
+                aria-controls="club-story-details"
               >
-                Zajímá mě více
-                <ArrowRight className="w-4 h-4" />
+                <span className="underline underline-offset-4 decoration-[#6EE76D]/70">
+                  {storyExpanded ? "Skrýt podrobnosti" : "Zajímá mě více"}
+                </span>
+                <ChevronDown className={`w-4 h-4 transition-transform ${storyExpanded ? "rotate-180" : "rotate-0"}`} />
               </button>
+
+              {storyExpanded && (
+                <div id="club-story-details" className="space-y-5 mb-8">
+                  {CLUB_STORY_PARAGRAPHS.map((paragraph) => (
+                    <p key={paragraph.slice(0, 36)} className="text-white/70 leading-relaxed" style={{ fontFamily: inter }}>
+                      {nbspShortWords(paragraph)}
+                    </p>
+                  ))}
+                </div>
+              )}
 
               <div className="rounded-2xl border border-[#6EE76D]/10 bg-[#0e160e] p-5 mb-8">
                 <div className="flex items-start gap-3">
@@ -230,58 +244,23 @@ export default function OKlubuPage() {
           <h2 className="text-3xl lg:text-4xl text-white uppercase mb-12" style={{ fontFamily: bebas }}>Milníky klubu</h2>
           <div className="relative">
             <div className="absolute left-5 -translate-x-1/2 top-5 bottom-5 w-px bg-[#6EE76D]/18" />
-            <div className="space-y-8">
+            <div className="space-y-5">
               {MILESTONES.map((m) => (
                 <div key={m.year} className="flex items-start gap-6 relative">
                   <div className="w-10 h-10 rounded-full bg-[#6EE76D]/10 border-2 border-[#6EE76D]/30 flex items-center justify-center flex-shrink-0 z-10">
                     <div className="w-3 h-3 rounded-full bg-[#6EE76D]" />
                   </div>
-                  <div>
-                    <span className="text-[#6EE76D] text-xl" style={{ fontFamily: bebas }}>{m.year}</span>
-                    <p className="text-white/50 mt-1" style={{ fontFamily: inter }}>{nbspShortWords(m.text)}</p>
-                  </div>
+                  <p className="text-white/75 leading-snug pt-2" style={{ fontFamily: inter }}>
+                    <span className="text-[#6EE76D] text-xl align-middle" style={{ fontFamily: bebas }}>{m.year}</span>
+                    <span className="text-white/35 mx-2 align-middle">/</span>
+                    <span className="align-middle">{nbspShortWords(m.text)}</span>
+                  </p>
                 </div>
               ))}
             </div>
           </div>
         </div>
       </section>
-
-      {storyOpen && (
-        <div className="fixed inset-0 z-[80] bg-black/70 backdrop-blur-sm px-4 py-6 sm:px-6 sm:py-8" onClick={() => setStoryOpen(false)}>
-          <div
-            className="max-w-4xl mx-auto h-full rounded-3xl border border-[#6EE76D]/20 bg-[#0b120b] shadow-[0_20px_60px_rgba(0,0,0,0.45)] flex flex-col"
-            onClick={(event) => event.stopPropagation()}
-          >
-            <div className="flex items-center justify-between px-6 sm:px-8 py-5 border-b border-[#6EE76D]/12">
-              <div>
-                <SectionLabel>Historie klubu</SectionLabel>
-                <h3 className="text-2xl sm:text-3xl text-white uppercase" style={{ fontFamily: bebas }}>
-                  HC Háje - více než 40 let házenkářské tradice
-                </h3>
-              </div>
-              <button
-                type="button"
-                onClick={() => setStoryOpen(false)}
-                className="w-10 h-10 rounded-full border border-[#6EE76D]/20 text-white/70 hover:text-[#6EE76D] hover:border-[#6EE76D]/40 transition-colors flex items-center justify-center"
-                aria-label="Zavřít detail historie"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="px-6 sm:px-8 py-6 overflow-y-auto">
-              <div className="space-y-5">
-                {CLUB_STORY_PARAGRAPHS.map((paragraph) => (
-                  <p key={paragraph.slice(0, 36)} className="text-white/75 leading-relaxed" style={{ fontFamily: inter }}>
-                    {nbspShortWords(paragraph)}
-                  </p>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
 
       <CtaStrip />
     </>
