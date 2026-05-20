@@ -163,7 +163,7 @@ function Hero() {
   ];
 
   return (
-    <section className="reveal-on-scroll relative min-h-[100dvh] lg:min-h-screen flex items-start lg:items-center overflow-hidden pt-16 lg:pt-20">
+    <section className="home-hero reveal-on-scroll relative min-h-[100dvh] lg:min-h-screen overflow-hidden pt-16 lg:pt-20">
       <div className="absolute inset-0">
         <ImageWithFallback
           src={heroBackground}
@@ -174,51 +174,52 @@ function Hero() {
         <div className="absolute inset-0 bg-gradient-to-t from-[#080C08] via-transparent to-transparent" />
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 lg:py-32 w-full">
-        <div className="max-w-2xl">
-          <div className="inline-flex items-center gap-2 bg-[#6EE76D]/10 border border-[#6EE76D]/20 rounded-full px-4 py-1.5 mb-6">
-            <div className="w-2 h-2 rounded-full bg-[#6EE76D] animate-pulse" />
-            <span className="text-[#6EE76D] text-sm" style={{ fontFamily: bebas, letterSpacing: "0.1em" }}>
-              Sezóna 2026
-            </span>
-          </div>
-
-          <h1
-            className="text-4xl sm:text-6xl lg:text-8xl text-white mb-5 sm:mb-6 uppercase"
-            style={{ fontFamily: bebas, lineHeight: 0.95, letterSpacing: "0.02em" }}
-          >
-            Házená je{" "}
-            <span className="text-[#6EE76D]">náš život.</span>
-          </h1>
-
-          <p className="text-white/50 text-lg mb-7 sm:mb-10 max-w-lg" style={{ fontFamily: inter }}>
-            {nbspShortWords("Jsme HC Háje — dívčí a ženský házenkářský klub z Prahy 4. Od roku 1980 vedeme hráčky k pravidelnému sportu, týmovosti a radosti z házené.")}
-          </p>
-
-          <div className="flex flex-wrap gap-4">
-            <Btn variant="primary" to="/nabor#kontaktni-formular">
-              Chci zkusit trénink <ArrowRight className="w-4 h-4" />
-            </Btn>
-            <Btn variant="secondary" to="/o-klubu">Více o klubu</Btn>
-          </div>
-        </div>
-
-        <div className="mt-8 sm:mt-12 lg:mt-24 grid grid-cols-3 gap-4 sm:gap-8 max-w-xl">
-          {stats.map((s) => (
-            <div key={s.label}>
-              <div className="text-3xl sm:text-4xl lg:text-5xl text-[#6EE76D]" style={{ fontFamily: bebas }}>{s.value}</div>
-              <div className="text-white/40 text-sm mt-1" style={{ fontFamily: inter }}>{s.label}</div>
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+        <div className="home-hero-content min-h-[calc(100dvh-4.5rem)] lg:min-h-0 flex flex-col justify-center pb-24 sm:pb-28 lg:py-32">
+          <div className="max-w-2xl">
+            <div className="home-hero-badge inline-flex items-center gap-2 bg-[#6EE76D]/10 border border-[#6EE76D]/20 rounded-full px-4 py-1.5 mb-6">
+              <div className="w-2 h-2 rounded-full bg-[#6EE76D] animate-pulse" />
+              <span className="text-[#6EE76D] text-sm" style={{ fontFamily: bebas, letterSpacing: "0.1em" }}>
+                Sezóna 2026
+              </span>
             </div>
-          ))}
-        </div>
 
+            <h1
+              className="home-hero-title text-4xl sm:text-6xl lg:text-8xl text-white mb-5 sm:mb-6 uppercase"
+              style={{ fontFamily: bebas, lineHeight: 0.95, letterSpacing: "0.02em" }}
+            >
+              Házená je{" "}
+              <span className="text-[#6EE76D]">náš život.</span>
+            </h1>
+
+            <p className="home-hero-copy text-white/50 text-lg mb-7 sm:mb-10 max-w-lg" style={{ fontFamily: inter }}>
+              {nbspShortWords("Jsme HC Háje — dívčí a ženský házenkářský klub z Prahy 4. Od roku 1980 vedeme hráčky k pravidelnému sportu, týmovosti a radosti z házené.")}
+            </p>
+
+            <div className="home-hero-cta flex flex-wrap gap-4">
+              <Btn variant="primary" to="/nabor#kontaktni-formular">
+                Chci zkusit trénink <ArrowRight className="w-4 h-4" />
+              </Btn>
+              <Btn variant="secondary" to="/o-klubu">Více o klubu</Btn>
+            </div>
+          </div>
+
+          <div className="home-hero-stats mt-8 sm:mt-12 lg:mt-24 grid grid-cols-3 gap-4 sm:gap-8 max-w-xl">
+            {stats.map((s) => (
+              <div key={s.label}>
+                <div className="home-hero-stat-value text-3xl sm:text-4xl lg:text-5xl text-[#6EE76D]" style={{ fontFamily: bebas }}>{s.value}</div>
+                <div className="home-hero-stat-label text-white/40 text-sm mt-1" style={{ fontFamily: inter }}>{s.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
       <button
         type="button"
         aria-label="Posunout níže"
         onClick={() => document.getElementById("home-about")?.scrollIntoView({ behavior: "smooth" })}
-        className="absolute left-1/2 bottom-2 sm:bottom-3 -translate-x-1/2 flex flex-col items-center gap-2 text-white/40 hover:text-white transition-colors z-20"
+        className="home-hero-scroll absolute left-1/2 bottom-2 sm:bottom-3 -translate-x-1/2 flex flex-col items-center gap-2 text-white/40 hover:text-white transition-colors z-20"
       >
         <span className="text-[10px] uppercase tracking-[0.22em]" style={{ fontFamily: bebas }}>Scroll</span>
         <span className="flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-black/20 backdrop-blur-sm animate-bounce">

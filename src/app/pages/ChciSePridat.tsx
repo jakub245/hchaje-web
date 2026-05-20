@@ -131,6 +131,15 @@ export default function ChciSePridatPage() {
     setSubmitState({ type: "idle", message: "" });
   };
 
+  const scrollToContactForm = () => {
+    const formSection = document.getElementById("kontaktni-formular");
+    if (!formSection) return;
+    formSection.scrollIntoView({ behavior: "smooth", block: "start" });
+    if (window.location.hash !== "#kontaktni-formular") {
+      window.history.replaceState(null, "", "#kontaktni-formular");
+    }
+  };
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value, type } = event.target;
     const checked = type === "checkbox" ? (event.target as HTMLInputElement).checked : undefined;
@@ -226,14 +235,15 @@ export default function ChciSePridatPage() {
               <p className="text-white/55 mb-8" style={{ fontFamily: inter }}>
                 {nbspShortWords("První trénink je u nás vždy zdarma a nezávazně. Přijďte mezi nás objevit radost z pohybu a týmového sportu.")}
               </p>
-              <a
-                href="#kontaktni-formular"
+              <button
+                type="button"
+                onClick={scrollToContactForm}
                 className="inline-flex items-center gap-2 rounded-full px-8 py-3 bg-[#F587B9] text-[#080C08] hover:brightness-110 hover:shadow-[0_0_20px_rgba(245,135,185,0.28)] uppercase transition-all duration-300"
                 style={{ fontFamily: bebas, letterSpacing: "0.08em" }}
               >
                 Chci zkušební trénink
                <ArrowRight className="w-5 h-5" />
-              </a>
+              </button>
             </div>
             <div className="relative rounded-2xl overflow-hidden aspect-[4/3] group">
               {NABOR_GALLERY.map((item, index) => (

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Target, Heart, Award, Users, Building2, UserRound, ArrowRight } from "lucide-react";
+import { Target, Heart, Award, Users, Building2, UserRound, ArrowRight, X } from "lucide-react";
 import { PageHero, Btn, CtaStrip, SectionLabel, bebas, inter, CONTACT_EMAIL, nbspShortWords } from "../components/shared";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { TEAMS } from "../data/teams";
@@ -13,11 +13,22 @@ const VALUES = [
 ];
 
 const MILESTONES = [
-  { year: "1980", text: "Založení oddílu házené HC Háje." },
-  { year: "6–8 let", text: "Přípravka rozvíjí sportovní základy formou her a soutěží." },
-  { year: "9–11 let", text: "Minižákyně navazují na přípravku a seznamují se se základy házené." },
-  { year: "13+", text: "Navazující žákovské a dorostenecké kategorie sbírají zkušenosti i úspěchy v soutěžích." },
-  { year: "Dnes", text: "Hlavním cílem klubu je nadchnout co nejvíce dětí pro pravidelné sportování." },
+  { year: "1980", text: "Založení klubu házené HC Háje." },
+  { year: "1985", text: "Budování zázemí klubu v areálu TJ Háje nad Hostivařskou přehradou." },
+  { year: "1995", text: "Získání samostatné právní subjektivity." },
+  { year: "2014", text: "Nový umělý povrch hřiště." },
+  { year: "2019", text: "První vlastní družstvo staršího dorostu." },
+  { year: "2020", text: "První vlastní družstvo žen v ligové soutěži." },
+  { year: "Dnes", text: "Přes 45 let tradice. Každý den nové začátky." },
+];
+
+const CLUB_STORY_PARAGRAPHS = [
+  "HC Háje je klub s dlouholetou tradicí, jehož příběh se začal psát v roce 1980. Tehdy skupina nadšenců přišla do tehdejší Tělovýchovné jednoty Háje s jasnou vizí - vytvořit prostor pro práci s mládeží a nabídnout dětem možnost sportovního rozvoje prostřednictvím házené. První tréninky probíhaly na Jižním Městě, zejména na hřištích Modré školy a ZŠ Mikulova. Klub měl zpočátku chlapecká i dívčí družstva, postupem času se však zaměřil na dívčí házenou, která je jeho hlavním zaměřením dodnes.",
+  "Zásadním milníkem se stal rok 1985, kdy klub začal využívat sportovní areál nad Hostivařskou přehradou, který se stal jeho domovem. Na budování klubového zázemí se tehdy významně podíleli trenéři, rodiče, hráčky i další podporovatelé, kteří společnými silami pomohli vytvořit prostředí pro sport i klubový život. Od té doby areál průběžně modernizujeme - od nového sportovního povrchu až po obnovu šaten a zázemí - tak, aby poskytoval kvalitní podmínky pro tréninky, zápasy i společná setkání.",
+  "V HC Háje věříme, že sport je mnohem víc než jen výsledky. Dětem nabízíme prostředí, kde rozvíjejí pohybové schopnosti, týmového ducha, disciplínu i zdravé sebevědomí. Stejně důležité jsou pro nás přátelské vztahy, radost z pohybu a pocit, že každý v klubu někam patří. Zakládáme si na individuálním přístupu a prostředí, ve kterém se děti cítí bezpečně, motivovaně a mají chuť sportovat dlouhodobě.",
+  "Významným krokem v rozvoji klubu byla sezona 2019/2020, kdy se podařilo rozšířit strukturu družstev o kategorii staršího dorostu. O rok později nastoupilo poprvé také ženské A družstvo v ligové soutěži. Díky tomu dnes nabízíme kompletní návaznost týmů od minižákyň až po ženy, což umožňuje hráčkám vyrůstat v jednom prostředí, dlouhodobě rozvíjet svůj talent a zůstávat součástí klubové komunity i v dospělosti.",
+  "Za více než čtyři desetiletí prošly dresem HC Háje stovky hráček a své první házenkářské kroky zde udělala i řada budoucích reprezentantek. Velkou zásluhu na tom mají také desítky trenérů, rodičů a dobrovolníků, kteří klub po celou dobu jeho existence spoluvytvářeli. Díky jejich energii, nadšení a práci je dnes HC Háje stabilní a respektovanou součástí české házené.",
+  "HC Háje je místem, kde hráčky rostou nejen jako sportovkyně, ale i jako osobnosti - s radostí ze sportu, přáteli a zkušenostmi na celý život.",
 ];
 
 
@@ -40,6 +51,7 @@ export default function OKlubuPage() {
   const [coaches, setCoaches] = useState<CoachItem[]>([]);
   const [coachesLoading, setCoachesLoading] = useState(true);
   const [coachesLoaded, setCoachesLoaded] = useState(false);
+  const [storyOpen, setStoryOpen] = useState(false);
 
   useEffect(() => {
     let activeRequest = true;
@@ -93,15 +105,26 @@ export default function OKlubuPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-start">
             <div>
+              <SectionLabel>Historie klubu</SectionLabel>
+              <h2 className="text-3xl lg:text-4xl text-white uppercase mb-6" style={{ fontFamily: bebas }}>
+                HC Háje - více než 40 let házenkářské tradice
+              </h2>
               <p className="text-white text-lg mb-4" style={{ fontFamily: inter }}>
-                {nbspShortWords("HC Háje je dívčí a ženský házenkářský klub z Prahy 4, který patří od svého založení v roce 1980 mezi výrazná centra dívčí házené v Praze i v rámci celé České republiky.")}
+                {nbspShortWords("HC Háje je klub s dlouholetou tradicí, jehož příběh se začal psát v roce 1980. Na Jižním Městě jsme vyrostli v respektovaný dívčí a ženský házenkářský klub, který staví na práci s mládeží, komunitě a dlouhodobém sportovním rozvoji.")}
               </p>
               <p className="text-white/55 mb-4" style={{ fontFamily: inter }}>
-                {nbspShortWords("Klub je zaměřený na dlouhodobou sportovní přípravu děvčat od 6 do 17 let. V nejmladších kategoriích stavíme na pohybových hrách, soutěžích a všeobecné sportovní průpravě, na které postupně navazují další házenkářské dovednosti.")}
+                {nbspShortWords("Dnes nabízíme návaznost týmů od minižákyň až po ženy a prostředí, kde hráčky rostou nejen sportovně, ale i lidsky. Celý příběh klubu a důležité souvislosti najdete po kliknutí níže.")}
               </p>
-              <p className="text-white/55 mb-8" style={{ fontFamily: inter }}>
-                {nbspShortWords("Na žákovské a dorostenecké kategorie navazují ženská družstva. Vedle sportovních výsledků je naším hlavním cílem získat a nadchnout co nejvíce dětí pro pravidelné sportování a vytvořit prostředí, kam se budou rády vracet.")}
-              </p>
+
+              <button
+                type="button"
+                onClick={() => setStoryOpen(true)}
+                className="inline-flex items-center gap-2 rounded-full px-8 py-3 bg-[#F587B9] text-[#080C08] hover:brightness-110 hover:shadow-[0_0_20px_rgba(245,135,185,0.28)] uppercase transition-all duration-300 mb-8"
+                style={{ fontFamily: bebas, letterSpacing: "0.08em" }}
+              >
+                Zajímá mě více
+                <ArrowRight className="w-4 h-4" />
+              </button>
 
               <div className="rounded-2xl border border-[#6EE76D]/10 bg-[#0e160e] p-5 mb-8">
                 <div className="flex items-start gap-3">
@@ -206,7 +229,7 @@ export default function OKlubuPage() {
           <SectionLabel>Historie</SectionLabel>
           <h2 className="text-3xl lg:text-4xl text-white uppercase mb-12" style={{ fontFamily: bebas }}>Milníky klubu</h2>
           <div className="relative">
-            <div className="absolute left-[19px] top-0 bottom-0 w-px bg-[#6EE76D]/15" />
+            <div className="absolute left-5 -translate-x-1/2 top-5 bottom-5 w-px bg-[#6EE76D]/18" />
             <div className="space-y-8">
               {MILESTONES.map((m) => (
                 <div key={m.year} className="flex items-start gap-6 relative">
@@ -223,6 +246,42 @@ export default function OKlubuPage() {
           </div>
         </div>
       </section>
+
+      {storyOpen && (
+        <div className="fixed inset-0 z-[80] bg-black/70 backdrop-blur-sm px-4 py-6 sm:px-6 sm:py-8" onClick={() => setStoryOpen(false)}>
+          <div
+            className="max-w-4xl mx-auto h-full rounded-3xl border border-[#6EE76D]/20 bg-[#0b120b] shadow-[0_20px_60px_rgba(0,0,0,0.45)] flex flex-col"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="flex items-center justify-between px-6 sm:px-8 py-5 border-b border-[#6EE76D]/12">
+              <div>
+                <SectionLabel>Historie klubu</SectionLabel>
+                <h3 className="text-2xl sm:text-3xl text-white uppercase" style={{ fontFamily: bebas }}>
+                  HC Háje - více než 40 let házenkářské tradice
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setStoryOpen(false)}
+                className="w-10 h-10 rounded-full border border-[#6EE76D]/20 text-white/70 hover:text-[#6EE76D] hover:border-[#6EE76D]/40 transition-colors flex items-center justify-center"
+                aria-label="Zavřít detail historie"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="px-6 sm:px-8 py-6 overflow-y-auto">
+              <div className="space-y-5">
+                {CLUB_STORY_PARAGRAPHS.map((paragraph) => (
+                  <p key={paragraph.slice(0, 36)} className="text-white/75 leading-relaxed" style={{ fontFamily: inter }}>
+                    {nbspShortWords(paragraph)}
+                  </p>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <CtaStrip />
     </>
