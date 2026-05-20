@@ -239,7 +239,7 @@ function About() {
   }, []);
 
   return (
-    <section id="home-about" className="reveal-on-scroll py-20 lg:py-28">
+    <section id="home-about" className="reveal-on-scroll py-20 lg:py-28 scroll-mt-24 lg:scroll-mt-28">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <div>
