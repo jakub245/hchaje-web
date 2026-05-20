@@ -2,6 +2,34 @@
 @import './tailwind.css';
 @import './theme.css';
 
+@media (max-width: 767px) and (orientation: portrait) {
+	.home-hero-content {
+		padding-top: 4.8rem;
+		padding-bottom: 5.2rem;
+	}
+
+	.home-hero-badge {
+		margin-bottom: 0.85rem;
+	}
+
+	.home-hero-title {
+		margin-bottom: 0.95rem;
+	}
+
+	.home-hero-copy {
+		margin-bottom: 1rem;
+	}
+
+	.home-hero-cta {
+		gap: 0.7rem;
+	}
+
+	.home-hero-stats {
+		margin-top: 1rem;
+		gap: 0.75rem;
+	}
+}
+
 @media (max-width: 1023px) and (orientation: portrait) and (max-height: 680px) {
 	.home-hero {
 		padding-top: 3.15rem;
