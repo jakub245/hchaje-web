@@ -204,10 +204,10 @@ function Hero() {
             </div>
           </div>
 
-          <div className="home-hero-stats mt-14 sm:mt-12 lg:mt-24 grid grid-cols-3 gap-6 sm:gap-8 max-w-xl">
+          <div className="home-hero-stats mt-16 lg:mt-24 grid grid-cols-3 gap-8 max-w-xl">
             {stats.map((s) => (
               <div key={s.label}>
-                <div className="home-hero-stat-value text-4xl sm:text-4xl lg:text-5xl text-[#6EE76D]" style={{ fontFamily: bebas }}>{s.value}</div>
+                <div className="home-hero-stat-value text-4xl lg:text-5xl text-[#6EE76D]" style={{ fontFamily: bebas }}>{s.value}</div>
                 <div className="home-hero-stat-label text-white/40 text-sm mt-1" style={{ fontFamily: inter }}>{s.label}</div>
               </div>
             ))}
