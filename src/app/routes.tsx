@@ -24,6 +24,7 @@ export const router = createBrowserRouter([
       { path: "treninky", Component: AkcePage },
       { path: "o-klubu", Component: OKlubuPage },
       { path: "kontakty", Component: KontaktyPage },
+      { path: "nabor", Component: ChciSePridatPage },
       { path: "chci-se-pridat", Component: ChciSePridatPage },
     ],
   },

@@ -499,7 +499,7 @@ export default function ChciSePridatPage() {
                             </select>
                             <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-white/40 pointer-events-none" />
                           </div>
-                          <input type="tel" name="phone" value={formData.phone} onChange={handleChange} required inputMode="numeric" className={`w-full rounded-2xl border bg-[#0d160d] px-4 py-3 text-white placeholder:text-white/35 outline-none ${formData.phone.length > 0 ? (phoneIsValid ? "border-[#6EE76D]/45" : "border-red-400/45") : "border-[#6EE76D]/15"}`} placeholder="777 721 282" />
+                          <input type="tel" name="phone" value={formData.phone} onChange={handleChange} required inputMode="numeric" className={`w-full rounded-2xl border bg-[#0d160d] px-4 py-3 text-white placeholder:text-white/35 outline-none ${formData.phone.length > 0 ? (phoneIsValid ? "border-[#6EE76D]/45" : "border-red-400/45") : "border-[#6EE76D]/15"}`} placeholder="792 336 535" />
                         </div>
                         {formData.phone.length > 0 && (
                           <p className={`mt-2 text-sm ${phoneIsValid ? "text-[#9CF59B]" : "text-red-300"}`} style={{ fontFamily: inter }}>
@@ -598,8 +598,7 @@ export default function ChciSePridatPage() {
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-4">
               {[
                 { icon: Phone, name: "Petr Paulín", value: "792 336 535" },
-                { icon: Phone, name: "Petr Zálešák", value: "777 721 282" },
-                { icon: Phone, name: "Kateřina Bláhová", value: "608 981 667" },
+                { icon: Phone, name: "Václav Škarda", value: "606 330 998" },
                 { icon: Mail, name: "E-mail", value: "pripravkahchaje@gmail.com" },
               ].map((contact) => (
                 <div

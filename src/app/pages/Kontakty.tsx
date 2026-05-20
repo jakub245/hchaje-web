@@ -5,7 +5,6 @@ import {
   bebas,
   inter,
   CONTACT_PHONE,
-  CONTACT_PHONE_SECONDARY,
   CONTACT_EMAIL,
   CONTACT_ADDRESS_TITLE,
   CONTACT_ADDRESS,
@@ -30,7 +29,7 @@ export default function KontaktyPage() {
 
               <div className="space-y-6 mb-10">
                 {[
-                  { icon: Phone, label: "Telefon", value: `${CONTACT_PHONE} / ${CONTACT_PHONE_SECONDARY}`, href: `tel:${CONTACT_PHONE.replace(/\s/g, "")}` },
+                  { icon: Phone, label: "Telefon", value: CONTACT_PHONE, href: `tel:${CONTACT_PHONE.replace(/\s/g, "")}` },
                   { icon: Mail, label: "E-mail", value: CONTACT_EMAIL, href: `mailto:${CONTACT_EMAIL}` },
                 ].map((c) => (
                   <div key={c.label} className="flex items-start gap-4">

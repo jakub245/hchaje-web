@@ -3,15 +3,15 @@ import { Link, useLocation } from "react-router";
 import {
   Menu, X, Phone, Mail, MapPin, Instagram, Activity, ArrowRight, Facebook, Calendar,
 } from "lucide-react";
-import logoSvg from "../../imports/hc-haje-praha.svg";
+import logoSvg from "../../imports/hchaje-logo-old.png";
 
 export const G = "#6EE76D";
 export const P = "#F587B9";
 export const BG = "#080C08";
 export const bebas = "'Bebas Neue', sans-serif";
 export const inter = "Inter, sans-serif";
-export const CONTACT_PHONE = "+420 777 721 282";
-export const CONTACT_PHONE_SECONDARY = "+420 608 981 667";
+export const CONTACT_PHONE = "+420 792 336 535";
+export const CONTACT_PHONE_SECONDARY = "";
 export const CONTACT_EMAIL = "vybor@hchaje.cz";
 export const CONTACT_ADDRESS_TITLE = "Areál TJ Háje";
 export const CONTACT_ADDRESS = "K Jezeru, Praha 4";
@@ -25,6 +25,7 @@ const NAV = [
   { label: "Aktuality", to: "/aktuality" },
   { label: "O klubu", to: "/o-klubu" },
   { label: "Kontakty", to: "/kontakty" },
+  { label: "Nábor", to: "/nabor" },
 ];
 
 export const nbspShortWords = (value: string) =>
@@ -193,7 +194,7 @@ export function Navbar() {
               </Link>
             ))}
             <Link
-              to="/chci-se-pridat"
+              to="/nabor"
               className="rounded-full px-6 py-2 bg-[#F587B9] text-[#080C08] hover:brightness-110 hover:shadow-[0_0_20px_rgba(245,135,185,0.28)] uppercase transition-all duration-300 inline-flex items-center gap-2"
               style={navTextStyle}
             >
@@ -227,7 +228,7 @@ export function Navbar() {
                 </Link>
               ))}
             </div>
-            <Btn variant="primary" to="/chci-se-pridat" className="mt-6 w-full justify-center py-4">
+            <Btn variant="primary" to="/nabor" className="mt-6 w-full justify-center py-4">
               Chci se přidat
             </Btn>
           </div>
@@ -320,7 +321,7 @@ export function CtaStrip() {
           Ať už jsi zkušená hráčka nebo teprve začínáš — u nás si najdeš svoje místo.
           Přijď se podívat na trénink a poznej náš tým!
         </p>
-        <Btn variant="primary" to="/chci-se-pridat" className="px-10 py-4">
+        <Btn variant="primary" to="/nabor" className="px-10 py-4">
           Chci zkusit trénink <ArrowRight className="w-5 h-5" />
         </Btn>
       </div>

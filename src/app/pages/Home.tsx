@@ -7,7 +7,7 @@ import {
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { Btn, SectionLabel, CtaStrip, bebas, inter, nbspShortWords } from "../components/shared";
 import { TEAMS } from "../data/teams";
-import heroBackground from "../../imports/HCH_Homepage-foto.png";
+import heroBackground from "../../imports/Web Photo HCH.png";
 import carouselHch02 from "../../imports/foto/carousel hp/HCH_02.jpg";
 import carouselHch03 from "../../imports/foto/carousel hp/HCH_03.jpg";
 import carouselHch04 from "../../imports/foto/carousel hp/HCH_04.jpg";
@@ -196,7 +196,7 @@ function Hero() {
           </p>
 
           <div className="flex flex-wrap gap-4">
-            <Btn variant="primary" to="/chci-se-pridat">
+            <Btn variant="primary" to="/nabor">
               Chci zkusit trénink <ArrowRight className="w-4 h-4" />
             </Btn>
             <Btn variant="secondary" to="/o-klubu">Více o klubu</Btn>

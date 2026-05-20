@@ -118,7 +118,7 @@ export default function OKlubuPage() {
                   </div>
                 </div>
               </div>
-              <Btn variant="primary" to="/chci-se-pridat">
+              <Btn variant="primary" to="/nabor">
                 Chci zkusit trénink <ArrowRight className="w-4 h-4" />
               </Btn>
             </div>
