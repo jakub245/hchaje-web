@@ -243,11 +243,13 @@ export default function OKlubuPage() {
           <SectionLabel>Historie</SectionLabel>
           <h2 className="text-3xl lg:text-4xl text-white uppercase mb-12" style={{ fontFamily: bebas }}>Milníky klubu</h2>
           <div className="relative">
-            <div className="absolute left-5 -translate-x-1/2 top-5 bottom-5 w-px bg-[#6EE76D]/18 z-0" />
             <div className="space-y-5">
-              {MILESTONES.map((m) => (
-                <div key={m.year} className="flex items-start gap-6 relative z-10">
-                  <div className="w-10 h-10 rounded-full bg-[#6EE76D]/10 border-2 border-[#6EE76D]/30 flex items-center justify-center flex-shrink-0">
+              {MILESTONES.map((m, index) => (
+                <div key={m.year} className="flex items-start gap-6 relative">
+                  {index < MILESTONES.length - 1 ? (
+                    <div className="absolute left-5 top-5 -bottom-10 w-px -translate-x-1/2 bg-[#6EE76D]/18 z-0" />
+                  ) : null}
+                  <div className="relative z-10 w-10 h-10 rounded-full bg-[#080C08] border-2 border-[#6EE76D]/30 flex items-center justify-center flex-shrink-0">
                     <div className="w-3 h-3 rounded-full bg-[#6EE76D]" />
                   </div>
                   <p className="text-white/75 leading-snug pt-2" style={{ fontFamily: inter }}>

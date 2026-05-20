@@ -175,7 +175,7 @@ function Hero() {
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        <div className="home-hero-content min-h-[calc(100dvh-4.5rem)] lg:min-h-0 flex flex-col justify-center pb-24 sm:pb-28 lg:py-32">
+        <div className="home-hero-content min-h-[calc(100dvh-4.5rem)] lg:min-h-[calc(100dvh-5rem)] flex flex-col justify-center pb-24 sm:pb-28 lg:pb-24">
           <div className="max-w-2xl">
             <div className="home-hero-badge inline-flex items-center gap-2 bg-[#6EE76D]/10 border border-[#6EE76D]/20 rounded-full px-4 py-1.5 mb-6">
               <div className="w-2 h-2 rounded-full bg-[#6EE76D] animate-pulse" />
