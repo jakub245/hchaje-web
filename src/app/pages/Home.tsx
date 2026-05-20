@@ -163,18 +163,18 @@ function Hero() {
   ];
 
   return (
-    <section className="reveal-on-scroll relative min-h-screen flex items-center overflow-hidden pt-20">
+    <section className="reveal-on-scroll relative min-h-[100dvh] lg:min-h-screen flex items-start lg:items-center overflow-hidden pt-16 lg:pt-20">
       <div className="absolute inset-0">
         <ImageWithFallback
           src={heroBackground}
           alt="HC Háje"
-          className="w-full h-full object-cover object-center sm:object-[78%_center]"
+          className="w-full h-full object-cover object-[74%_34%] sm:object-[78%_center]"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[#080C08] via-[#080C08]/82 to-[#080C08]/42 sm:via-[#080C08]/85 sm:to-[#080C08]/50" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#080C08] via-transparent to-transparent" />
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32 w-full">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 lg:py-32 w-full">
         <div className="max-w-2xl">
           <div className="inline-flex items-center gap-2 bg-[#6EE76D]/10 border border-[#6EE76D]/20 rounded-full px-4 py-1.5 mb-6">
             <div className="w-2 h-2 rounded-full bg-[#6EE76D] animate-pulse" />
@@ -184,14 +184,14 @@ function Hero() {
           </div>
 
           <h1
-            className="text-5xl sm:text-6xl lg:text-8xl text-white mb-6 uppercase"
+            className="text-4xl sm:text-6xl lg:text-8xl text-white mb-5 sm:mb-6 uppercase"
             style={{ fontFamily: bebas, lineHeight: 0.95, letterSpacing: "0.02em" }}
           >
             Házená je{" "}
             <span className="text-[#6EE76D]">náš život.</span>
           </h1>
 
-          <p className="text-white/50 text-lg mb-10 max-w-lg" style={{ fontFamily: inter }}>
+          <p className="text-white/50 text-lg mb-7 sm:mb-10 max-w-lg" style={{ fontFamily: inter }}>
             {nbspShortWords("Jsme HC Háje — dívčí a ženský házenkářský klub z Prahy 4. Od roku 1980 vedeme hráčky k pravidelnému sportu, týmovosti a radosti z házené.")}
           </p>
 
@@ -203,10 +203,10 @@ function Hero() {
           </div>
         </div>
 
-        <div className="mt-16 lg:mt-24 grid grid-cols-3 gap-8 max-w-xl">
+        <div className="mt-8 sm:mt-12 lg:mt-24 grid grid-cols-3 gap-4 sm:gap-8 max-w-xl">
           {stats.map((s) => (
             <div key={s.label}>
-              <div className="text-4xl lg:text-5xl text-[#6EE76D]" style={{ fontFamily: bebas }}>{s.value}</div>
+              <div className="text-3xl sm:text-4xl lg:text-5xl text-[#6EE76D]" style={{ fontFamily: bebas }}>{s.value}</div>
               <div className="text-white/40 text-sm mt-1" style={{ fontFamily: inter }}>{s.label}</div>
             </div>
           ))}

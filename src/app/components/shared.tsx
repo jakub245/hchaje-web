@@ -170,7 +170,7 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  useEffect(() => { setOpen(false); }, [location.pathname]);
+  useEffect(() => { setOpen(false); }, [location.pathname, location.hash]);
 
   const navTextStyle = { fontFamily: bebas, fontSize: "17px", letterSpacing: "0.08em", fontWeight: 200 as const };
 
@@ -228,7 +228,7 @@ export function Navbar() {
                 </Link>
               ))}
             </div>
-            <Btn variant="primary" to="/nabor#kontaktni-formular" className="mt-6 w-full justify-center py-4">
+            <Btn variant="primary" to="/nabor#kontaktni-formular" className="mt-6 w-full justify-center py-4" onClick={() => setOpen(false)}>
               Chci se přidat
             </Btn>
           </div>

@@ -422,7 +422,7 @@ export default function ChciSePridatPage() {
       </section>
 
       {/* Contact + Form */}
-      <section id="kontaktni-formular" className="reveal-on-scroll pb-20 lg:pb-28">
+      <section id="kontaktni-formular" className="reveal-on-scroll scroll-mt-24 lg:scroll-mt-28 pb-20 lg:pb-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8 lg:mb-10">
             <SectionLabel>Kontakt</SectionLabel>
@@ -608,9 +608,9 @@ export default function ChciSePridatPage() {
                   <div className="w-8 h-8 rounded-full bg-[#6EE76D]/10 flex items-center justify-center mx-auto mb-2">
                     <contact.icon className="w-4 h-4 text-[#6EE76D]" />
                   </div>
-                  <p className="text-[#9CF59B] text-lg leading-tight text-center mb-1 uppercase tracking-[0.06em]" style={{ fontFamily: bebas }}>{contact.name}</p>
+                  <p className="text-white text-lg leading-tight text-center mb-1 uppercase tracking-[0.06em]" style={{ fontFamily: bebas }}>{contact.name}</p>
                   <p
-                    className={`text-lg leading-tight text-center transition-colors font-medium ${contact.name === "E-mail" ? "text-[#FFD3E8] hover:text-[#F587B9] hover:underline decoration-[#F587B9]" : "text-[#E8FBE8]"}`}
+                    className={`text-lg leading-tight text-center transition-colors font-medium ${contact.name === "E-mail" ? "text-white hover:text-[#6EE76D] hover:underline decoration-[#6EE76D]" : "text-white"}`}
                     style={{ fontFamily: inter, letterSpacing: "0.01em" }}
                   >
                     {contact.value}
