@@ -185,14 +185,14 @@ function Hero() {
             </div>
 
             <h1
-              className="home-hero-title text-4xl sm:text-6xl lg:text-8xl text-white mb-5 sm:mb-6 uppercase"
+              className="home-hero-title text-5xl sm:text-6xl lg:text-8xl text-white mb-6 uppercase"
               style={{ fontFamily: bebas, lineHeight: 0.95, letterSpacing: "0.02em" }}
             >
               Házená je{" "}
               <span className="text-[#6EE76D]">náš život.</span>
             </h1>
 
-            <p className="home-hero-copy text-white/50 text-lg mb-7 sm:mb-10 max-w-lg" style={{ fontFamily: inter }}>
+            <p className="home-hero-copy text-white/50 text-lg mb-10 max-w-lg" style={{ fontFamily: inter }}>
               {nbspShortWords("Jsme HC Háje — dívčí a ženský házenkářský klub z Prahy 4. Od roku 1980 vedeme hráčky k pravidelnému sportu, týmovosti a radosti z házené.")}
             </p>
 
@@ -204,10 +204,10 @@ function Hero() {
             </div>
           </div>
 
-          <div className="home-hero-stats mt-8 sm:mt-12 lg:mt-24 grid grid-cols-3 gap-4 sm:gap-8 max-w-xl">
+          <div className="home-hero-stats mt-14 sm:mt-12 lg:mt-24 grid grid-cols-3 gap-6 sm:gap-8 max-w-xl">
             {stats.map((s) => (
               <div key={s.label}>
-                <div className="home-hero-stat-value text-3xl sm:text-4xl lg:text-5xl text-[#6EE76D]" style={{ fontFamily: bebas }}>{s.value}</div>
+                <div className="home-hero-stat-value text-4xl sm:text-4xl lg:text-5xl text-[#6EE76D]" style={{ fontFamily: bebas }}>{s.value}</div>
                 <div className="home-hero-stat-label text-white/40 text-sm mt-1" style={{ fontFamily: inter }}>{s.label}</div>
               </div>
             ))}

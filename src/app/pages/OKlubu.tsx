@@ -203,29 +203,29 @@ export default function OKlubuPage() {
               <p className="text-[#6EE76D] text-sm" style={{ fontFamily: inter }}>Načítám data trenérů...</p>
             </div>
           )}
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
             {coaches.map((coach) => (
-              <div key={coach.id} className="mobile-solid-card rounded-3xl bg-[#101a10] border border-[#6EE76D]/12 hover:border-[#6EE76D]/25 transition-all p-6 flex flex-col items-center justify-center text-center min-h-[22rem]">
-                <div className="mobile-solid-chip w-24 h-24 rounded-full overflow-hidden bg-[#6EE76D]/14 border border-[#6EE76D]/20 flex items-center justify-center mb-5">
+              <div key={coach.id} className="mobile-solid-card rounded-3xl bg-[#101a10] border border-[#6EE76D]/12 hover:border-[#6EE76D]/25 transition-all p-4 sm:p-6 flex flex-col items-center justify-center text-center min-h-[16rem] sm:min-h-[22rem]">
+                <div className="mobile-solid-chip w-16 h-16 sm:w-24 sm:h-24 rounded-full overflow-hidden bg-[#6EE76D]/14 border border-[#6EE76D]/20 flex items-center justify-center mb-3 sm:mb-5">
                   {coach.photoUrl ? (
                     <ImageWithFallback src={coach.photoUrl} alt={coach.name} className="w-full h-full object-cover" />
                   ) : (
-                    <UserRound className="w-10 h-10 text-[#6EE76D]" />
+                    <UserRound className="w-7 h-7 sm:w-10 sm:h-10 text-[#6EE76D]" />
                   )}
                 </div>
 
-                <div className="text-white text-[18px]" style={{ fontFamily: inter }}>{coach.name}</div>
+                <div className="text-white text-[15px] sm:text-[18px] leading-tight" style={{ fontFamily: inter }}>{coach.name}</div>
                 {coach.age ? (
-                  <div className="text-[#6EE76D] text-sm mt-1" style={{ fontFamily: inter }}>{coach.age} let</div>
+                  <div className="text-[#6EE76D] text-xs sm:text-sm mt-1" style={{ fontFamily: inter }}>{coach.age} let</div>
                 ) : null}
-                <div className="text-white/45 text-sm mt-2" style={{ fontFamily: inter }}>{coach.position || "—"}</div>
+                <div className="text-white/45 text-xs sm:text-sm mt-1.5 sm:mt-2" style={{ fontFamily: inter }}>{coach.position || "—"}</div>
 
                 {coach.teamSlug && (
-                  <div className="mt-4 flex flex-wrap items-center justify-center gap-2">
+                  <div className="mt-3 sm:mt-4 flex flex-wrap items-center justify-center gap-2">
                     <Btn
                       variant="secondary"
                       to={`/druzstva/${coach.teamSlug}`}
-                      className="px-3.5 py-1 text-[12px]"
+                      className="px-3 py-1 text-[11px] sm:text-[12px]"
                     >
                       {coach.teamName}
                     </Btn>
