@@ -214,11 +214,11 @@ export default function ChciSePridatPage() {
   };
 
   return (
-                  <a
-                    href={contact.name === "E-mail" ? `mailto:${contact.value}` : `tel:${contact.value.replace(/\s+/g, "")}`}
-                    className={`text-base leading-tight text-center transition-colors font-medium ${contact.name === "E-mail" ? "text-white hover:text-[#6EE76D] hover:underline decoration-[#6EE76D]" : "text-white"}`}
-                    style={{ fontFamily: inter }}
-                  >
+    <>
+      <PageHero title="Nábor" subtitle="Přijď si vyzkoušet házenou v HC Háje." />
+
+      {/* Intro */}
+      <section className="reveal-on-scroll pb-16 lg:pb-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
@@ -620,7 +620,7 @@ export default function ChciSePridatPage() {
                   </div>
                   <p className="text-white text-lg leading-tight text-center mb-1 uppercase tracking-[0.06em]" style={{ fontFamily: bebas }}>{contact.name}</p>
                   <p
-                    className={`text-lg leading-tight text-center transition-colors font-medium ${contact.name === "E-mail" ? "text-white hover:text-[#6EE76D] hover:underline decoration-[#6EE76D]" : "text-white"}`}
+                    className={`text-base leading-tight text-center transition-colors font-medium ${contact.name === "E-mail" ? "text-white hover:text-[#6EE76D] hover:underline decoration-[#6EE76D]" : "text-white"}`}
                     style={{ fontFamily: inter, letterSpacing: "0.01em" }}
                   >
                     {contact.value}
