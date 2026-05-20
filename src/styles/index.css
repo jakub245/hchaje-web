@@ -1,3 +1,25 @@
+@media (max-width: 1023px) and (orientation: landscape) {
+	.home-hero-content {
+		padding-top: 6.2rem;
+		padding-bottom: 4.5rem;
+	}
+	.home-hero-badge {
+		margin-bottom: 1.1rem;
+	}
+	.home-hero-title {
+		margin-bottom: 0.85rem;
+	}
+	.home-hero-copy {
+		margin-bottom: 1.1rem;
+	}
+	.home-hero-cta {
+		gap: 1.1rem;
+	}
+	.home-hero-stats {
+		margin-top: 1.2rem;
+		gap: 1.1rem;
+	}
+}
 @import './fonts.css';
 @import './tailwind.css';
 @import './theme.css';
