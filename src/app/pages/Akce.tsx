@@ -17,9 +17,18 @@ type EventItem = {
 
 type ApiEvent = Partial<EventItem>;
 
-const formatIsoDate = (iso: string) => {
-  const d = new Date(iso);
-  if (isNaN(d.getTime())) return iso;
+const formatIsoDate = (value: string) => {
+  const trimmed = String(value || "").trim();
+  if (!trimmed) return "";
+
+  const czMatch = trimmed.match(/^(\d{1,2})\.\s*(\d{1,2})\.\s*(\d{4})\.?$/);
+  if (czMatch) {
+    const [, day, month, year] = czMatch;
+    return `${day.padStart(2, "0")}.${month.padStart(2, "0")}.${year}`;
+  }
+
+  const d = new Date(trimmed);
+  if (isNaN(d.getTime())) return trimmed;
   return d.toLocaleDateString("cs-CZ", {
     day: "2-digit",
     month: "2-digit",
