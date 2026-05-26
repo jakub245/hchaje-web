@@ -118,6 +118,14 @@ const normalizeText = (value: string) =>
 
 const normalizePersonName = (value: string) => normalizeText(String(value || ""));
 
+const rankCoachPosition = (position: string) => {
+  const normalized = normalizeText(position || "");
+  if (normalized.includes("hlavni")) return 0;
+  if (normalized.includes("asistent") || normalized.includes("assistant")) return 1;
+  if (normalized.includes("trener") || normalized.includes("trainer") || normalized === "coach") return 0;
+  return 2;
+};
+
 const isClubEvent = (event: EventItem) => {
   const normalizedSlug = normalizeText(event.teamSlug || "");
   const normalizedName = normalizeText(event.teamName || "");
@@ -600,6 +608,9 @@ export default function DruzstvoDetail() {
           }))
           .filter((item) => item.teamSlug === team.slug)
           .sort((a, b) => {
+            const roleRankDiff = rankCoachPosition(a.position) - rankCoachPosition(b.position);
+            if (roleRankDiff !== 0) return roleRankDiff;
+
             if (a.sortPriority !== b.sortPriority) return a.sortPriority - b.sortPriority;
 
             return a.name.localeCompare(b.name, "cs");

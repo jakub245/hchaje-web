@@ -131,6 +131,7 @@ const rankByPosition = (position: string): number => {
 };
 
 const parseSortPriority = (properties: Record<string, any>, position: string): number => {
+  const roleBase = rankByPosition(position) * 1000;
   const priorityProp = findProperty(properties, [
     "Důležitost",
     "Dulezitost",
@@ -142,12 +143,12 @@ const parseSortPriority = (properties: Record<string, any>, position: string): n
   ]);
 
   const numberValue = parseNumberLike(priorityProp);
-  if (numberValue !== null) return numberValue;
+  if (numberValue !== null) return roleBase + numberValue;
 
   const textValue = parseTextLike(priorityProp);
-  if (textValue) return rankByPosition(textValue);
+  if (textValue) return rankByPosition(textValue) * 1000;
 
-  return rankByPosition(position);
+  return roleBase;
 };
 
 const calculateAge = (dob: string): string => {
