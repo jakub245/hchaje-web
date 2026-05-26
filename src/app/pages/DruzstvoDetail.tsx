@@ -116,6 +116,12 @@ const normalizeText = (value: string) =>
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9]/g, "");
 
+const isClubEvent = (event: EventItem) => {
+  const normalizedSlug = normalizeText(event.teamSlug || "");
+  const normalizedName = normalizeText(event.teamName || "");
+  return normalizedSlug.includes("klub") || normalizedName.includes("klub");
+};
+
 const parseCzDate = (value: string) => {
   if (!value) return Number.MAX_SAFE_INTEGER;
   const clean = value.replace(/\s/g, "");
@@ -360,7 +366,11 @@ export default function DruzstvoDetail() {
           })
           .filter((item) => {
             const normalizedTeamName = normalizeText(item.teamName);
-            return item.teamSlug === team.slug || normalizedTeamName.includes(normalizeText(team.name));
+            return (
+              item.teamSlug === team.slug ||
+              normalizedTeamName.includes(normalizeText(team.name)) ||
+              isClubEvent(item)
+            );
           })
           .sort((a, b) => getEventSortTs(a) - getEventSortTs(b));
 

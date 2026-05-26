@@ -36,6 +36,12 @@ const normalizeText = (value: string) =>
     .replace(/-+/g, "-")
     .replace(/^-|-$/g, "");
 
+const isClubEvent = (event: EventItem) => {
+  const slug = normalizeText(event.teamSlug || "");
+  const name = normalizeText(event.teamName || "");
+  return slug.includes("klub") || name.includes("klub");
+};
+
 const parseCzDate = (value: string) => {
   if (!value) return Number.MAX_SAFE_INTEGER;
   const clean = value.replace(/\s/g, "");
@@ -179,7 +185,7 @@ export default function AkcePage() {
   const filteredEvents = getUpcomingEvents(
     selectedTeam === "all"
       ? events
-      : events.filter((event) => event.teamSlug === selectedTeam)
+      : events.filter((event) => event.teamSlug === selectedTeam || isClubEvent(event))
   );
 
   return (
