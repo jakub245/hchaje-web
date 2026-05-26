@@ -611,8 +611,6 @@ export default function DruzstvoDetail() {
             const roleRankDiff = rankCoachPosition(a.position) - rankCoachPosition(b.position);
             if (roleRankDiff !== 0) return roleRankDiff;
 
-            if (a.sortPriority !== b.sortPriority) return a.sortPriority - b.sortPriority;
-
             return a.name.localeCompare(b.name, "cs");
           });
 

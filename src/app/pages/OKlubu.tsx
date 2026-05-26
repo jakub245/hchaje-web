@@ -47,6 +47,21 @@ type CoachItem = {
 
 type ApiCoach = Partial<CoachItem>;
 
+const normalizeText = (value: string) =>
+  String(value || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]/g, "");
+
+const rankCoachPosition = (position: string) => {
+  const normalized = normalizeText(position);
+  if (normalized.includes("hlavni")) return 0;
+  if (normalized.includes("asistent") || normalized.includes("assistant")) return 1;
+  if (normalized.includes("trener") || normalized.includes("trainer") || normalized === "coach") return 0;
+  return 2;
+};
+
 export default function OKlubuPage() {
   const [coaches, setCoaches] = useState<CoachItem[]>([]);
   const [coachesLoading, setCoachesLoading] = useState(true);
@@ -75,7 +90,15 @@ export default function OKlubuPage() {
             photoUrl: item.photoUrl || "",
             age: item.age || "",
           }))
-          .sort((a, b) => a.name.localeCompare(b.name, "cs"));
+          .sort((a, b) => {
+            const teamNameDiff = a.teamName.localeCompare(b.teamName, "cs");
+            if (teamNameDiff !== 0) return teamNameDiff;
+
+            const roleRankDiff = rankCoachPosition(a.position) - rankCoachPosition(b.position);
+            if (roleRankDiff !== 0) return roleRankDiff;
+
+            return a.name.localeCompare(b.name, "cs");
+          });
 
         if (!activeRequest) return;
         setCoaches(normalizedCoaches);

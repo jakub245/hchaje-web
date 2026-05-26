@@ -48,6 +48,11 @@ const parseRichText = (property: any): string => {
     const rich = property.title ?? [];
     return rich.map((item: any) => item?.plain_text || "").join("").trim();
   }
+  if (property.type === "select") return String(property.select?.name || "").trim();
+  if (property.type === "status") return String(property.status?.name || "").trim();
+  if (property.type === "multi_select") {
+    return (property.multi_select ?? []).map((item: any) => String(item?.name || "").trim()).filter(Boolean).join(", ");
+  }
   const rich = property.rich_text ?? [];
   return rich.map((item: any) => item?.plain_text || "").join("").trim();
 };
@@ -131,7 +136,7 @@ const rankByPosition = (position: string): number => {
 };
 
 const parseSortPriority = (properties: Record<string, any>, position: string): number => {
-  const roleBase = rankByPosition(position) * 1000;
+  const roleBase = rankByPosition(position);
   const priorityProp = findProperty(properties, [
     "Důležitost",
     "Dulezitost",
@@ -142,11 +147,8 @@ const parseSortPriority = (properties: Record<string, any>, position: string): n
     "Order",
   ]);
 
-  const numberValue = parseNumberLike(priorityProp);
-  if (numberValue !== null) return roleBase + numberValue;
-
   const textValue = parseTextLike(priorityProp);
-  if (textValue) return rankByPosition(textValue) * 1000;
+  if (textValue) return rankByPosition(textValue);
 
   return roleBase;
 };
@@ -298,7 +300,7 @@ const loadCoachesFromNotion = async () => {
       const properties = page?.properties ?? {};
       if (!resolveVisibility(properties)) return null;
       const name = parseTitle(findProperty(properties, ["Jméno", "Jmeno", "Name"]) || properties["title"]);
-      const position = parseRichText(findProperty(properties, ["Pozice", "Role", "Position"])) || "";
+      const position = parseTextLike(findProperty(properties, ["Pozice", "Role", "Position"])) || "";
       const sortPriority = parseSortPriority(properties, position);
       const phone = parseRichText(findProperty(properties, ["Telefon", "Phone"])) || "";
       const email = parseRichText(findProperty(properties, ["E-mail", "Email", "Mail"])) || "";
