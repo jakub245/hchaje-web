@@ -139,7 +139,7 @@ const TEAM_DATA: Team[] = [
     desc: "Dívky 10–12 let rozvíjející herní dovednosti.",
     longDesc: "Kategorie mladších žákyň se zaměřuje na všestranný rozvoj herních dovedností, pohybové gramotnosti a porozumění základním herním principům.\n\nVelký důraz klademe na týmovou spolupráci, zdravou soutěživost a přirozenou motivaci neustále se zlepšovat. Součástí našeho přístupu je také rozvoj disciplíny, herního myšlení a schopnosti zvládat zápasové situace s maximálním nasazením.\n\nNaším cílem je vytvářet prostředí, ve kterém hráčky rostou nejen sportovně, ale i osobnostně, učí se odpovědnosti vůči týmu a získávají pozitivní vztah ke sportu i zdravému pohybu.",
     img: resolveTeamHero("mladsi-zakyne", "Mladší žákyně", "https://images.unsplash.com/photo-1575367728985-8cb72541609a?w=800"),
-    coach: "Jůlia Dvořáková", assistantCoach: "Petr Novák",
+    coach: "Júlia Dvořáková", assistantCoach: "Petr Novák",
     playerCount: 20, ageRange: "10–12 let",
     trainings: [
       { day: "Pondělí", time: "17:45 – 19:15", hall: "Sportovní hala Háje" },

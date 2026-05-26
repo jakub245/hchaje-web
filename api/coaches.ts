@@ -124,9 +124,9 @@ const parseTextLike = (property: any): string => {
 
 const rankByPosition = (position: string): number => {
   const normalized = normalizeKey(position || "");
-  if (normalized.includes("trener") || normalized.includes("trainer") || normalized === "coach") return 0;
   if (normalized.includes("hlavni")) return 0;
   if (normalized.includes("asistent") || normalized.includes("assistant")) return 1;
+  if (normalized.includes("trener") || normalized.includes("trainer") || normalized === "coach") return 0;
   return 2;
 };
 

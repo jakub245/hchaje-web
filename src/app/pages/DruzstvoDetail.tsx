@@ -116,6 +116,8 @@ const normalizeText = (value: string) =>
     .replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9]/g, "");
 
+const normalizePersonName = (value: string) => normalizeText(String(value || ""));
+
 const isClubEvent = (event: EventItem) => {
   const normalizedSlug = normalizeText(event.teamSlug || "");
   const normalizedName = normalizeText(event.teamName || "");
@@ -583,19 +585,6 @@ export default function DruzstvoDetail() {
         if (!response.ok) throw new Error("Nepodařilo se načíst data z API.");
 
         const payload = (await response.json()) as { coaches?: ApiCoach[] };
-        const normalizePersonName = (value: string) =>
-          normalizeText(String(value || "")).replace(/[^a-z0-9]/g, "");
-
-        const headCoachName = normalizePersonName(team.coach || "");
-        const assistantCoachName = normalizePersonName(team.assistantCoach || "");
-
-        const rankByTeamHeader = (name: string) => {
-          const normalizedName = normalizePersonName(name);
-          if (headCoachName && normalizedName === headCoachName) return 0;
-          if (assistantCoachName && normalizedName === assistantCoachName) return 1;
-          return 2;
-        };
-
         const normalizedCoaches = (payload.coaches ?? [])
           .map((item, index) => ({
             id: item.id || `notion-coach-${index}`,
@@ -611,20 +600,7 @@ export default function DruzstvoDetail() {
           }))
           .filter((item) => item.teamSlug === team.slug)
           .sort((a, b) => {
-            const rank = (pos: string) => {
-              const n = normalizeText(pos);
-              if (n.includes("trener") || n.includes("trainer") || n === "coach") return 0;
-              if (n.includes("hlavni")) return 0;
-              if (n.includes("asistent")) return 1;
-              return 2;
-            };
-
             if (a.sortPriority !== b.sortPriority) return a.sortPriority - b.sortPriority;
-            const roleRankDiff = rank(a.position) - rank(b.position);
-            if (roleRankDiff !== 0) return roleRankDiff;
-
-            const headerRankDiff = rankByTeamHeader(a.name) - rankByTeamHeader(b.name);
-            if (headerRankDiff !== 0) return headerRankDiff;
 
             return a.name.localeCompare(b.name, "cs");
           });
@@ -681,6 +657,15 @@ export default function DruzstvoDetail() {
   const displayedStaff = coachesLoaded && coaches.length > 0
     ? coaches.map((c: CoachItem) => ({ name: c.name, phone: c.phone, email: c.email, photoUrl: c.photoUrl, age: c.age, position: c.position, sortPriority: c.sortPriority }))
     : [];
+  const displayedCoachNames = (coachesLoaded && coaches.length > 0
+    ? coaches.map((coach) => coach.name)
+    : [team.coach, team.assistantCoach]
+  )
+    .map((name) => String(name || "").trim())
+    .filter(Boolean)
+    .filter((name, index, all) =>
+      index === all.findIndex((candidate) => normalizePersonName(candidate) === normalizePersonName(name))
+    );
   const displayedPlayers = playersLoaded && players.length > 0 ? players : [];
   const displayedPlayerCount = playersLoaded && players.length > 0 ? players.length : team.players.length;
   const displayedNews = newsLoaded
@@ -751,7 +736,7 @@ export default function DruzstvoDetail() {
                 <div className="flex items-center gap-3">
                   <User className="w-5 h-5 text-[#6EE76D]" />
                   <span className="text-white/60" style={{ fontFamily: inter }}>
-                    Trenéři: <span className="text-white">{[team.coach, team.assistantCoach].filter(Boolean).join(" • ")}</span>
+                    Trenéři: <span className="text-white">{displayedCoachNames.join(" • ")}</span>
                   </span>
                 </div>
               </div>
