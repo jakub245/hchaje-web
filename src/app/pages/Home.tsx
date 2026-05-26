@@ -193,7 +193,7 @@ function Hero() {
             </h1>
 
             <p className="home-hero-copy text-white/50 text-lg mb-10 max-w-lg" style={{ fontFamily: inter }}>
-              {nbspShortWords("Jsme HC Háje — dívčí a ženský házenkářský klub z Prahy 4. Od roku 1980 vedeme hráčky k pravidelnému sportu, týmovosti a radosti z házené.")}
+              {nbspShortWords("Jsme HC Háje - dívčí a ženský házenkářský klub z Prahy 4. Od roku 1980 vedeme hráčky k pravidelnému sportu, týmovosti a radosti z házené.")}
             </p>
 
             <div className="home-hero-cta flex flex-wrap gap-4">
