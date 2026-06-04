@@ -7,7 +7,7 @@ import { TEAMS } from "../data/teams";
 export default function DruzstvaPage() {
   return (
     <>
-      <PageHero title="Naše družstva" subtitle="Vyberte si kategorii a zjistěte vše o tréninzích, hráčkách a aktualitách." />
+      <PageHero title="Naše družstva" subtitle="Vyberte si kategorii a zjistěte vše o trénincích, hráčkách a aktualitách." />
 
       <section className="reveal-on-scroll pb-20 lg:pb-28">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
