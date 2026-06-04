@@ -19,7 +19,7 @@ function figmaAssetResolver() {
 function localApiEventsProxy() {
   const notionApiBase = 'https://api.notion.com/v1'
   const notionVersion = '2022-06-28'
-  const notionToken = process.env.NOTION_TOKEN || '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'
+  const notionToken = process.env.NOTION_TOKEN
   const notionDatabaseId = process.env.NOTION_DATABASE_ID || '350c5ef377c78092a67cd5e8b3869bb8'
 
   const parseTitle = (properties: any) => {
