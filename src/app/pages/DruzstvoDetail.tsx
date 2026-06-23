@@ -280,61 +280,90 @@ export default function DruzstvoDetail() {
         .map(token => normalizeText(token))
         .filter(Boolean);
 
+    const stripNumericSuffix = (value: string) => value.replace(/\d+/g, "");
+
     const currentTeamSlug = normalizeText(team.slug);
     const playerTokens = toNameTokens(name);
     const normalizedName = playerTokens.join("");
     const reversedName = [...playerTokens].reverse().join("");
+    const surname = playerTokens[0] || "";
+    const firstName = playerTokens[1] || "";
+    const firstNameInitial = firstName.slice(0, 1);
 
     const allCandidates = Object.entries(teamPlayerPhotos)
       .map(([path, url]) => {
         const fileName = path.split("/").pop()?.replace(/\.(jpg|jpeg|png)$/i, "") || "";
         const tokens = toNameTokens(fileName);
+        const compact = stripNumericSuffix(tokens.join(""));
         return {
           path,
-          baseName: normalizeText(fileName),
+          baseName: stripNumericSuffix(normalizeText(fileName)),
           tokens,
-          tokenJoin: tokens.join(""),
-          tokenJoinReversed: [...tokens].reverse().join(""),
+          tokenJoin: compact,
+          tokenJoinReversed: stripNumericSuffix([...tokens].reverse().join("")),
           url,
         };
       });
 
     const teamCandidates = allCandidates.filter((candidate) => normalizeText(candidate.path).includes(currentTeamSlug));
 
-    const findBestMatch = (candidates: typeof allCandidates) => {
-      // Pokus 1: Přesná shoda - normalizované jméno
-      const exactMatch = candidates.find(
-        (candidate) =>
-          candidate.baseName === normalizedName ||
-          candidate.baseName === reversedName ||
-          candidate.tokenJoin === normalizedName ||
-          candidate.tokenJoinReversed === normalizedName
-      );
-      if (exactMatch) return exactMatch.url;
-
-      // Pokus 2: Všechny tokeny se nacházejí v kandidátovi
-      const allTokensMatch = candidates.find((candidate) =>
-        playerTokens.every(token => candidate.tokenJoin.includes(token))
-      );
-      if (allTokensMatch) return allTokensMatch.url;
-
-      // Pokus 3: Příjmení (první token) + jakýkoliv další token
-      const surname = playerTokens[0] || "";
-      const surnameMatches = candidates.filter((candidate) =>
-        candidate.tokenJoin.includes(surname) && candidate.tokens.length >= 1
-      );
-      if (surnameMatches.length === 1) return surnameMatches[0].url;
-
-      // Pokus 4: Jakýkoliv token se v kandidátovi vyskytuje
-      const anyTokenMatch = candidates.find((candidate) =>
-        playerTokens.some(token => candidate.tokenJoin.includes(token) && token.length > 3)
-      );
-      if (anyTokenMatch) return anyTokenMatch.url;
-
-      return "";
+    const findUniqueMatch = (
+      candidates: typeof allCandidates,
+      predicate: (candidate: (typeof allCandidates)[number]) => boolean
+    ) => {
+      const matches = candidates.filter(predicate);
+      return matches.length === 1 ? matches[0].url : "";
     };
 
-    return findBestMatch(teamCandidates) || findBestMatch(allCandidates);
+    const directMatchInTeam = findUniqueMatch(
+      teamCandidates,
+      (candidate) =>
+        candidate.baseName === normalizedName ||
+        candidate.baseName === reversedName ||
+        candidate.tokenJoin === normalizedName ||
+        candidate.tokenJoin === reversedName ||
+        candidate.tokenJoinReversed === normalizedName ||
+        candidate.tokenJoinReversed === reversedName
+    );
+    if (directMatchInTeam) return directMatchInTeam;
+
+    const directMatchGlobal = findUniqueMatch(
+      allCandidates,
+      (candidate) =>
+        candidate.baseName === normalizedName ||
+        candidate.baseName === reversedName ||
+        candidate.tokenJoin === normalizedName ||
+        candidate.tokenJoin === reversedName ||
+        candidate.tokenJoinReversed === normalizedName ||
+        candidate.tokenJoinReversed === reversedName
+    );
+    if (directMatchGlobal) return directMatchGlobal;
+
+    if (surname && firstName) {
+      const surnameAndNameInTeam = findUniqueMatch(teamCandidates, (candidate) => {
+        const hasSurname = candidate.tokenJoin.includes(surname);
+        const hasFirstName = candidate.tokenJoin.includes(firstName) || (firstNameInitial && candidate.tokenJoin.includes(firstNameInitial));
+        return hasSurname && hasFirstName;
+      });
+      if (surnameAndNameInTeam) return surnameAndNameInTeam;
+
+      const surnameAndNameGlobal = findUniqueMatch(allCandidates, (candidate) => {
+        const hasSurname = candidate.tokenJoin.includes(surname);
+        const hasFirstName = candidate.tokenJoin.includes(firstName) || (firstNameInitial && candidate.tokenJoin.includes(firstNameInitial));
+        return hasSurname && hasFirstName;
+      });
+      if (surnameAndNameGlobal) return surnameAndNameGlobal;
+    }
+
+    if (surname) {
+      const surnameInTeam = findUniqueMatch(teamCandidates, (candidate) => candidate.tokenJoin.includes(surname));
+      if (surnameInTeam) return surnameInTeam;
+
+      const surnameGlobal = findUniqueMatch(allCandidates, (candidate) => candidate.tokenJoin.includes(surname));
+      if (surnameGlobal) return surnameGlobal;
+    }
+
+    return "";
   };
 
   useEffect(() => {
