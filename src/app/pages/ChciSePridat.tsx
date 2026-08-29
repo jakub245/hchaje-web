@@ -296,7 +296,7 @@ export default function ChciSePridatPage() {
               <ul className="space-y-3 text-white/85" style={{ fontFamily: inter }}>
                 <li className="flex items-start gap-2">
                   <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[#6EE76D] flex-shrink-0" />
-                  <span>Přípravka: 5–8 let</span>
+                  <span>Přípravka: 6–8 let</span>
                 </li>
                 <li className="flex items-start gap-2">
                   <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[#6EE76D] flex-shrink-0" />
