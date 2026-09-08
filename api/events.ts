@@ -197,24 +197,29 @@ const loadEventsFromNotion = async () => {
   const readRelatedTitle = async (pageId: string) => {
     if (relatedTitleCache.has(pageId)) return relatedTitleCache.get(pageId) || "";
 
-    const response = await fetch(`${NOTION_API_BASE}/pages/${pageId}`, {
-      headers: {
-        Authorization: `Bearer ${notionToken}`,
-        "Notion-Version": NOTION_VERSION,
-      },
-    });
+    try {
+      const response = await fetch(`${NOTION_API_BASE}/pages/${pageId}`, {
+        headers: {
+          Authorization: `Bearer ${notionToken}`,
+          "Notion-Version": NOTION_VERSION,
+        },
+      });
 
-    if (!response.ok) {
+      if (!response.ok) {
+        relatedTitleCache.set(pageId, "");
+        return "";
+      }
+
+      const data = await response.json();
+      const properties = data?.properties ?? {};
+      const titleProperty = Object.values(properties).find((property: any) => property?.type === "title");
+      const title = parseRichText(titleProperty);
+      relatedTitleCache.set(pageId, title);
+      return title;
+    } catch {
       relatedTitleCache.set(pageId, "");
       return "";
     }
-
-    const data = await response.json();
-    const properties = data?.properties ?? {};
-    const titleProperty = Object.values(properties).find((property: any) => property?.type === "title");
-    const title = parseRichText(titleProperty);
-    relatedTitleCache.set(pageId, title);
-    return title;
   };
 
   const rawEvents = await Promise.all(
@@ -236,9 +241,9 @@ const loadEventsFromNotion = async () => {
         if (relationIds.length > 0) {
           const names = await Promise.all(
             relationIds.map(async (relationId: string) => {
-              const resolvedName = await readRelatedTitle(relationId);
-              if (resolvedName) return resolvedName;
-              return TEAM_RELATION_ID_FALLBACKS[relationId] || "";
+              const fallbackName = TEAM_RELATION_ID_FALLBACKS[relationId] || "";
+              if (fallbackName) return fallbackName;
+              return await readRelatedTitle(relationId);
             }),
           );
           const resolved = names.filter(Boolean);
