@@ -214,6 +214,26 @@ const sortTrainingsByDay = (items: Array<{ day: string; time: string; hall: stri
   });
 };
 
+const readSessionCache = <T,>(key: string): T | null => {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.sessionStorage.getItem(key);
+    if (!raw) return null;
+    return JSON.parse(raw) as T;
+  } catch {
+    return null;
+  }
+};
+
+const writeSessionCache = (key: string, value: unknown) => {
+  if (typeof window === "undefined") return;
+  try {
+    window.sessionStorage.setItem(key, JSON.stringify(value));
+  } catch {
+    // Ignore quota or serialization issues and continue without cache.
+  }
+};
+
 export default function DruzstvoDetail() {
   const { slug } = useParams();
   const team = getTeamBySlug(slug || "");
@@ -451,8 +471,18 @@ export default function DruzstvoDetail() {
         .replace(/-+/g, "-")
         .replace(/^-|-$/g, "");
 
+    const cacheKey = `team-trainings:${team.slug}`;
+    const cachedTrainings = readSessionCache<TrainingItem[]>(cacheKey);
+    const hasCachedTrainings = Array.isArray(cachedTrainings) && cachedTrainings.length > 0;
+
+    if (hasCachedTrainings) {
+      setTrainings(cachedTrainings);
+      setTrainingsLoading(false);
+      setTrainingsLoaded(true);
+    }
+
     const loadTeamTrainings = async () => {
-      setTrainingsLoading(true);
+      setTrainingsLoading(!hasCachedTrainings);
       try {
         const response = await fetch("/api/trainings");
         if (!response.ok) throw new Error("Nepodařilo se načíst data z API.");
@@ -476,10 +506,16 @@ export default function DruzstvoDetail() {
 
         if (!activeRequest) return;
         setTrainings(normalizedTrainings);
+        writeSessionCache(cacheKey, normalizedTrainings);
         setTrainingsLoading(false);
         setTrainingsLoaded(true);
       } catch {
         if (!activeRequest) return;
+        if (hasCachedTrainings) {
+          setTrainingsLoading(false);
+          setTrainingsLoaded(true);
+          return;
+        }
         setTrainings([]);
         setTrainingsLoading(false);
         setTrainingsLoaded(true);
@@ -570,8 +606,18 @@ export default function DruzstvoDetail() {
         .replace(/-+/g, "-")
         .replace(/^-|-$/g, "");
 
+    const cacheKey = `team-players:${team.slug}`;
+    const cachedPlayers = readSessionCache<PlayerItem[]>(cacheKey);
+    const hasCachedPlayers = Array.isArray(cachedPlayers) && cachedPlayers.length > 0;
+
+    if (hasCachedPlayers) {
+      setPlayers(cachedPlayers);
+      setPlayersLoading(false);
+      setPlayersLoaded(true);
+    }
+
     const loadTeamPlayers = async () => {
-      setPlayersLoading(true);
+      setPlayersLoading(!hasCachedPlayers);
       try {
         const response = await fetch("/api/players");
         if (!response.ok) throw new Error("Nepodařilo se načíst data z API.");
@@ -604,10 +650,16 @@ export default function DruzstvoDetail() {
 
         if (!activeRequest) return;
         setPlayers(normalizedPlayers);
+        writeSessionCache(cacheKey, normalizedPlayers);
         setPlayersLoading(false);
         setPlayersLoaded(true);
       } catch {
         if (!activeRequest) return;
+        if (hasCachedPlayers) {
+          setPlayersLoading(false);
+          setPlayersLoaded(true);
+          return;
+        }
         setPlayers([]);
         setPlayersLoading(false);
         setPlayersLoaded(true);
@@ -715,7 +767,10 @@ export default function DruzstvoDetail() {
       index === all.findIndex((candidate) => normalizePersonName(candidate) === normalizePersonName(name))
     );
   const displayedPlayers = playersLoaded && players.length > 0 ? players : [];
-  const displayedPlayerCount = playersLoaded && players.length > 0 ? players.length : team.players.length;
+  const displayedPlayerCount = playersLoaded
+    ? (players.length > 0 ? players.length : team.players.length)
+    : null;
+  const displayedTrainingCount = trainingsLoaded ? trainingCount : null;
   const displayedNews = newsLoaded
     ? teamNews.map((item: TeamNewsItem) => ({ slug: item.slug, title: item.title, date: item.date, excerpt: item.excerpt || item.content || "", mediaSections: item.mediaSections }))
     : newsSorted;
@@ -771,11 +826,11 @@ export default function DruzstvoDetail() {
 
               <div className="grid grid-cols-2 gap-4 mb-8">
                 <div className="mobile-solid-card p-4 rounded-2xl bg-[#101a10] border border-[#6EE76D]/12">
-                  <div className="text-3xl text-[#6EE76D]" style={{ fontFamily: bebas }}>{displayedPlayerCount}</div>
+                  <div className="text-3xl text-[#6EE76D]" style={{ fontFamily: bebas }}>{displayedPlayerCount ?? "..."}</div>
                   <div className="text-white/35 text-sm" style={{ fontFamily: inter }}>Hráček</div>
                 </div>
                 <div className="mobile-solid-card p-4 rounded-2xl bg-[#101a10] border border-[#6EE76D]/12">
-                  <div className="text-3xl text-[#6EE76D]" style={{ fontFamily: bebas }}>{trainingCount}×</div>
+                  <div className="text-3xl text-[#6EE76D]" style={{ fontFamily: bebas }}>{displayedTrainingCount !== null ? `${displayedTrainingCount}×` : "..."}</div>
                   <div className="text-white/35 text-sm" style={{ fontFamily: inter }}>Tréninků týdně</div>
                 </div>
               </div>
