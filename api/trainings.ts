@@ -168,6 +168,21 @@ const resolveVisibility = (properties: Record<string, any>): boolean => {
   const explicitValue = parseBooleanLike(visibilityProp);
   if (explicitValue !== null) return explicitValue;
 
+  for (const entry of Object.entries(properties)) {
+    const [key, value] = entry;
+    const normalized = normalizeKey(key);
+    const looksLikeVisibility =
+      normalized.includes("zobraz") ||
+      normalized.includes("publik") ||
+      normalized.includes("visible") ||
+      normalized.includes("show") ||
+      normalized.includes("aktiv");
+
+    if (!looksLikeVisibility) continue;
+    const inferredValue = parseBooleanLike(value);
+    if (inferredValue !== null) return inferredValue;
+  }
+
   // Pokud není explicitní sloupec viditelnosti, necháme záznam zobrazený (zpětná kompatibilita).
   return true;
 };
