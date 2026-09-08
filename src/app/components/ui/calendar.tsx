@@ -18,10 +18,21 @@ function Calendar({
     <DayPicker
       locale={cs}
       weekStartsOn={1}
+      ISOWeek
+      labels={{
+        labelPrevious: () => "Předchozí měsíc",
+        labelNext: () => "Další měsíc",
+      }}
+      formatters={{
+        formatCaption: (date) =>
+          new Intl.DateTimeFormat("cs-CZ", { month: "long", year: "numeric" }).format(date),
+        formatWeekdayName: (date) =>
+          new Intl.DateTimeFormat("cs-CZ", { weekday: "short" }).format(date),
+      }}
       showOutsideDays={showOutsideDays}
       className={cn("p-3", className)}
       classNames={{
-        months: "flex flex-col sm:flex-row gap-4 sm:gap-6",
+        months: "flex flex-col sm:flex-row gap-8 sm:gap-10",
         month: "flex flex-col gap-5",
         caption: "flex justify-center pt-1 relative items-center w-full",
         caption_label: "text-sm font-medium",
