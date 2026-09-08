@@ -14,7 +14,7 @@ type EventDateFilterProps = {
 };
 
 const formatRangeLabel = (range: DateRange | undefined) => {
-  if (!range?.from) return "Vybrat rozmezí";
+  if (!range?.from) return "Vlastní rozsah";
 
   const from = range.from.toLocaleDateString("cs-CZ", {
     day: "2-digit",
@@ -87,7 +87,7 @@ export function EventDateFilter({ mode, onModeChange, range, onRangeChange }: Ev
           className={`rounded-full border px-4 py-2 text-sm transition-all ${mode === "all" ? "border-[#F587B9] bg-[#F587B9]/12 text-white shadow-[0_0_18px_rgba(245,135,185,0.12)]" : "border-white/10 text-white/70 hover:border-[#F587B9]/40 hover:text-white"}`}
           style={{ fontFamily: inter }}
         >
-          Vse
+          Vše
         </button>
 
         <button
@@ -95,7 +95,7 @@ export function EventDateFilter({ mode, onModeChange, range, onRangeChange }: Ev
           className={`rounded-full border px-4 py-2 text-sm transition-all ${mode === "this-month" ? "border-[#F587B9] bg-[#F587B9]/12 text-white shadow-[0_0_18px_rgba(245,135,185,0.12)]" : "border-white/10 text-white/70 hover:border-[#F587B9]/40 hover:text-white"}`}
           style={{ fontFamily: inter }}
         >
-          Tento mesic
+          Tento měsíc
         </button>
 
         <button
@@ -103,7 +103,7 @@ export function EventDateFilter({ mode, onModeChange, range, onRangeChange }: Ev
           className={`rounded-full border px-4 py-2 text-sm transition-all ${mode === "next-month" ? "border-[#F587B9] bg-[#F587B9]/12 text-white shadow-[0_0_18px_rgba(245,135,185,0.12)]" : "border-white/10 text-white/70 hover:border-[#F587B9]/40 hover:text-white"}`}
           style={{ fontFamily: inter }}
         >
-          Pristi mesic
+          Příští měsíc
         </button>
 
         <Popover>
