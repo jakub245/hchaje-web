@@ -242,7 +242,7 @@ export default function DruzstvoDetail() {
   const [active, setActive] = useState("prehled");
   const [events, setEvents] = useState<EventItem[]>([]);
   const [eventsLoading, setEventsLoading] = useState(true);
-  const [eventDateFilterMode, setEventDateFilterMode] = useState<EventDateFilterMode>("all");
+  const [eventDateFilterMode, setEventDateFilterMode] = useState<EventDateFilterMode>("this-month");
   const [eventDateRange, setEventDateRange] = useState<DateRange>();
   const [trainings, setTrainings] = useState<TrainingItem[]>([]);
   const [trainingsLoading, setTrainingsLoading] = useState(true);

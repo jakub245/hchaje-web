@@ -103,7 +103,7 @@ const teamOrder = new Map([
 
 export default function AkcePage() {
   const [selectedTeam, setSelectedTeam] = useState("all");
-  const [dateFilterMode, setDateFilterMode] = useState<EventDateFilterMode>("all");
+  const [dateFilterMode, setDateFilterMode] = useState<EventDateFilterMode>("this-month");
   const [dateRange, setDateRange] = useState<DateRange>();
   const [events, setEvents] = useState<EventItem[]>([]);
   const [eventsLoading, setEventsLoading] = useState(true);
