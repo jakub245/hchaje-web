@@ -14,21 +14,28 @@ function Calendar({
   showOutsideDays = true,
   ...props
 }: React.ComponentProps<typeof DayPicker>) {
+  const mergedLabels = {
+    ...(props.labels ?? {}),
+    labelPrevious: () => "Předchozí měsíc",
+    labelNext: () => "Další měsíc",
+  };
+
+  const mergedFormatters = {
+    ...(props.formatters ?? {}),
+    formatCaption: (date: Date) =>
+      new Intl.DateTimeFormat("cs-CZ", { month: "long", year: "numeric" }).format(date),
+    formatWeekdayName: (date: Date) =>
+      new Intl.DateTimeFormat("cs-CZ", { weekday: "short" }).format(date),
+  };
+
   return (
     <DayPicker
+      {...props}
       locale={cs}
       weekStartsOn={1}
       ISOWeek
-      labels={{
-        labelPrevious: () => "Předchozí měsíc",
-        labelNext: () => "Další měsíc",
-      }}
-      formatters={{
-        formatCaption: (date) =>
-          new Intl.DateTimeFormat("cs-CZ", { month: "long", year: "numeric" }).format(date),
-        formatWeekdayName: (date) =>
-          new Intl.DateTimeFormat("cs-CZ", { weekday: "short" }).format(date),
-      }}
+      labels={mergedLabels}
+      formatters={mergedFormatters}
       showOutsideDays={showOutsideDays}
       className={cn("p-3", className)}
       classNames={{
@@ -81,7 +88,6 @@ function Calendar({
           <ChevronRight className={cn("size-4", className)} {...props} />
         ),
       }}
-      {...props}
     />
   );
 }
