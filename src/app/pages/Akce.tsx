@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router";
-import { Calendar, MapPin } from "lucide-react";
+import { Calendar, MapPin, Users } from "lucide-react";
 import type { DateRange } from "react-day-picker";
 import { CtaStrip, PageHero, bebas, inter, nbspShortWords } from "../components/shared";
 import { EventDateFilter, type EventDateFilterMode, isEventInDateFilter } from "../components/EventDateFilter";
@@ -223,8 +223,8 @@ export default function AkcePage() {
             ) : (
               <>
                 <div className="flex items-center gap-2 text-white/80 mb-4" style={{ fontFamily: bebas }}>
-                  <Calendar className="w-4 h-4 text-[#6EE76D]" />
-                  Filtrovat podle družstva
+                  <Users className="w-4 h-4 text-[#6EE76D] shrink-0" />
+                  <span className="leading-none">Filtrovat podle družstva</span>
                 </div>
 
                 <div className="flex flex-wrap gap-3">

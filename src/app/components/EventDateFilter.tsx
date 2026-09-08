@@ -77,8 +77,8 @@ export function EventDateFilter({ mode, onModeChange, range, onRangeChange }: Ev
   return (
     <div className="mt-6">
       <div className="flex items-center gap-2 text-white/80 mb-4" style={{ fontFamily: bebas }}>
-        <CalendarDays className="w-4 h-4 text-[#6EE76D]" />
-        Filtrovat podle data
+        <CalendarDays className="w-4 h-4 text-[#6EE76D] shrink-0" />
+        <span className="leading-none">Filtrovat podle data</span>
       </div>
 
       <div className="flex flex-wrap items-center gap-3">
