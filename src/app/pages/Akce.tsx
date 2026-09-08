@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router";
 import { Calendar, MapPin } from "lucide-react";
+import type { DateRange } from "react-day-picker";
 import { CtaStrip, PageHero, bebas, inter, nbspShortWords } from "../components/shared";
+import { EventDateFilter, type EventDateFilterMode, isEventInDateFilter } from "../components/EventDateFilter";
 
 type EventItem = {
   id: string;
@@ -101,6 +103,8 @@ const teamOrder = new Map([
 
 export default function AkcePage() {
   const [selectedTeam, setSelectedTeam] = useState("all");
+  const [dateFilterMode, setDateFilterMode] = useState<EventDateFilterMode>("all");
+  const [dateRange, setDateRange] = useState<DateRange>();
   const [events, setEvents] = useState<EventItem[]>([]);
   const [eventsLoading, setEventsLoading] = useState(true);
 
@@ -191,11 +195,14 @@ export default function AkcePage() {
       });
   }, [events]);
 
-  const filteredEvents = getUpcomingEvents(
-    selectedTeam === "all"
-      ? events
-      : events.filter((event) => event.teamSlug === selectedTeam || isClubEvent(event))
-  );
+  const teamFilteredEvents = selectedTeam === "all"
+    ? events
+    : events.filter((event) => event.teamSlug === selectedTeam || isClubEvent(event));
+
+  const filteredEvents = useMemo(() => {
+    const upcoming = getUpcomingEvents(teamFilteredEvents);
+    return upcoming.filter((event) => isEventInDateFilter(getEventSortTs(event), dateFilterMode, dateRange));
+  }, [teamFilteredEvents, dateFilterMode, dateRange]);
 
   return (
     <>
@@ -243,6 +250,13 @@ export default function AkcePage() {
                     );
                   })}
                 </div>
+
+                <EventDateFilter
+                  mode={dateFilterMode}
+                  onModeChange={setDateFilterMode}
+                  range={dateRange}
+                  onRangeChange={setDateRange}
+                />
               </>
             )}
 

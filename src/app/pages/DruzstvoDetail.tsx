@@ -1,5 +1,6 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { useParams, Link, Navigate } from "react-router";
+import type { DateRange } from "react-day-picker";
 import {
   ArrowLeft,
   Calendar,
@@ -12,6 +13,7 @@ import {
   Mail,
 } from "lucide-react";
 import { bebas, inter, CtaStrip, NewsCard, nbspShortWords } from "../components/shared";
+import { EventDateFilter, type EventDateFilterMode, isEventInDateFilter } from "../components/EventDateFilter";
 import { ImageWithFallback } from "../components/figma/ImageWithFallback";
 import { getTeamBySlug, TEAMS } from "../data/teams";
 
@@ -240,6 +242,8 @@ export default function DruzstvoDetail() {
   const [active, setActive] = useState("prehled");
   const [events, setEvents] = useState<EventItem[]>([]);
   const [eventsLoading, setEventsLoading] = useState(true);
+  const [eventDateFilterMode, setEventDateFilterMode] = useState<EventDateFilterMode>("all");
+  const [eventDateRange, setEventDateRange] = useState<DateRange>();
   const [trainings, setTrainings] = useState<TrainingItem[]>([]);
   const [trainingsLoading, setTrainingsLoading] = useState(true);
   const [trainingsLoaded, setTrainingsLoaded] = useState(false);
@@ -753,7 +757,10 @@ export default function DruzstvoDetail() {
 
   const trainingCount = trainingBlocks.reduce((sum, block: { title: string; items: Array<{ day: string; time: string; hall: string }> }) => sum + block.items.length, 0);
 
-  const displayedEvents = getUpcomingEvents(events);
+  const displayedEvents = useMemo(() => {
+    const upcoming = getUpcomingEvents(events);
+    return upcoming.filter((event) => isEventInDateFilter(getEventSortTs(event), eventDateFilterMode, eventDateRange));
+  }, [events, eventDateFilterMode, eventDateRange]);
   const displayedStaff = coachesLoaded && coaches.length > 0
     ? coaches.map((c: CoachItem) => ({ name: c.name, phone: c.phone, email: c.email, photoUrl: c.photoUrl, age: c.age, position: c.position, sortPriority: c.sortPriority }))
     : [];
@@ -926,6 +933,13 @@ export default function DruzstvoDetail() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <span className="text-[#6EE76D] text-sm tracking-[0.2em] uppercase mb-3 block" style={{ fontFamily: bebas }}>Kalendář</span>
           <h2 className="text-3xl lg:text-4xl text-white uppercase mb-8" style={{ fontFamily: bebas }}>Akce</h2>
+
+          <EventDateFilter
+            mode={eventDateFilterMode}
+            onModeChange={setEventDateFilterMode}
+            range={eventDateRange}
+            onRangeChange={setEventDateRange}
+          />
 
           {eventsLoading && (
             <div className="rounded-2xl bg-[#6EE76D]/5 border border-[#6EE76D]/20 px-4 py-3 mb-8 flex items-center gap-3">
