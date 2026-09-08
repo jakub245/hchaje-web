@@ -65,8 +65,10 @@ function Calendar({
           buttonVariants({ variant: "ghost" }),
           "size-8 p-0 font-normal aria-selected:opacity-100",
         ),
-        day_range_start: "day-range-start aria-selected:bg-transparent aria-selected:text-white",
-        day_range_end: "day-range-end aria-selected:bg-transparent aria-selected:text-white",
+        day_range_start:
+          "day-range-start aria-selected:bg-[#6EE76D] aria-selected:text-[#0B140B]",
+        day_range_end:
+          "day-range-end aria-selected:bg-[#6EE76D] aria-selected:text-[#0B140B]",
         day_selected:
           props.mode === "range"
             ? "bg-transparent text-white hover:bg-transparent hover:text-white focus:bg-transparent focus:text-white"
@@ -76,7 +78,7 @@ function Calendar({
           "day-outside text-muted-foreground aria-selected:text-muted-foreground",
         day_disabled: "text-muted-foreground opacity-50",
         day_range_middle:
-          "aria-selected:bg-[#6EE76D]/30 aria-selected:text-white",
+          "aria-selected:bg-transparent aria-selected:text-white",
         day_hidden: "invisible",
         ...classNames,
       }}
