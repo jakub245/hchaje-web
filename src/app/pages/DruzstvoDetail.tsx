@@ -672,8 +672,9 @@ export default function DruzstvoDetail() {
   }, [team.slug]);
 
   const newsSorted = [...team.news].sort((a, b) => parseCzDate(b.date) - parseCzDate(a.date));
-  const apiHasTrainingSections = trainings.some((item: TrainingItem) => Boolean(item.section?.trim()));
-  const apiTrainingMap = trainings.reduce((map: Map<string, Array<{ day: string; time: string; hall: string }>>, item: TrainingItem) => {
+  const filteredApiTrainings = filterToCurrentSeason(trainings);
+  const apiHasTrainingSections = filteredApiTrainings.some((item: TrainingItem) => Boolean(item.section?.trim()));
+  const apiTrainingMap = filteredApiTrainings.reduce((map: Map<string, Array<{ day: string; time: string; hall: string }>>, item: TrainingItem) => {
     const section = item.section?.trim() || "Tréninky";
     const list = map.get(section) || [];
     list.push({
@@ -693,7 +694,7 @@ export default function DruzstvoDetail() {
   const trainingBlocks = trainingsLoaded && trainings.length > 0
     ? (apiHasTrainingSections
       ? apiTrainingBlocks
-      : [{ title: "Tréninky", items: sortTrainingsByDay(trainings.map((item: TrainingItem) => ({ day: item.day, time: item.time, hall: item.hall }))) }])
+      : [{ title: "Tréninky", items: sortTrainingsByDay(filteredApiTrainings.map((item: TrainingItem) => ({ day: item.day, time: item.time, hall: item.hall }))) }])
     : ((team.trainingSections && team.trainingSections.length > 0)
       ? team.trainingSections.map(section => ({ ...section, items: sortTrainingsByDay(section.items) }))
       : [{ title: "Tréninky", items: sortTrainingsByDay(team.trainings) }]);

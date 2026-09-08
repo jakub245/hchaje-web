@@ -7,6 +7,16 @@ const FALLBACK_NOTION_TOKEN = "ntn_531326217671s0Fsu5gglCUUDnJsKx2ZfloPvuBNItReY
 const FALLBACK_NOTION_DATABASE_ID = "350c5ef377c780f697d7eae5d0688831";
 const TRAININGS_CACHE_TTL_MS = 1000 * 60; // Reduced to 1 minute
 
+const TEAM_RELATION_ID_FALLBACKS: Record<string, string> = {
+  "34fc5ef3-77c7-8004-80d6-e612c6bfe13c": "Ženy",
+  "34fc5ef3-77c7-8016-b874-c183af150bed": "Starší žákyně",
+  "34fc5ef3-77c7-8043-a650-da788c7a6af3": "Mini žákyně",
+  "34fc5ef3-77c7-8047-868d-fddcf75eeab6": "Mladší dorostenky",
+  "34fc5ef3-77c7-805a-933a-d59276d6113f": "Přípravka",
+  "34fc5ef3-77c7-8068-938d-e5216e062d1a": "Starší dorostenky",
+  "34fc5ef3-77c7-80ea-a91f-db3ee248dc25": "Mladší žákyně",
+};
+
 type TrainingItem = {
   id: string;
   day: string;
@@ -39,6 +49,20 @@ const toSlug = (value: string) =>
     .replace(/[^a-z0-9]/g, "-")
     .replace(/-+/g, "-")
     .replace(/^-|-$/g, "");
+
+const resolveCanonicalTeamSlug = (teamName: string) => {
+  const key = normalizeKey(teamName);
+
+  if (key.includes("zen")) return "zeny";
+  if (key.includes("starsidorosten")) return "starsi-dorostenky";
+  if (key.includes("mladsidorosten")) return "mladsi-dorostenky";
+  if (key.includes("starsi") && key.includes("zak")) return "starsi-zakyne";
+  if (key.includes("mladsi") && key.includes("zak")) return "mladsi-zakyne";
+  if (key.includes("mini") && key.includes("zak")) return "mini-zakyne";
+  if (key.includes("priprav")) return "pripravka";
+
+  return toSlug(teamName);
+};
 
 const findProperty = (properties: Record<string, any>, names: string[]) => {
   const map = new Map(Object.entries(properties).map(([key, value]) => [normalizeKey(key), value] as const));
@@ -229,18 +253,24 @@ const loadTrainingsFromNotion = async () => {
         "Nazev",
       ])) || "";
 
-      const teamProperty = findProperty(properties, ["Družstvo", "Druzstvo", "Team", "Tým", "Tym"]);
+      const teamProperty = findProperty(properties, ["Družstva", "Druzstva", "Družstvo", "Druzstvo", "Team", "Tým", "Tym"]);
       let teamName = "Nezařazeno";
       let teamSlug = "";
 
       if (teamProperty?.type === "relation") {
         const relationIds = (teamProperty.relation ?? []).map((relation: any) => relation?.id).filter(Boolean);
         if (relationIds.length > 0) {
-          const resolvedNames = await Promise.all(relationIds.map((relationId: string) => readRelatedTitle(relationId)));
+          const resolvedNames = await Promise.all(
+            relationIds.map(async (relationId: string) => {
+              const resolvedName = await readRelatedTitle(relationId);
+              if (resolvedName) return resolvedName;
+              return TEAM_RELATION_ID_FALLBACKS[relationId] || "";
+            }),
+          );
           const resolved = resolvedNames.filter(Boolean);
           if (resolved.length > 0) {
             teamName = resolved[0];
-            teamSlug = toSlug(teamName);
+            teamSlug = resolveCanonicalTeamSlug(teamName);
           }
         }
       }
@@ -249,7 +279,7 @@ const loadTrainingsFromNotion = async () => {
         const plain = parseProperty(teamProperty);
         if (plain) {
           teamName = plain;
-          teamSlug = toSlug(teamName);
+          teamSlug = resolveCanonicalTeamSlug(teamName);
         }
       }
 

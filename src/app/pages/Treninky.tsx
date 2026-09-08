@@ -1,10 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { ArrowRight, Clock, MapPin, Trophy, Users } from "lucide-react";
 import { PageHero, CtaStrip, bebas, inter } from "../components/shared";
 import { TEAMS } from "../data/teams";
 
 const DAY_ORDER = ["Pondělí", "Úterý", "Středa", "Čtvrtek", "Pátek", "Sobota", "Neděle"];
+
+type TrainingItem = {
+  id: string;
+  day: string;
+  time: string;
+  hall: string;
+  section?: string;
+  teamName: string;
+  teamSlug: string;
+};
+
+type ApiTraining = Partial<TrainingItem>;
 
 function normalizePlace(place: string) {
   return place.trim().toLowerCase();
@@ -56,14 +68,112 @@ const allScheduleSlots = Array.from(
   ).values(),
 );
 
-const placeOptions = Array.from(new Set(allScheduleSlots.map((slot) => formatPlace(slot.hall))));
+  const normalizeTeamSlug = (value: string) =>
+    value
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9]/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "");
+
+  const filterToCurrentSeason = (items: TrainingItem[]): TrainingItem[] => {
+    const byTeam = items.reduce((map, item) => {
+      const slug = normalizeTeamSlug(item.teamSlug);
+      const list = map.get(slug) || [];
+      list.push(item);
+      map.set(slug, list);
+      return map;
+    }, new Map<string, TrainingItem[]>());
+
+    const getMaxYear = (s: string): number => {
+      const fullYears = (s.match(/\b(20\d{2})\b/g) || []).map(Number);
+      const shortYears = (s.match(/\/(\d{2})\b/g) || []).map((m) => 2000 + parseInt(m.slice(1), 10));
+      const all = [...fullYears, ...shortYears];
+      return all.length ? Math.max(...all) : 0;
+    };
+
+    const currentYear = new Date().getFullYear();
+    const selected: TrainingItem[] = [];
+
+    for (const teamItems of byTeam.values()) {
+      const uniqueSections = [...new Set(teamItems.map((t) => t.section?.trim() || ""))].filter(Boolean);
+
+      if (uniqueSections.length <= 1) {
+        selected.push(...teamItems);
+        continue;
+      }
+
+      const sortedSections = [...uniqueSections].sort((a, b) => getMaxYear(b) - getMaxYear(a));
+      const currentSection = sortedSections.find((s) => getMaxYear(s) <= currentYear) ?? sortedSections[0];
+      selected.push(...teamItems.filter((item) => (item.section?.trim() || "") === currentSection));
+    }
+
+    return selected;
+  };
+
+  const fallbackScheduleSlots: TrainingItem[] = allScheduleSlots.map((entry, index) => ({
+    id: `fallback-${index}`,
+    day: entry.day,
+    time: entry.time,
+    hall: entry.hall,
+    section: entry.season,
+    teamName: entry.team,
+    teamSlug: entry.slug,
+  }));
 
 export default function TreninkyPage() {
   const [selectedPlace, setSelectedPlace] = useState<string>("all");
+    const [scheduleSlots, setScheduleSlots] = useState<TrainingItem[]>(fallbackScheduleSlots);
+
+    useEffect(() => {
+      let active = true;
+
+      const loadTrainings = async () => {
+        try {
+          const response = await fetch("/api/trainings");
+          if (!response.ok) throw new Error("Nepodařilo se načíst data z API.");
+
+          const payload = (await response.json()) as { trainings?: ApiTraining[] };
+          const normalized = (payload.trainings ?? [])
+            .map((item, index) => ({
+              id: item.id || `notion-training-${index}`,
+              day: item.day || "",
+              time: item.time || "",
+              hall: item.hall || "",
+              section: item.section || "",
+              teamName: item.teamName || "",
+              teamSlug: normalizeTeamSlug(item.teamSlug || item.teamName || ""),
+            }))
+            .filter((item) => item.day && item.time && item.teamSlug);
+
+          const filtered = filterToCurrentSeason(normalized);
+          if (!active) return;
+
+          if (filtered.length > 0) {
+            setScheduleSlots(filtered);
+            return;
+          }
+
+          setScheduleSlots(filterToCurrentSeason(fallbackScheduleSlots));
+        } catch {
+          if (!active) return;
+          setScheduleSlots(filterToCurrentSeason(fallbackScheduleSlots));
+        }
+      };
+
+      loadTrainings();
+
+      return () => {
+        active = false;
+      };
+    }, []);
+
+    const placeOptions = Array.from(new Set(scheduleSlots.map((slot) => formatPlace(slot.hall))));
 
   const filteredScheduleByDay = DAY_ORDER.map((day) => ({
     day,
-    slots: allScheduleSlots.filter(
+      slots: scheduleSlots.filter(
       (slot) => slot.day === day && (selectedPlace === "all" || normalizePlace(formatPlace(slot.hall)) === selectedPlace),
     ),
   })).filter((item) => item.slots.length > 0);
@@ -117,21 +227,21 @@ export default function TreninkyPage() {
                 <div className="space-y-3">
                   {day.slots.map((slot) => (
                     <Link
-                      key={slot.slug + slot.day + slot.time + slot.hall + (slot.season ?? "")}
-                      to={`/druzstva/${slot.slug}`}
+                      key={slot.teamSlug + slot.day + slot.time + slot.hall + (slot.section ?? "")}
+                      to={`/druzstva/${slot.teamSlug}`}
                       className="group block w-full rounded-2xl border border-[#6EE76D]/10 bg-[#0f180f] px-4 py-4 transition-all hover:border-[#6EE76D]/25 hover:bg-[#111c11]"
                     >
                       <div className="grid gap-3 md:gap-4 lg:grid-cols-[48px_minmax(220px,1.2fr)_minmax(160px,0.8fr)_minmax(220px,1fr)_28px] lg:items-center">
                         <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#6EE76D]/10 flex-shrink-0">
-                          {slot.slug === "zeny" ? <Trophy className="w-5 h-5 text-[#6EE76D]" /> : <Users className="w-5 h-5 text-[#6EE76D]" />}
+                          {slot.teamSlug === "zeny" ? <Trophy className="w-5 h-5 text-[#6EE76D]" /> : <Users className="w-5 h-5 text-[#6EE76D]" />}
                         </div>
 
                         <div className="min-w-0">
-                          <div className="text-white text-[1.2rem] leading-none uppercase whitespace-pre-line" style={{ fontFamily: bebas }}>{slot.team}</div>
-                          {slot.season && (
+                          <div className="text-white text-[1.2rem] leading-none uppercase whitespace-pre-line" style={{ fontFamily: bebas }}>{slot.teamName}</div>
+                          {slot.section && (
                             <div className="mt-2">
                               <span className="inline-flex rounded-full bg-[#F587B9]/12 px-3 py-1 text-[12px] uppercase tracking-[0.12em] text-[#FFC2DD]" style={{ fontFamily: bebas }}>
-                                {slot.season}
+                                {slot.section}
                               </span>
                             </div>
                           )}

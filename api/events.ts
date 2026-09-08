@@ -7,6 +7,16 @@ const FALLBACK_NOTION_TOKEN = "ntn_531326217671s0Fsu5gglCUUDnJsKx2ZfloPvuBNItReY
 const FALLBACK_NOTION_DATABASE_ID = "350c5ef377c78092a67cd5e8b3869bb8";
 const EVENTS_CACHE_TTL_MS = 1000 * 60; // Reduced to 1 minute
 
+const TEAM_RELATION_ID_FALLBACKS: Record<string, string> = {
+  "34fc5ef3-77c7-8004-80d6-e612c6bfe13c": "Ženy",
+  "34fc5ef3-77c7-8016-b874-c183af150bed": "Starší žákyně",
+  "34fc5ef3-77c7-8043-a650-da788c7a6af3": "Mini žákyně",
+  "34fc5ef3-77c7-8047-868d-fddcf75eeab6": "Mladší dorostenky",
+  "34fc5ef3-77c7-805a-933a-d59276d6113f": "Přípravka",
+  "34fc5ef3-77c7-8068-938d-e5216e062d1a": "Starší dorostenky",
+  "34fc5ef3-77c7-80ea-a91f-db3ee248dc25": "Mladší žákyně",
+};
+
 type CachedEvents = {
   events: Array<{
     id: string;
@@ -218,13 +228,19 @@ const loadEventsFromNotion = async () => {
       const dateNote = parseRichText(findProperty(properties, ["Datum poznámka", "Datum poznamka", "Date note", "Date Note"])) || "";
       const location = parseRichText(findProperty(properties, ["Místo", "Misto", "Location", "Kde"])) || "";
 
-      const teamProperty = findProperty(properties, ["Družstva", "Druzstva", "Team", "Tým", "Tym"]);
+      const teamProperty = findProperty(properties, ["Družstva", "Druzstva", "Družstvo", "Druzstvo", "Team", "Tým", "Tym"]);
       let teamName = "Nezařazeno";
 
       if (teamProperty?.type === "relation") {
         const relationIds = (teamProperty.relation ?? []).map((relation: any) => relation?.id).filter(Boolean);
         if (relationIds.length > 0) {
-          const names = await Promise.all(relationIds.map((relationId: string) => readRelatedTitle(relationId)));
+          const names = await Promise.all(
+            relationIds.map(async (relationId: string) => {
+              const resolvedName = await readRelatedTitle(relationId);
+              if (resolvedName) return resolvedName;
+              return TEAM_RELATION_ID_FALLBACKS[relationId] || "";
+            }),
+          );
           const resolved = names.filter(Boolean);
           if (resolved.length > 0) teamName = resolved.join(", ");
         }
