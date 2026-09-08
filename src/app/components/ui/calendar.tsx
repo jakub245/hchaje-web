@@ -65,12 +65,12 @@ function Calendar({
           buttonVariants({ variant: "ghost" }),
           "size-8 p-0 font-normal aria-selected:opacity-100",
         ),
-        day_range_start:
-          "day-range-start aria-selected:bg-[#6EE76D] aria-selected:text-[#0B140B]",
-        day_range_end:
-          "day-range-end aria-selected:bg-[#6EE76D] aria-selected:text-[#0B140B]",
+        day_range_start: "day-range-start aria-selected:bg-transparent aria-selected:text-white",
+        day_range_end: "day-range-end aria-selected:bg-transparent aria-selected:text-white",
         day_selected:
-          "bg-[#6EE76D] text-[#0B140B] hover:bg-[#6EE76D] hover:text-[#0B140B] focus:bg-[#6EE76D] focus:text-[#0B140B]",
+          props.mode === "range"
+            ? "bg-transparent text-white hover:bg-transparent hover:text-white focus:bg-transparent focus:text-white"
+            : "bg-[#6EE76D] text-[#0B140B] hover:bg-[#6EE76D] hover:text-[#0B140B] focus:bg-[#6EE76D] focus:text-[#0B140B]",
         day_today: "bg-[#F587B9]/20 text-white",
         day_outside:
           "day-outside text-muted-foreground aria-selected:text-muted-foreground",
