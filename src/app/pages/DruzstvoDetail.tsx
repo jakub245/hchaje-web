@@ -11,6 +11,7 @@ import {
   ChevronRight,
   Phone,
   Mail,
+  Loader2,
 } from "lucide-react";
 import { bebas, inter, CtaStrip, NewsCard, nbspShortWords } from "../components/shared";
 import { EventDateFilter, type EventDateFilterMode, isEventInDateFilter } from "../components/EventDateFilter";
@@ -233,6 +234,36 @@ const writeSessionCache = (key: string, value: unknown) => {
     window.sessionStorage.setItem(key, JSON.stringify(value));
   } catch {
     // Ignore quota or serialization issues and continue without cache.
+  }
+};
+
+const PLAYERS_LOCAL_CACHE_TTL_MS = 1000 * 60 * 30;
+
+const readLocalCacheWithTtl = <T,>(key: string, ttlMs: number): T | null => {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(key);
+    if (!raw) return null;
+
+    const parsed = JSON.parse(raw) as { cachedAt?: number; value?: T };
+    const cachedAt = Number(parsed?.cachedAt ?? 0);
+    if (!cachedAt || Date.now() - cachedAt > ttlMs) {
+      window.localStorage.removeItem(key);
+      return null;
+    }
+
+    return (parsed?.value as T) ?? null;
+  } catch {
+    return null;
+  }
+};
+
+const writeLocalCache = <T,>(key: string, value: T) => {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(key, JSON.stringify({ cachedAt: Date.now(), value }));
+  } catch {
+    // Ignore quota or serialization issues and continue without persistent cache.
   }
 };
 
@@ -610,12 +641,17 @@ export default function DruzstvoDetail() {
         .replace(/-+/g, "-")
         .replace(/^-|-$/g, "");
 
-    const cacheKey = `team-players:${team.slug}`;
-    const cachedPlayers = readSessionCache<PlayerItem[]>(cacheKey);
-    const hasCachedPlayers = Array.isArray(cachedPlayers) && cachedPlayers.length > 0;
+    const sessionCacheKey = `team-players:${team.slug}`;
+    const localCacheKey = `team-players-persistent:${team.slug}`;
+    const sessionCachedPlayers = readSessionCache<PlayerItem[]>(sessionCacheKey);
+    const localCachedPlayers = readLocalCacheWithTtl<PlayerItem[]>(localCacheKey, PLAYERS_LOCAL_CACHE_TTL_MS);
+    const initialCachedPlayers = Array.isArray(sessionCachedPlayers)
+      ? sessionCachedPlayers
+      : (Array.isArray(localCachedPlayers) ? localCachedPlayers : null);
+    const hasCachedPlayers = Array.isArray(initialCachedPlayers);
 
-    if (hasCachedPlayers) {
-      setPlayers(cachedPlayers);
+    if (hasCachedPlayers && initialCachedPlayers) {
+      setPlayers(initialCachedPlayers);
       setPlayersLoading(false);
       setPlayersLoaded(true);
     }
@@ -654,7 +690,8 @@ export default function DruzstvoDetail() {
 
         if (!activeRequest) return;
         setPlayers(normalizedPlayers);
-        writeSessionCache(cacheKey, normalizedPlayers);
+        writeSessionCache(sessionCacheKey, normalizedPlayers);
+        writeLocalCache(localCacheKey, normalizedPlayers);
         setPlayersLoading(false);
         setPlayersLoaded(true);
       } catch {
@@ -776,7 +813,7 @@ export default function DruzstvoDetail() {
   const displayedPlayers = playersLoaded && players.length > 0 ? players : [];
   const displayedPlayerCount = playersLoaded
     ? (players.length > 0 ? players.length : team.players.length)
-    : null;
+    : team.players.length;
   const displayedTrainingCount = trainingsLoaded ? trainingCount : null;
   const displayedNews = newsLoaded
     ? teamNews.map((item: TeamNewsItem) => ({ slug: item.slug, title: item.title, date: item.date, excerpt: item.excerpt || item.content || "", mediaSections: item.mediaSections }))
@@ -833,7 +870,10 @@ export default function DruzstvoDetail() {
 
               <div className="grid grid-cols-2 gap-4 mb-8">
                 <div className="mobile-solid-card p-4 rounded-2xl bg-[#101a10] border border-[#6EE76D]/12">
-                  <div className="text-3xl text-[#6EE76D]" style={{ fontFamily: bebas }}>{displayedPlayerCount ?? "..."}</div>
+                  <div className="flex items-center gap-2 text-3xl text-[#6EE76D]" style={{ fontFamily: bebas }}>
+                    <span>{displayedPlayerCount}</span>
+                    {playersLoading && <Loader2 className="w-5 h-5 animate-spin text-[#6EE76D]/85" aria-hidden="true" />}
+                  </div>
                   <div className="text-white/35 text-sm" style={{ fontFamily: inter }}>Hráček</div>
                 </div>
                 <div className="mobile-solid-card p-4 rounded-2xl bg-[#101a10] border border-[#6EE76D]/12">
