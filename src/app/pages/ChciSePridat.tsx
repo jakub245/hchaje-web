@@ -166,7 +166,7 @@ export default function ChciSePridatPage() {
     try {
       const payload = {
         access_key: "432504e2-9b18-43c3-ade9-c183b3c77391",
-        to_email: "pripravkahchaje@gmail.com",
+        to_email: "hchaje.nabor@gmail.com",
         subject: "Chci se přidat - nový zájemce",
         from_name: "HC Háje",
         from_email: formData.email,
@@ -609,7 +609,7 @@ export default function ChciSePridatPage() {
               {[
                 { icon: Phone, name: "Petr Paulín", value: "792 336 535" },
                 { icon: Phone, name: "Václav Škarda", value: "606 330 998" },
-                { icon: Mail, name: "E-mail", value: "pripravkahchaje@gmail.com" },
+                { icon: Mail, name: "E-mail", value: "hchaje.nabor@gmail.com" },
               ].map((contact) => (
                 <div
                   key={contact.name}
