@@ -823,7 +823,7 @@ export default function DruzstvoDetail() {
     <>
       <section className="relative pt-24 pb-10 lg:pt-32 lg:pb-14">
         <div className="absolute inset-0">
-          <ImageWithFallback src={team.img} alt={team.name} className="w-full h-full object-cover" />
+          <ImageWithFallback src={team.img} alt={team.name} className="w-full h-full object-cover" style={{ objectPosition: team.heroPosition }} />
           <div className="absolute inset-0 bg-gradient-to-r from-[#080C08] via-[#080C08]/90 to-[#080C08]/60" />
           <div className="absolute inset-0 bg-gradient-to-t from-[#080C08] via-transparent to-transparent" />
         </div>
@@ -893,7 +893,7 @@ export default function DruzstvoDetail() {
             </div>
 
             <div className="rounded-2xl overflow-hidden aspect-[4/3] border border-[#6EE76D]/10">
-              <ImageWithFallback src={team.img} alt={team.name} className="w-full h-full object-cover" />
+              <ImageWithFallback src={team.img} alt={team.name} className="w-full h-full object-cover" style={{ objectPosition: team.heroPosition }} />
             </div>
           </div>
         </div>

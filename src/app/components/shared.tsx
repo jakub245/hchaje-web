@@ -1,7 +1,7 @@
-import { Children, cloneElement, isValidElement, useState, useEffect, type ReactElement, type ReactNode } from "react";
+import { Children, cloneElement, isValidElement, useState, useEffect, type CSSProperties, type ReactElement, type ReactNode } from "react";
 import { Link, useLocation } from "react-router";
 import {
-  Menu, X, Phone, Mail, MapPin, Instagram, Activity, ArrowRight, Facebook, Calendar,
+  Menu, X, Phone, Mail, MapPin, Instagram, Activity, ArrowRight, ArrowUpRight, Facebook, Calendar,
 } from "lucide-react";
 import logoSvg from "../../imports/hchaje-logo-old.png";
 
@@ -18,12 +18,16 @@ export const CONTACT_ADDRESS = "K Jezeru, Praha 4";
 export const MAP_URL = "https://www.google.com/maps?q=50.0365389,14.5359419";
 export const FACEBOOK_URL = "https://www.facebook.com/hchajeprahacze/photos/?ref=page_internal";
 export const INSTAGRAM_URL = "https://www.instagram.com/hchajeprahacze";
+export const ESHOP_URL = "https://www.yourclub.cz/kategorie/hc-haje/";
 
-const NAV = [
+type NavEntry = { label: string; to: string; external?: boolean };
+
+const NAV: NavEntry[] = [
   { label: "Družstva", to: "/druzstva" },
   { label: "Akce", to: "/akce" },
   { label: "Aktuality", to: "/aktuality" },
   { label: "O klubu", to: "/o-klubu" },
+  { label: "E-shop", to: ESHOP_URL, external: true },
   { label: "Kontakty", to: "/kontakty" },
   { label: "Nábor", to: "/nabor" },
 ];
@@ -157,6 +161,39 @@ export function NewsCard({
   );
 }
 
+/* ── Položka navigace: interní odkaz, nebo externí s ikonou a novou záložkou ── */
+function NavItem({ item, className, iconClassName = "", style, onClick }: {
+  item: NavEntry;
+  className?: string;
+  iconClassName?: string;
+  style?: CSSProperties;
+  onClick?: () => void;
+}) {
+  if (item.external) {
+    return (
+      <a
+        href={item.to}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={`${item.label} (otevře se v nové záložce)`}
+        className={className}
+        style={style}
+        onClick={onClick}
+      >
+        <span className="inline-flex items-center gap-0.5">
+          {item.label}
+          <ArrowUpRight className={`w-[1em] h-[1em] ${iconClassName}`} aria-hidden="true" />
+        </span>
+      </a>
+    );
+  }
+  return (
+    <Link to={item.to} className={className} style={style} onClick={onClick}>
+      {item.label}
+    </Link>
+  );
+}
+
 /* ── Navbar ── */
 export function Navbar() {
   const [open, setOpen] = useState(false);
@@ -178,24 +215,23 @@ export function Navbar() {
     <nav className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${scrolled ? "bg-[#080C08]/95 backdrop-blur-md border-b border-[#6EE76D]/10 shadow-lg shadow-black/30" : "bg-transparent"}`}>
       <div className="w-full px-6 lg:px-24 pt-2">
         <div className="flex items-center justify-between h-16 lg:h-20">
-          <Link to="/" className="flex items-center gap-3">
+          <Link to="/" className="flex items-center gap-3 shrink-0">
             <img src={logoSvg} alt="HC Háje" className="h-14 w-auto" />
           </Link>
 
-          <div className="hidden lg:flex items-center gap-10">
+          <div className="hidden lg:flex items-center gap-6 xl:gap-10">
             {NAV.map((item) => (
-              <Link
+              <NavItem
                 key={item.to}
-                to={item.to}
-                className={`uppercase transition-all duration-200 ease-out hover:text-[#6EE76D] active:-translate-y-[1px] active:text-[#6EE76D] ${location.pathname.startsWith(item.to) ? "text-[#6EE76D]" : "text-white/55"}`}
+                item={item}
+                className={`uppercase whitespace-nowrap transition-all duration-200 ease-out hover:text-[#6EE76D] active:-translate-y-[1px] active:text-[#6EE76D] ${location.pathname.startsWith(item.to) ? "text-[#6EE76D]" : "text-white/55"}`}
+                iconClassName="-translate-y-[0.1em]"
                 style={navTextStyle}
-              >
-                {item.label}
-              </Link>
+              />
             ))}
             <Link
               to="/nabor#kontaktni-formular"
-              className="rounded-full px-6 py-2 bg-[#F587B9] text-[#080C08] hover:brightness-110 hover:shadow-[0_0_20px_rgba(245,135,185,0.28)] uppercase transition-all duration-300 inline-flex items-center gap-2"
+              className="rounded-full px-6 py-2 bg-[#F587B9] text-[#080C08] hover:brightness-110 hover:shadow-[0_0_20px_rgba(245,135,185,0.28)] uppercase whitespace-nowrap transition-all duration-300 inline-flex items-center gap-2"
               style={navTextStyle}
             >
               Chci se přidat
@@ -214,18 +250,18 @@ export function Navbar() {
       </div>
 
       {open && (
-        <div className="lg:hidden border-t border-[#6EE76D]/10 bg-[#080C08]/98 backdrop-blur-lg">
+        <div className="lg:hidden border-t border-[#6EE76D]/10 bg-[#080C08]/98 backdrop-blur-lg max-h-[calc(100dvh-4.5rem)] overflow-y-auto overscroll-contain">
           <div className="px-6 pt-4 pb-8 min-h-[calc(100dvh-4.5rem)] flex flex-col">
             <div className="flex flex-col items-center gap-2">
               {NAV.map((item, index) => (
-                <Link
+                <NavItem
                   key={item.to}
-                  to={item.to}
+                  item={item}
                   className={`block w-full rounded-2xl py-4 px-4 text-center text-white/80 hover:text-[#6EE76D] hover:bg-[#6EE76D]/8 active:-translate-y-[1px] uppercase tracking-wider transition-all duration-200 ease-out ${index !== NAV.length - 1 ? "border-b border-white/5" : ""}`}
+                  iconClassName="-translate-y-[0.1em]"
                   style={navTextStyle}
-                >
-                  {item.label}
-                </Link>
+                  onClick={item.external ? () => setOpen(false) : undefined}
+                />
               ))}
             </div>
             <Btn variant="primary" to="/nabor#kontaktni-formular" className="mt-6 w-full justify-center py-4" onClick={() => setOpen(false)}>
@@ -271,9 +307,7 @@ export function Footer() {
                 <h4 className="text-white mb-4 uppercase tracking-wider" style={{ fontFamily: bebas }}>Navigace</h4>
                 <div className="space-y-2">
                   {NAV.map((item) => (
-                    <Link key={item.to} to={item.to} className="block text-white/35 hover:text-[#6EE76D] transition-colors text-sm">
-                      {item.label}
-                    </Link>
+                    <NavItem key={item.to} item={item} className="block text-white/55 hover:text-[#6EE76D] transition-colors text-sm" />
                   ))}
                 </div>
               </div>

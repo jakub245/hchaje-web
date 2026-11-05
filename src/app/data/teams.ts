@@ -63,7 +63,7 @@ export interface TeamNews { date: string; title: string; excerpt?: string; conte
 export interface TeamEvent { date: string; title: string; location: string; }
 export interface Team {
   slug: string; name: string; shortName: string; desc: string; longDesc: string;
-  img: string; coach: string; assistantCoach?: string; playerCount: number;
+  img: string; heroPosition?: string; coach: string; assistantCoach?: string; playerCount: number;
   ageRange: string; trainings: Training[]; trainingSections?: TrainingSection[];
   players: Player[]; news: TeamNews[]; events?: TeamEvent[];
 }
@@ -115,6 +115,7 @@ const TEAM_DATA: Team[] = [
     desc: "Soutěžní tým 12-14 let.",
     longDesc: "Kategorie starších žákyň navazuje na získané základy a rozvíjí herní dovednosti do větší variability a jistoty i pod tlakem soupeře. Hráčky si osvojují základy pozičního útoku, spolupráci v menších skupinách i specifické role na hřišti, přičemž se učí lépe využívat prostor a rozhodovat se v reálných herních situacích. Důraz je kladen také na samostatnost, zodpovědnost za vlastní výkon a pochopení širších souvislostí hry i regenerace.",
     img: resolveTeamHero("starsi-zakyne", "Starší žákyně", "imports/foto/druzstva/starsi zakyne/textura (1).png"),
+    heroPosition: "50% 22%",
     coach: "Milan Ernest", assistantCoach: "Pavla Martin",
     playerCount: 16, ageRange: "12-14 let",
     trainings: [
